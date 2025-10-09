@@ -1,0 +1,83 @@
+.dashboardRoot {
+  min-height: 100vh;
+  display: flex;
+  background: linear-gradient(180deg,#0b1220,#0f1a2b);
+  color: #e6f7ff;
+}
+
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #16213e, #0f1a30);
+  color: #fff;
+  padding: 1.5rem 1rem;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+}
+
+.brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #dff6ff;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.menuItem {
+  padding: 0.8rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.menuItem:hover {
+  background: rgba(255,255,255,0.02);
+  border-color: rgba(255,255,255,0.03);
+}
+
+.menuItem.active {
+  background: linear-gradient(90deg, rgba(0,212,255,0.12), rgba(255,107,107,0.06));
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.homeItem {
+  background: linear-gradient(90deg, rgba(255,60,60,0.22), rgba(220,30,30,0.18));
+  color: #fff;
+  font-weight: 800;
+  border: 1px solid rgba(220,40,40,0.28);
+  box-shadow: 0 16px 44px rgba(220,40,40,0.14);
+  padding: 0.9rem 1rem;
+  font-size: 1.02rem;
+  border-radius: 10px;
+}
+.homeItem:hover { box-shadow: 0 20px 60px rgba(220,40,40,0.22); transform: translateY(-2px); }
+
+
+.content {
+  flex: 1;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 10px;
+}
+
+.contentCard {
+  background: linear-gradient(180deg, rgba(6,10,18,0.65), rgba(10,14,22,0.6));
+  border-radius: 12px;
+  min-height: 520px;
+  box-shadow: 0 14px 50px rgba(0,0,0,0.6);
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: #dff8ff;
+}

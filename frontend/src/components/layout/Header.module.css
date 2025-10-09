@@ -1,0 +1,188 @@
+.header {
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.logo-link {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.logo-link:hover {
+  color: #00d4ff;
+  transform: scale(1.05);
+}
+
+.icon {
+  margin-right: 0.5rem;
+  font-size: 2rem;
+  filter: drop-shadow(0 0 5px #00d4ff);
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #ff6b6b;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background: linear-gradient(45deg, #00d4ff, #ff6b6b);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative; /* so dropdown can be absolutely positioned relative to this */
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  display: block;
+  object-fit: cover;
+}
+
+.user-name {
+  color: white;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.btn-logout {
+  background: linear-gradient(45deg, #ff6b6b, #16213e);
+  border: 2px solid #ff6b6b;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-logout:hover {
+  background: linear-gradient(45deg, #00d4ff, #ff6b6b);
+  border-color: #00d4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+}
+
+.btn-login, .btn-register {
+  background: linear-gradient(45deg, #00d4ff, #16213e);
+  border: 2px solid #00d4ff;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.btn-login:hover, .btn-register:hover {
+  background: linear-gradient(45deg, #ff6b6b, #00d4ff);
+  border-color: #ff6b6b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.avatar-btn {
+  background: transparent;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer;
+  width: 40px; /* make the button the same size as avatar */
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden; /* clip any square background */
+}
+
+.avatar-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  left: auto;
+  margin-top: 0;
+  background: linear-gradient(180deg, rgba(8,10,20,0.98), rgba(12,18,36,0.98));
+  border: 1px solid rgba(0,212,255,0.08);
+  border-radius: 12px;
+  padding: 0.4rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 18px rgba(0,212,255,0.06) inset;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  z-index: 1100;
+}
+
+.dropdown-item {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.dropdown-item:hover {
+  background: linear-gradient(90deg, rgba(0,212,255,0.08), rgba(255,107,107,0.06));
+  transform: translateX(4px);
+}

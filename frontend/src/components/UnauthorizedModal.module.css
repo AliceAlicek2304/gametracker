@@ -1,0 +1,4 @@
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:4000}
+.modal{background:#081218;padding:18px;border-radius:8px;min-width:320px;max-width:520px;color:#ddd}
+.btn{background:#223;border:1px solid #334;padding:8px 12px;border-radius:6px;color:#ddd}
+.primary{background:#0b6;border-color:#08a;color:#042}

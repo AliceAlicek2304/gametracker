@@ -1,0 +1,15 @@
+.footer {
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(0, 212, 255, 0.3);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}

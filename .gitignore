@@ -1,0 +1,174 @@
+# Java / Maven
+/target/
+*.class
+*.jar
+*.war
+
+# Node / frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+
+# Env files
+.env
+.env.local
+
+# Uploads
+/uploads/
+
+# Local configuration and secrets
+# backend Spring Boot properties
+application.properties
+application-*.properties
+**/application.properties
+# env variants
+.env.*
+# YAML configs
+*.yml
+*.yaml
+# Local config directories
+config/
+# secret / key files
+*.secret
+*.key
+*.pem
+secrets.*
+credentials
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production builds
+/frontend/build/
+/backend/target/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Spring Boot application properties
+/backend/src/main/resources/application.properties
+/backend/src/main/resources/application-*.properties
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Eclipse
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# Visual Studio Code
+.vscode/
+
+# Application specific
+/backend/uploads/
+/frontend/public/uploads/
+cosplay-new-key.pem 
+cosplay-backend.tar
