@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alice.gametracker.dto.CreateWeaponRequest;
 import com.alice.gametracker.dto.DeactivateWeaponRequest;
 import com.alice.gametracker.dto.UpdateWeaponRequest;
+import com.alice.gametracker.dto.WeaponCardResponse;
 import com.alice.gametracker.dto.WeaponResponse;
 import com.alice.gametracker.service.WeaponService;
 
@@ -102,6 +103,14 @@ public class WeaponController {
     public ResponseEntity<List<WeaponResponse>> getActiveWeapons() {
         List<WeaponResponse> resp = weaponService.findActiveWeapons();
         return ResponseEntity.ok(resp);
+    }
+
+    // Get simplified weapon cards for public listing page (no authentication required)
+    // Returns only essential fields: id, name, type, imageUrl, rarity
+    @GetMapping("/cards")
+    public ResponseEntity<List<WeaponCardResponse>> getWeaponCards() {
+        List<WeaponCardResponse> cards = weaponService.findWeaponCards();
+        return ResponseEntity.ok(cards);
     }
 
     // Upload weapon image

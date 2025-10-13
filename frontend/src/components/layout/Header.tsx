@@ -39,6 +39,7 @@ const Header: React.FC = () => {
           <nav className={styles.nav}>
             <Link to="/" className={styles['nav-link']}>Trang chủ</Link>
             <Link to="/characters" className={styles['nav-link']}>Nhân vật</Link>
+            <Link to="/weapons" className={styles['nav-link']}>Vũ khí</Link>
             <Link to="/tracker" className={styles['nav-link']}>Tracker</Link>
           </nav>
           <div className={styles['auth-buttons']}>

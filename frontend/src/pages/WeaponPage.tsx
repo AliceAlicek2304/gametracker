@@ -3,22 +3,20 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './CharacterPage.module.css';
 
-type Character = {
+type Weapon = {
   id: number;
   name: string;
-  element: string;
-  weaponType: string;
+  type: string;
   imageUrl: string;
   rarity: number;
 };
 
-const CharacterPage: React.FC = () => {
-  const [characters, setCharacters] = useState<Character[]>([]);
+const WeaponPage: React.FC = () => {
+  const [weapons, setWeapons] = useState<Weapon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedElement, setSelectedElement] = useState<string>('all');
-  const [selectedWeapon, setSelectedWeapon] = useState<string>('all');
+  const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedRarity, setSelectedRarity] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 28;
@@ -40,19 +38,19 @@ const CharacterPage: React.FC = () => {
       })
       .catch(error => console.error('Error fetching backgrounds:', error));
 
-    // Fetch characters
-    fetch('/api/characters/cards')
+    // Fetch weapons
+    fetch('/api/weapons/cards')
       .then(response => response.json())
       .then(data => {
         // Sort by ID descending (newest first)
-        const sortedData = data.sort((a: Character, b: Character) => b.id - a.id);
-        setCharacters(sortedData);
+        const sortedData = data.sort((a: Weapon, b: Weapon) => b.id - a.id);
+        setWeapons(sortedData);
         setLoading(false);
       })
       .catch(err => {
-        setError('Không thể tải danh sách nhân vật');
+        setError('Không thể tải danh sách vũ khí');
         setLoading(false);
-        console.error('Error fetching characters:', err);
+        console.error('Error fetching weapons:', err);
       });
   }, []);
 
@@ -65,59 +63,43 @@ const CharacterPage: React.FC = () => {
     }
   }, [backgrounds]);
 
-  // Get unique elements and weapons for filters
-  const elements = ['all', ...Array.from(new Set(characters.map(c => c.element)))];
-  const weapons = ['all', ...Array.from(new Set(characters.map(c => c.weaponType)))];
-  const rarities = ['all', ...Array.from(new Set(characters.map(c => c.rarity))).sort((a, b) => b - a)];
+  // Get unique types and rarities for filters
+  const types = ['all', ...Array.from(new Set(weapons.map(w => w.type)))];
+  const rarities = ['all', ...Array.from(new Set(weapons.map(w => w.rarity))).sort((a, b) => b - a)];
 
-  // Filter characters
-  const filteredCharacters = characters.filter(character => {
-    const matchesSearch = character.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesElement = selectedElement === 'all' || character.element === selectedElement;
-    const matchesWeapon = selectedWeapon === 'all' || character.weaponType === selectedWeapon;
-    const matchesRarity = selectedRarity === 'all' || character.rarity === parseInt(selectedRarity);
-    return matchesSearch && matchesElement && matchesWeapon && matchesRarity;
+  // Filter weapons
+  const filteredWeapons = weapons.filter(weapon => {
+    const matchesSearch = weapon.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = selectedType === 'all' || weapon.type === selectedType;
+    const matchesRarity = selectedRarity === 'all' || weapon.rarity === parseInt(selectedRarity);
+    return matchesSearch && matchesType && matchesRarity;
   });
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredCharacters.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredWeapons.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedCharacters = filteredCharacters.slice(startIndex, endIndex);
+  const paginatedWeapons = filteredWeapons.slice(startIndex, endIndex);
 
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedElement, selectedWeapon, selectedRarity]);
-
-  // Get element icon URL from backend
-  const getElementIcon = (element: string) => {
-    const elementMap: { [key: string]: string } = {
-      'glacio': 'glacio.png',
-      'fusion': 'fusion.png',
-      'electro': 'electro.png',
-      'aero': 'aero.png',
-      'spectro': 'spectro.png',
-      'havoc': 'havoc.png'
-    };
-    const filename = elementMap[element.toLowerCase()];
-    return filename ? `/api/elements/icon/${filename}` : null;
-  };
+  }, [searchTerm, selectedType, selectedRarity]);
 
   return (
     <>
       <Header />
       <div className={styles.container} style={{ backgroundImage: `url(${currentBg})` }}>
         <div className={styles.contentWrapper}>
-          <h1 className={styles.title}>Danh Sách Nhân Vật</h1>
-          <p className={styles.subtitle}>Khám phá tất cả các nhân vật trong game</p>
+          <h1 className={styles.title}>Danh Sách Vũ Khí</h1>
+          <p className={styles.subtitle}>Khám phá tất cả các vũ khí trong game</p>
 
           {/* Filter Section */}
           <div className={styles.filterSection}>
             <div className={styles.searchBox}>
               <input
                 type="text"
-                placeholder="🔍 Tìm kiếm nhân vật..."
+                placeholder="🔍 Tìm kiếm vũ khí..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={styles.searchInput}
@@ -125,30 +107,15 @@ const CharacterPage: React.FC = () => {
             </div>
 
             <div className={styles.filterGroup}>
-              <label className={styles.filterLabel}>Nguyên Tố:</label>
+              <label className={styles.filterLabel}>Loại Vũ Khí:</label>
               <select
-                value={selectedElement}
-                onChange={(e) => setSelectedElement(e.target.value)}
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
                 className={styles.filterSelect}
               >
-                {elements.map(element => (
-                  <option key={element} value={element}>
-                    {element === 'all' ? 'Tất cả' : element}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.filterGroup}>
-              <label className={styles.filterLabel}>Vũ Khí:</label>
-              <select
-                value={selectedWeapon}
-                onChange={(e) => setSelectedWeapon(e.target.value)}
-                className={styles.filterSelect}
-              >
-                {weapons.map(weapon => (
-                  <option key={weapon} value={weapon}>
-                    {weapon === 'all' ? 'Tất cả' : weapon}
+                {types.map(type => (
+                  <option key={type} value={type}>
+                    {type === 'all' ? 'Tất cả' : type}
                   </option>
                 ))}
               </select>
@@ -170,11 +137,11 @@ const CharacterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Character Grid */}
+          {/* Weapon Grid */}
           {loading ? (
             <div className={styles.loading}>
               <div className={styles.spinner}></div>
-              <p>Đang tải nhân vật...</p>
+              <p>Đang tải vũ khí...</p>
             </div>
           ) : error ? (
             <div className={styles.error}>
@@ -183,28 +150,19 @@ const CharacterPage: React.FC = () => {
           ) : (
             <>
               <div className={styles.characterGrid}>
-                {paginatedCharacters.map(character => (
-                  <div key={character.id} className={styles.characterCard}>
+                {paginatedWeapons.map(weapon => (
+                  <div key={weapon.id} className={styles.characterCard}>
                     <div className={styles.characterImageWrapper}>
                       <img
-                        src={character.imageUrl}
-                        alt={character.name}
+                        src={weapon.imageUrl}
+                        alt={weapon.name}
                         className={styles.characterImage}
                       />
-                      {getElementIcon(character.element) && (
-                        <div className={styles.elementIcon}>
-                          <img 
-                            src={getElementIcon(character.element)!} 
-                            alt={character.element}
-                            className={styles.elementIconImg}
-                          />
-                        </div>
-                      )}
                       <div className={styles.rarity}>
-                        {'★'.repeat(character.rarity)}
+                        {'★'.repeat(weapon.rarity)}
                       </div>
                     </div>
-                    <div className={styles.characterName}>{character.name}</div>
+                    <div className={styles.characterName}>{weapon.name}</div>
                   </div>
                 ))}
               </div>
@@ -244,9 +202,9 @@ const CharacterPage: React.FC = () => {
             </>
           )}
 
-          {filteredCharacters.length === 0 && !loading && (
+          {filteredWeapons.length === 0 && !loading && (
             <div className={styles.noResults}>
-              <p>Không tìm thấy nhân vật nào phù hợp</p>
+              <p>Không tìm thấy vũ khí nào phù hợp</p>
             </div>
           )}
         </div>
@@ -256,4 +214,4 @@ const CharacterPage: React.FC = () => {
   );
 };
 
-export default CharacterPage;
+export default WeaponPage;

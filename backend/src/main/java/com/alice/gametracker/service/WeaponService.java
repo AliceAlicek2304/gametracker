@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alice.gametracker.dto.CreateWeaponRequest;
 import com.alice.gametracker.dto.DeactivateWeaponRequest;
 import com.alice.gametracker.dto.UpdateWeaponRequest;
+import com.alice.gametracker.dto.WeaponCardResponse;
 import com.alice.gametracker.dto.WeaponResponse;
 import com.alice.gametracker.model.Weapon;
 import com.alice.gametracker.repository.WeaponRepository;
@@ -134,6 +135,14 @@ public class WeaponService {
         return weaponRepository.findAll().stream().filter(Weapon::isActive).map(this::convertToResponse).toList();
     }
 
+    // Get simplified weapon cards (only essential fields for public listing)
+    public List<WeaponCardResponse> findWeaponCards() {
+        return weaponRepository.findAll().stream()
+            .filter(Weapon::isActive)
+            .map(this::convertToCardResponse)
+            .toList();
+    }
+
     // Find by name (case-insensitive)
     public Optional<WeaponResponse> findByName(String name) {
         if (name == null || name.trim().isEmpty()) return Optional.empty();
@@ -158,6 +167,17 @@ public class WeaponService {
             weapon.getRarity(),
             weapon.isActive(),
             weapon.getCreatedDate()
+        );
+    }
+
+    // Convert entity to simplified card response DTO (only essential fields)
+    private WeaponCardResponse convertToCardResponse(Weapon weapon) {
+        return new WeaponCardResponse(
+            weapon.getId(),
+            weapon.getName(),
+            weapon.getWeaponType() != null ? weapon.getWeaponType().name() : null,
+            weapon.getImageUrl(),
+            weapon.getRarity()
         );
     }
 
