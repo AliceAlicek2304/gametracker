@@ -13,6 +13,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alice.gametracker.dto.CharacterCardResponse;
 import com.alice.gametracker.dto.CharacterResponse;
 import com.alice.gametracker.dto.CreateCharacterRequest;
 import com.alice.gametracker.dto.DeactivateCharacterRequest;
@@ -255,6 +256,14 @@ public class CharacterService {
             .collect(Collectors.toList());
     }
 
+    // Get simplified character cards (only essential fields for public listing)
+    public List<CharacterCardResponse> findCharacterCards() {
+        return characterRepository.findAll().stream()
+            .filter(Character::isActive)
+            .map(this::convertToCardResponse)
+            .collect(Collectors.toList());
+    }
+
     // Find by name (case-insensitive)
     public Optional<CharacterResponse> findByName(String name) {
         if (name == null || name.trim().isEmpty()) return Optional.empty();
@@ -309,6 +318,18 @@ public class CharacterService {
             statsResponse,
             skillResponse,
             character.getCreatedDate()
+        );
+    }
+
+    // Convert entity to simplified card response DTO (only essential fields)
+    private CharacterCardResponse convertToCardResponse(Character character) {
+        return new CharacterCardResponse(
+            character.getId(),
+            character.getName(),
+            character.getElement().name(),
+            character.getWeaponType().name(),
+            character.getImageUrl(),
+            character.getRarity()
         );
     }
 }

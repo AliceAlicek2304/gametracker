@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alice.gametracker.dto.CharacterCardResponse;
 import com.alice.gametracker.dto.CharacterResponse;
 import com.alice.gametracker.dto.CreateCharacterRequest;
 import com.alice.gametracker.dto.DeactivateCharacterRequest;
@@ -108,6 +109,14 @@ public class CharacterController {
     public ResponseEntity<List<CharacterResponse>> getActiveCharacters() {
         List<CharacterResponse> characters = characterService.findActiveCharacters();
         return ResponseEntity.ok(characters);
+    }
+
+    // Get simplified character cards for public listing page (no authentication required)
+    // Returns only essential fields: id, name, element, weaponType, imageUrl, rarity
+    @GetMapping("/cards")
+    public ResponseEntity<List<CharacterCardResponse>> getCharacterCards() {
+        List<CharacterCardResponse> cards = characterService.findCharacterCards();
+        return ResponseEntity.ok(cards);
     }
 
     // Upload character image

@@ -1,11 +1,8 @@
 package com.alice.gametracker.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -21,41 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alice.gametracker.service.FileStorageService;
 
 @RestController
-@RequestMapping("/api/background")
-public class BackgroundController {
+@RequestMapping("/api/elements")
+public class ElementController {
 
     @Autowired
     private FileStorageService fileStorageService;
 
-    // Get list of background filenames
-    @GetMapping
-    public ResponseEntity<List<String>> getBackgroundFiles() {
-        List<String> files = new ArrayList<>();
-        Path backgroundStoragePath = fileStorageService.getBackgroundStoragePath();
-        File dir = backgroundStoragePath.toFile();
-        if (dir.exists() && dir.isDirectory()) {
-            File[] fileList = dir.listFiles();
-            if (fileList != null) {
-                for (File file : fileList) {
-                    if (file.isFile()) {
-                        files.add(file.getName());
-                    }
-                }
-            }
-        }
-        return ResponseEntity.ok(files);
-    }
-
-    // Serve background image files (public)
-    // GET /api/background/image/{filename}
-    @GetMapping("/image/{filename:.+}")
-    public ResponseEntity<Resource> serveBackgroundImage(@PathVariable String filename) {
+    // Serve element icon files (public)
+    // GET /api/elements/icon/{filename}
+    @GetMapping("/icon/{filename:.+}")
+    public ResponseEntity<Resource> serveElementIcon(@PathVariable String filename) {
         try {
-            Path backgroundStoragePath = fileStorageService.getBackgroundStoragePath();
-            Path filePath = backgroundStoragePath.resolve(filename).normalize();
+            Path elementStoragePath = fileStorageService.getElementStoragePath();
+            Path filePath = elementStoragePath.resolve(filename).normalize();
 
             // Security check: ensure the file is within the storage directory
-            if (!filePath.startsWith(backgroundStoragePath)) {
+            if (!filePath.startsWith(elementStoragePath)) {
                 return ResponseEntity.notFound().build();
             }
 

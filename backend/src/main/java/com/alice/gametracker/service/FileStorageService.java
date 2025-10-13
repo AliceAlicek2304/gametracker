@@ -70,6 +70,18 @@ public class FileStorageService {
     @Value("${app.echo.url.pattern:${app.character.url.pattern}}")
     private String echoUrlPattern;
 
+    @Value("${app.element.storage.location:uploads/element/}")
+    private String elementStorageLocation;
+
+    @Value("${app.element.url.pattern:/api/elements/icon}")
+    private String elementUrlPattern;
+
+    @Value("${app.background.storage.location:uploads/background/}")
+    private String backgroundStorageLocation;
+
+    @Value("${app.background.url.pattern:/api/background/image}")
+    private String backgroundUrlPattern;
+
     @Value("${app.storage.type:local}")
     private String storageType;
 
@@ -87,6 +99,8 @@ public class FileStorageService {
     private Path weaponStoragePath;
     private Path setEchoStoragePath;
     private Path echoStoragePath;
+    private Path elementStoragePath;
+    private Path backgroundStoragePath;
     
     // S3 storage
     private S3Client s3Client;
@@ -122,8 +136,10 @@ public class FileStorageService {
         this.roleStoragePath = Paths.get(roleStorageLocation).toAbsolutePath().normalize();
         this.characterStoragePath = Paths.get(characterStorageLocation).toAbsolutePath().normalize();
         this.weaponStoragePath = Paths.get(weaponStorageLocation).toAbsolutePath().normalize();
-    this.setEchoStoragePath = Paths.get(setEchoStorageLocation).toAbsolutePath().normalize();
-    this.echoStoragePath = Paths.get(echoStorageLocation).toAbsolutePath().normalize();
+        this.setEchoStoragePath = Paths.get(setEchoStorageLocation).toAbsolutePath().normalize();
+        this.echoStoragePath = Paths.get(echoStorageLocation).toAbsolutePath().normalize();
+        this.elementStoragePath = Paths.get(elementStorageLocation).toAbsolutePath().normalize();
+        this.backgroundStoragePath = Paths.get(backgroundStorageLocation).toAbsolutePath().normalize();
 
         try {
             Files.createDirectories(avatarStoragePath);
@@ -132,6 +148,8 @@ public class FileStorageService {
             Files.createDirectories(weaponStoragePath);
             Files.createDirectories(setEchoStoragePath);
             Files.createDirectories(echoStoragePath);
+            Files.createDirectories(elementStoragePath);
+            Files.createDirectories(backgroundStoragePath);
             copyDefaultAvatar();
             log.info("Local storage directories created successfully");
         } catch (IOException e) {
@@ -229,6 +247,38 @@ public class FileStorageService {
             return getS3FileUrl("setechos/" + fileName);
         } else {
             String base = setEchoUrlPattern;
+            if (!base.endsWith("/")) {
+                base += "/";
+            }
+            if (fileName.startsWith("/")) {
+                fileName = fileName.substring(1);
+            }
+            return base + fileName;
+        }
+    }
+
+    // Helper to build element icon URL based on storage type
+    private String buildElementIconUrl(String fileName) {
+        if (isS3Storage) {
+            return getS3FileUrl("elements/" + fileName);
+        } else {
+            String base = elementUrlPattern;
+            if (!base.endsWith("/")) {
+                base += "/";
+            }
+            if (fileName.startsWith("/")) {
+                fileName = fileName.substring(1);
+            }
+            return base + fileName;
+        }
+    }
+
+    // Helper to build background image URL based on storage type
+    private String buildBackgroundImageUrl(String fileName) {
+        if (isS3Storage) {
+            return getS3FileUrl("backgrounds/" + fileName);
+        } else {
+            String base = backgroundUrlPattern;
             if (!base.endsWith("/")) {
                 base += "/";
             }
@@ -853,5 +903,14 @@ public class FileStorageService {
         } else {
             return "Local File Storage (Cosplay App optimized)";
         }
+    }
+
+    // Get paths for local file serving
+    public Path getElementStoragePath() {
+        return elementStoragePath;
+    }
+
+    public Path getBackgroundStoragePath() {
+        return backgroundStoragePath;
     }
 }

@@ -1,5 +1,5 @@
 .header {
-  background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
   backdrop-filter: blur(10px);
   color: white;
   padding: 1rem 0;
@@ -7,7 +7,7 @@
   top: 0;
   width: 100%;
   z-index: 1000;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.3);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -36,14 +36,14 @@
 }
 
 .logo-link:hover {
-  color: #00d4ff;
+  color: #3b82f6;
   transform: scale(1.05);
 }
 
 .icon {
   margin-right: 0.5rem;
   font-size: 2rem;
-  filter: drop-shadow(0 0 5px #00d4ff);
+  filter: drop-shadow(0 0 5px #3b82f6);
 }
 
 .nav {
@@ -60,7 +60,7 @@
 }
 
 .nav-link:hover {
-  color: #ff6b6b;
+  color: #3b82f6;
 }
 
 .nav-link::after {
@@ -70,7 +70,7 @@
   height: 2px;
   bottom: -5px;
   left: 0;
-  background: linear-gradient(45deg, #00d4ff, #ff6b6b);
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
   transition: width 0.3s ease;
 }
 
@@ -127,21 +127,21 @@
 }
 
 .btn-login, .btn-register {
-  background: linear-gradient(45deg, #00d4ff, #16213e);
-  border: 2px solid #00d4ff;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: 2px solid transparent;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.5rem;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  font-weight: 500;
 }
 
 .btn-login:hover, .btn-register:hover {
-  background: linear-gradient(45deg, #ff6b6b, #00d4ff);
-  border-color: #ff6b6b;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
 }
 
 .avatar-btn {
@@ -157,32 +157,102 @@
 
 .avatar-dropdown {
   position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  left: auto;
-  margin-top: 0;
-  background: linear-gradient(180deg, rgba(8,10,20,0.98), rgba(12,18,36,0.98));
-  border: 1px solid rgba(0,212,255,0.08);
-  border-radius: 12px;
-  padding: 0.4rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 18px rgba(0,212,255,0.06) inset;
+  top: calc(100% + 12px);
+  right: 0;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 16px;
+  padding: 0.75rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(59, 130, 246, 0.2);
   display: flex;
   flex-direction: column;
-  min-width: 140px;
+  min-width: 280px;
   z-index: 1100;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.dropdown-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  object-fit: cover;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+.dropdown-user-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.dropdown-username {
+  font-weight: 600;
+  color: white;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-email {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(59, 130, 246, 0.2);
+  margin: 0.5rem 0;
 }
 
 .dropdown-item {
   background: transparent;
   border: none;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   text-align: left;
   cursor: pointer;
   font-size: 0.95rem;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
 }
 
 .dropdown-item:hover {
-  background: linear-gradient(90deg, rgba(0,212,255,0.08), rgba(255,107,107,0.06));
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
   transform: translateX(4px);
+}
+
+.dropdown-icon {
+  font-size: 1.2rem;
+  width: 24px;
+  display: inline-flex;
+  justify-content: center;
 }

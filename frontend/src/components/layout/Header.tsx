@@ -37,7 +37,8 @@ const Header: React.FC = () => {
             </a>
           </div>
           <nav className={styles.nav}>
-            <Link to="/#home" className={styles['nav-link']}>Trang chủ</Link>
+            <Link to="/" className={styles['nav-link']}>Trang chủ</Link>
+            <Link to="/characters" className={styles['nav-link']}>Nhân vật</Link>
             <Link to="/tracker" className={styles['nav-link']}>Tracker</Link>
           </nav>
           <div className={styles['auth-buttons']}>
@@ -54,15 +55,33 @@ const Header: React.FC = () => {
                 </button>
                 {openMenu && (
                   <div className={styles['avatar-dropdown']}>
+                    <div className={styles['dropdown-header']}>
+                      <img
+                        src={
+                          (!user.avatar || user.avatar.endsWith('default-avatar.jpg')) ? '/default-avatar.svg' : user.avatar
+                        }
+                        alt="Avatar"
+                        className={styles['dropdown-avatar']}
+                      />
+                      <div className={styles['dropdown-user-info']}>
+                        <div className={styles['dropdown-username']}>{user.username}</div>
+                        <div className={styles['dropdown-email']}>{user.email}</div>
+                      </div>
+                    </div>
+                    <div className={styles['dropdown-divider']}></div>
                     <button className={styles['dropdown-item']} onClick={() => { setOpenMenu(false); navigate('/profile'); }}>
+                      <span className={styles['dropdown-icon']}>👤</span>
                       Hồ sơ
                     </button>
                     {user.roles && user.roles.includes('ROLE_ADMIN') && (
                       <button className={styles['dropdown-item']} onClick={() => { setOpenMenu(false); navigate('/admin/dashboard'); }}>
+                        <span className={styles['dropdown-icon']}>📊</span>
                         Dashboard
                       </button>
                     )}
+                    <div className={styles['dropdown-divider']}></div>
                     <button className={styles['dropdown-item']} onClick={() => { setOpenMenu(false); logout(); }}>
+                      <span className={styles['dropdown-icon']}>🚪</span>
                       Đăng xuất
                     </button>
                   </div>
