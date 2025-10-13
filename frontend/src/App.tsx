@@ -1,5 +1,6 @@
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
+import TrackerPage from './pages/TrackerPage';
 import Dashboard from './admin/Dashboard';
 import styles from './App.module.css';
 import { ToastContainer } from 'react-toastify';
@@ -25,6 +26,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/tracker" element={<TrackerPage />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
           </Routes>
           <ToastContainer />

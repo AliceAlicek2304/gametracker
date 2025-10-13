@@ -255,6 +255,15 @@ public class CharacterService {
             .collect(Collectors.toList());
     }
 
+    // Find by name (case-insensitive)
+    public Optional<CharacterResponse> findByName(String name) {
+        if (name == null || name.trim().isEmpty()) return Optional.empty();
+        return characterRepository.findAll().stream()
+            .filter(c -> c.getName() != null && c.getName().equalsIgnoreCase(name.trim()))
+            .findFirst()
+            .map(this::convertToResponse);
+    }
+
     // Convert entity to response DTO
     private CharacterResponse convertToResponse(Character character) {
         List<RoleResponse> roleResponses = character.getRoles().stream()

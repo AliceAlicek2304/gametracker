@@ -134,6 +134,15 @@ public class WeaponService {
         return weaponRepository.findAll().stream().filter(Weapon::isActive).map(this::convertToResponse).toList();
     }
 
+    // Find by name (case-insensitive)
+    public Optional<WeaponResponse> findByName(String name) {
+        if (name == null || name.trim().isEmpty()) return Optional.empty();
+        return weaponRepository.findAll().stream()
+            .filter(w -> w.getName() != null && w.getName().equalsIgnoreCase(name.trim()))
+            .findFirst()
+            .map(this::convertToResponse);
+    }
+
     // Convert to DTO
     private WeaponResponse convertToResponse(Weapon weapon) {
         return new WeaponResponse(

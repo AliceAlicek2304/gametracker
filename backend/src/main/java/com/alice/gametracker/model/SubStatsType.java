@@ -5,5 +5,6 @@ public enum SubStatsType {
     Def,
     Hp,
     CritDamage,
-    CritRate
+    CritRate,
+    EnergyRegen
 }

@@ -38,7 +38,20 @@ function renderFormattedText(input: string) {
 }
 
 const weaponOptions = ['BROADBLADE','GAUNTLETS','PISTOLS','RECTIFIER','SWORD'];
-const subStatsOptions = ['Atk','Def','Hp','CritDamage','CritRate','Energy Regen'];
+const subStatsOptions = [
+  { label: 'Atk', value: 'Atk' },
+  { label: 'Def', value: 'Def' },
+  { label: 'Hp', value: 'Hp' },
+  { label: 'Crit Damage', value: 'CritDamage' },
+  { label: 'Crit Rate', value: 'CritRate' },
+  { label: 'Energy Regen', value: 'EnergyRegen' },
+];
+
+const getSubStatsLabel = (v?: string) => {
+  if (!v) return '';
+  const found = subStatsOptions.find(s => s.value === v);
+  return found ? found.label : v;
+}
 
 const WeaponManagement: React.FC = () => {
   const [weapons, setWeapons] = useState<Weapon[]>([]);
@@ -50,8 +63,8 @@ const WeaponManagement: React.FC = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showUpload, setShowUpload] = useState<null | { id: number; name?: string; currentImage?: string }>(null);
-  const [createForm, setCreateForm] = useState({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0], skill: '', rarity: 1 });
-  const [form, setForm] = useState({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0], skill: '', rarity: 1 });
+  const [createForm, setCreateForm] = useState({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 });
+  const [form, setForm] = useState({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 });
   const [uploadFile, setUploadFile] = useState<File | null>(null);
 
   const fetchWeapons = async () => {
@@ -77,10 +90,10 @@ const WeaponManagement: React.FC = () => {
     headers: buildHeaders('application/json'),
   body: JSON.stringify({ name: createForm.name, weaponType: createForm.weaponType, description: createForm.description, mainStats: createForm.mainStats, subStats: createForm.subStats, subStatsType: createForm.subStatsType, skill: createForm.skill, rarity: createForm.rarity }),
   });
-      if (res.ok) {
-        const data = await res.json();
+  if (res.ok) {
+    const data = await res.json();
   setShowCreate(false);
-  setCreateForm({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0], skill: '', rarity: 1 });
+  setCreateForm({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 });
         setShowUpload({ id: data.id, name: data.name, currentImage: data.imageUrl });
         // refresh list
         fetchWeapons();
@@ -90,7 +103,7 @@ const WeaponManagement: React.FC = () => {
     } catch (err) { console.error(err); }
   }
 
-  const openEdit = (w: Weapon) => { setEditingId(w.id); setForm({ name: w.name || '', weaponType: w.weaponType || weaponOptions[0], description: w.description || '', mainStats: w.mainStats || '', subStats: w.subStats || '', subStatsType: w.subStatsType || subStatsOptions[0], skill: w.skill || '', rarity: w.rarity || 1 }); }
+  const openEdit = (w: Weapon) => { setEditingId(w.id); setForm({ name: w.name || '', weaponType: w.weaponType || weaponOptions[0], description: w.description || '', mainStats: w.mainStats || '', subStats: w.subStats || '', subStatsType: w.subStatsType || subStatsOptions[0].value, skill: w.skill || '', rarity: w.rarity || 1 }); }
 
   const openUploadModal = (w: Weapon) => { setShowUpload({ id: w.id, name: w.name, currentImage: w.imageUrl }); setUploadFile(null); }
 
@@ -103,7 +116,7 @@ const WeaponManagement: React.FC = () => {
     headers: buildHeaders('application/json'),
   body: JSON.stringify({ name: form.name, weaponType: form.weaponType, description: form.description, mainStats: form.mainStats, subStats: form.subStats, subStatsType: form.subStatsType, skill: form.skill, rarity: form.rarity }),
   });
-  if (res.ok) { setEditingId(null); setForm({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0], skill: '', rarity: 1 }); fetchWeapons(); }
+  if (res.ok) { setEditingId(null); setForm({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 }); fetchWeapons(); }
       else { const txt = await res.text(); alert(txt || 'Update failed'); }
     } catch (err) { console.error(err); }
   }
@@ -188,7 +201,7 @@ const WeaponManagement: React.FC = () => {
           </select>
         </div>
         <div className={styles.controls}>
-          <button className={styles.btn} onClick={() => { setCreateForm({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0], skill: '', rarity: 1 }); setShowCreate(true); }}>Create Weapon</button>
+          <button className={styles.btn} onClick={() => { setCreateForm({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 }); setShowCreate(true); }}>Create Weapon</button>
           <button className={styles.btn} onClick={() => fetchWeapons()}>Refresh</button>
         </div>
       </div>
@@ -228,12 +241,12 @@ const WeaponManagement: React.FC = () => {
                   {weaponOptions.map(o => <option key={o} value={o}>{o}</option>)}
                 </select>
               </div>
-              <div className={styles.formRow}>
-                <label>Sub stats type</label>
-                <select value={createForm.subStatsType} onChange={e=>setCreateForm({...createForm, subStatsType: e.target.value})} className={styles.select}>
-                  {subStatsOptions.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
+                  <div className={styles.formRow}>
+                    <label>Sub stats type</label>
+                    <select value={createForm.subStatsType} onChange={e=>setCreateForm({...createForm, subStatsType: e.target.value})} className={styles.select}>
+                      {subStatsOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                    </select>
+                  </div>
               <div className={styles.formRow}>
                 <label>Description</label>
                 <textarea value={createForm.description} onChange={e=>setCreateForm({...createForm, description: e.target.value})} rows={4} />
@@ -283,7 +296,7 @@ const WeaponManagement: React.FC = () => {
               <div className={styles.formRow}>
                 <label>Sub stats type</label>
                 <select value={form.subStatsType} onChange={e=>setForm({...form, subStatsType: e.target.value})} className={styles.select}>
-                  {subStatsOptions.map(s => <option key={s} value={s}>{s}</option>)}
+                  {subStatsOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
               </div>
               <div className={styles.formRow}>
@@ -359,7 +372,7 @@ const WeaponManagement: React.FC = () => {
                 </div>
                 {showDetail.mainStats && <div style={{marginBottom:8}}><strong>Main stats:</strong> <div style={{marginTop:6}}>{showDetail.mainStats}</div></div>}
                 {showDetail.subStats && <div style={{marginBottom:8}}><strong>Sub stats:</strong> <div style={{marginTop:6}}>{showDetail.subStats}</div></div>}
-                {showDetail.subStatsType && <div style={{marginBottom:8}}><strong>Sub stats type:</strong> <div style={{marginTop:6}}>{showDetail.subStatsType}</div></div>}
+                {showDetail.subStatsType && <div style={{marginBottom:8}}><strong>Sub stats type:</strong> <div style={{marginTop:6}}>{getSubStatsLabel(showDetail.subStatsType)}</div></div>}
                 {showDetail.skill && <div style={{marginBottom:8}}><strong>Skill:</strong> <div style={{marginTop:6}} dangerouslySetInnerHTML={{__html: renderFormattedText(String(showDetail.skill || ''))}} /></div>}
                 <div style={{display:'flex',gap:8,marginTop:12}}>
                   <button className={styles.smallBtn} onClick={() => { setShowDetail(null); openUploadModal(showDetail); }}>Upload Image</button>

@@ -38,7 +38,7 @@ const Header: React.FC = () => {
           </div>
           <nav className={styles.nav}>
             <Link to="/#home" className={styles['nav-link']}>Trang chủ</Link>
-            <Link to="/#tracker" className={styles['nav-link']}>Tracker</Link>
+            <Link to="/tracker" className={styles['nav-link']}>Tracker</Link>
           </nav>
           <div className={styles['auth-buttons']}>
             {isAuthenticated && user ? (
