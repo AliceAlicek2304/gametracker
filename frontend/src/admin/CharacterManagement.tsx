@@ -79,6 +79,8 @@ const CharacterManagement: React.FC = () => {
   const [detailTab, setDetailTab] = useState<'profile'|'skills'>('profile');
   const [detailLevel, setDetailLevel] = useState<number>(1);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 21;
 
   // parse skill sections for currently shown detail (used by detail tabs)
   const parsedSections: any[] = (() => {
@@ -154,6 +156,15 @@ const CharacterManagement: React.FC = () => {
     return filtered;
   })();
 
+  // Pagination
+  const totalPages = Math.ceil(displayed.length / itemsPerPage);
+  const paginatedChars = displayed.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, activeFilter, sortOption, rarityFilter]);
+
   const handleToggleActive = async (id: number, active?: boolean) => {
     try {
       const res = await fetch(`/api/characters/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
@@ -195,7 +206,7 @@ const CharacterManagement: React.FC = () => {
 
       <div className={styles.grid}>
         {loading ? <div className={styles.loading}>Loading...</div> : (
-          displayed.map(c => (
+          paginatedChars.map(c => (
             <div key={c.id} className={styles.card} onClick={()=>setShowDetail(c)} style={{border: c.rarity === 5 ? '2px solid gold' : c.rarity === 4 ? '2px solid rebeccapurple' : undefined, boxShadow: c.rarity === 5 ? '0 4px 12px rgba(255,215,0,0.12)' : c.rarity === 4 ? '0 4px 12px rgba(138,43,226,0.08)' : undefined}}>
               {c.imageUrl ? <img src={c.imageUrl} alt={c.name} className={styles.charImg} /> : <div className={styles.charPlaceholder} />}
               <div className={styles.cardOverlay}>
@@ -207,10 +218,50 @@ const CharacterManagement: React.FC = () => {
         )}
       </div>
 
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            ← Prev
+          </button>
+          
+          <div className={styles.pageNumbers}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                className={`${styles.pageNum} ${currentPage === page ? styles.active : ''}`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next →
+          </button>
+        </div>
+      )}
+
       {showDetail && (
         <div className={styles.modalOverlay}>
           {/* Make detail modal wider to accommodate the full detail table on large screens */}
-          <div className={styles.modal} style={{ width: 'min(1940px, 96vw)', maxWidth: '96vw' }}>
+          <div className={styles.modal} style={{ width: 'min(1940px, 96vw)', maxWidth: '96vw', position: 'relative' }}>
+            <button 
+              className={styles.closeBtn} 
+              onClick={() => setShowDetail(null)}
+              title="Close"
+            >
+              ×
+            </button>
             <h3>{showDetail.name} {showDetail.rarity ? `• ${showDetail.rarity}★` : ''}</h3>
             {/* Three-column layout: left image/actions, center vertical tabs, right scrollable content */}
             <div style={{display:'flex',gap:16,alignItems:'flex-start'}}>
@@ -424,7 +475,14 @@ const CharacterManagement: React.FC = () => {
 
         {showCreate && (
           <div className={styles.modalOverlay}>
-            <div className={styles.modal}>
+            <div className={styles.modal} style={{ position: 'relative' }}>
+              <button 
+                className={styles.closeBtn} 
+                onClick={() => setShowCreate(false)}
+                title="Close"
+              >
+                ×
+              </button>
               <h3>{editingId ? 'Edit Character' : 'Create Character'}</h3>
               <form onSubmit={async (e)=>{
                 e.preventDefault();

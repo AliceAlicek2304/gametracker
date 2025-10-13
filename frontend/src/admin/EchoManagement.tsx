@@ -42,6 +42,8 @@ const EchoManagement: React.FC = () => {
   const [showUpload, setShowUpload] = useState<{id:number;name?:string;currentImage?:string}|null>(null);
   const [form, setForm] = useState<any>({ name:'', description:'', cost:0, skill:'', setEchoId: null });
   const [file, setFile] = useState<File|null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 21;
 
   const fetchList = async () => {
     setLoading(true);
@@ -89,6 +91,15 @@ const EchoManagement: React.FC = () => {
     return filtered;
   })();
 
+  // Pagination
+  const totalPages = Math.ceil(displayed.length / itemsPerPage);
+  const paginatedEchoes = displayed.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, activeFilter, sortOption]);
+
   const handleOpenCreate = () => { setEditing(null); setForm({ name:'', description:'', cost:0, skill:'', setEchoId: null }); setShowCreate(true); }
 
   const handleSubmit = async (ev:React.FormEvent) => {
@@ -107,6 +118,7 @@ const EchoManagement: React.FC = () => {
         // open upload modal only for new
         if (!editing) setShowUpload({ id: data.id, name: data.name, currentImage: data.imageUrl });
         fetchList();
+        showToast.success(editing ? 'Echo updated successfully' : 'Echo created successfully');
       } else {
         const txt = await res.text(); showToast.error('Save failed: ' + txt);
       }
@@ -156,7 +168,7 @@ const EchoManagement: React.FC = () => {
 
       <div className={styles.grid}>
         {loading ? <div className={styles.loading}>Loading...</div> : (
-          displayed.map(e=> (
+          paginatedEchoes.map(e=> (
             <div key={e.id} className={styles.card} onClick={()=> { setShowDetail(e); }}>
               {e.imageUrl ? <img src={e.imageUrl} alt={e.name} className={styles.charImg} /> : <div className={styles.charPlaceholder} />}
               <div className={styles.cardOverlay}>
@@ -168,9 +180,49 @@ const EchoManagement: React.FC = () => {
         )}
       </div>
 
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            ← Prev
+          </button>
+          
+          <div className={styles.pageNumbers}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                className={`${styles.pageNum} ${currentPage === page ? styles.active : ''}`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next →
+          </button>
+        </div>
+      )}
+
       {showCreate && (
         <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
+          <div className={styles.modal} style={{ position: 'relative' }}>
+            <button 
+              className={styles.closeBtn} 
+              onClick={() => { setShowCreate(false); setEditing(null); }}
+              title="Close"
+            >
+              ×
+            </button>
             <h3>{editing ? 'Edit Echo' : 'Create Echo'}</h3>
             <form onSubmit={handleSubmit}>
               <div className={styles.formRow}>
@@ -198,22 +250,89 @@ const EchoManagement: React.FC = () => {
 
       {showDetail && (
         <div className={styles.modalOverlay}>
-          <div className={styles.modal} style={{width:720}}>
-            <h3>{showDetail.name}</h3>
-            <div style={{display:'flex',gap:16}}>
+          <div className={styles.modal} style={{width:820, maxWidth: '96vw', position: 'relative'}}>
+            <button 
+              className={styles.closeBtn} 
+              onClick={() => setShowDetail(null)}
+              title="Close"
+            >
+              ×
+            </button>
+            <h3>{showDetail.name} {showDetail.cost ? `• Cost ${showDetail.cost}` : ''}</h3>
+            <div style={{display:'flex',gap:16, flexWrap: 'wrap'}}>
+              {/* Left column: Image + Actions */}
               <div style={{minWidth:200}}>
                 {showDetail.imageUrl ? <img src={showDetail.imageUrl} alt={showDetail.name} style={{width:200,height:200,objectFit:'cover',borderRadius:8}} /> : <div style={{width:200,height:200,background:'#111',borderRadius:8}} />}
-              </div>
-              <div style={{flex:1}}>
-                <div style={{marginBottom:8}}><strong>Set:</strong> {setEchos.find(s => s.id === showDetail.setEchoId)?.name ?? ''}</div>
-                <div style={{marginBottom:8}}><strong>Active:</strong> {showDetail.isActive ? 'Yes' : 'No'}</div>
-                <div style={{marginBottom:8}}><strong>Created:</strong> {showDetail.createdDate || ''}</div>
-                <div style={{marginBottom:8}}><strong>Description:</strong>
-                  <div style={{marginTop:6}}>{showDetail.description}</div>
+                <div style={{display:'flex',gap:8,marginTop:12,flexDirection:'column'}}>
+                  <button className={styles.smallBtn} onClick={() => { setShowDetail(null); setShowUpload({ id: showDetail.id, name: showDetail.name, currentImage: showDetail.imageUrl }); setFile(null); }}>Upload Image</button>
+                  <button className={styles.smallBtn} onClick={() => { setShowDetail(null); setEditing(showDetail); setForm({ name: showDetail.name, description: showDetail.description || '', cost: showDetail.cost || 0, skill: showDetail.skill || '', setEchoId: showDetail.setEchoId ?? null, imageUrl: showDetail.imageUrl ?? null }); setShowCreate(true); }}>Edit</button>
+                  <button className={`${styles.smallBtn} ${styles.muted}`} onClick={async () => {
+                    try {
+                      const res = await fetch(`/api/echoes/${showDetail.id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !showDetail.isActive }) });
+                      if (res.ok) {
+                        fetchList();
+                        setShowDetail({ ...showDetail, isActive: !showDetail.isActive });
+                        showToast.success(showDetail.isActive ? 'Echo deactivated' : 'Echo activated');
+                      } else {
+                        showToast.error('Action failed');
+                      }
+                    } catch (err) {
+                      console.error(err);
+                      showToast.error('Network error');
+                    }
+                  }}>{showDetail.isActive ? 'Deactivate' : 'Activate'}</button>
+                  <button className={`${styles.smallBtn} ${styles.danger}`} onClick={async () => {
+                    if (!confirm('Are you sure to delete this echo?')) return;
+                    try {
+                      const res = await fetch(`/api/echoes/${showDetail.id}`, { method: 'DELETE', headers: buildHeaders() });
+                      if (res.ok) {
+                        fetchList();
+                        setShowDetail(null);
+                        showToast.success('Echo deleted successfully');
+                      } else {
+                        showToast.error('Delete failed');
+                      }
+                    } catch (err) {
+                      console.error(err);
+                      showToast.error('Network error');
+                    }
+                  }}>Delete</button>
                 </div>
-                {showDetail.skill ? (
-                  <div style={{marginBottom:8}}><strong>Skill:</strong>
-                    <div style={{marginTop:6}}>
+              </div>
+              
+              {/* Right column: Info sections */}
+              <div style={{flex:1, minWidth: 300}}>
+                {/* Basic Info */}
+                <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:12}}>
+                  <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
+                    <div style={{flex:'1 1 150px'}}>
+                      <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:4}}>Set Echo</div>
+                      <div style={{fontWeight:600}}>{setEchos.find(s => s.id === showDetail.setEchoId)?.name || 'None'}</div>
+                    </div>
+                    <div style={{flex:'1 1 150px'}}>
+                      <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:4}}>Status</div>
+                      <div style={{fontWeight:600,color: showDetail.isActive ? '#4ade80' : '#f87171'}}>{showDetail.isActive ? 'Active' : 'Inactive'}</div>
+                    </div>
+                    <div style={{flex:'1 1 150px'}}>
+                      <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:4}}>Cost</div>
+                      <div style={{fontWeight:600}}>{showDetail.cost || 'N/A'}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                {showDetail.description && (
+                  <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:12}}>
+                    <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:8}}>Description</div>
+                    <div style={{lineHeight:1.6}}>{showDetail.description}</div>
+                  </div>
+                )}
+
+                {/* Skill */}
+                {showDetail.skill && (
+                  <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:12}}>
+                    <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:8}}>Skill</div>
+                    <div>
                       {(() => {
                         let raw: any = showDetail.skill;
                         let skillObj: any = raw;
@@ -275,27 +394,12 @@ const EchoManagement: React.FC = () => {
                       })()}
                     </div>
                   </div>
-                ) : null}
-                <div style={{display:'flex',gap:8,marginTop:12}}>
-                  <button className={styles.smallBtn} onClick={() => { setShowDetail(null); setShowUpload({ id: showDetail.id, name: showDetail.name, currentImage: showDetail.imageUrl }); setFile(null); }}>Upload Image</button>
-                  <button className={styles.smallBtn} onClick={() => { setShowDetail(null); setEditing(showDetail); setForm({ name: showDetail.name, description: showDetail.description || '', cost: showDetail.cost || 0, skill: showDetail.skill || '', setEchoId: showDetail.setEchoId ?? null, imageUrl: showDetail.imageUrl ?? null }); setShowCreate(true); }}>Edit</button>
-                  <button className={`${styles.smallBtn} ${styles.muted}`} onClick={async () => {
-                    try {
-                      const res = await fetch(`/api/echoes/${showDetail.id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !showDetail.isActive }) });
-                      if (res.ok) {
-                        fetchList();
-                        setShowDetail({ ...showDetail, isActive: !showDetail.isActive });
-                      }
-                    } catch (err) { console.error(err); }
-                  }}>{showDetail.isActive ? 'Deactivate' : 'Activate'}</button>
-                  <button className={`${styles.smallBtn} ${styles.danger}`} onClick={async () => {
-                    if (!confirm('Are you sure to delete this echo?')) return;
-                    try {
-                      const res = await fetch(`/api/echoes/${showDetail.id}`, { method: 'DELETE', headers: buildHeaders() });
-                      if (res.ok) { fetchList(); setShowDetail(null); }
-                    } catch (err) { console.error(err); }
-                  }}>Delete</button>
-                  <button className={styles.smallBtn} onClick={() => setShowDetail(null)}>Close</button>
+                )}
+
+                {/* Created Date */}
+                <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8}}>
+                  <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:4}}>Created Date</div>
+                  <div>{showDetail.createdDate || 'N/A'}</div>
                 </div>
               </div>
             </div>
@@ -305,7 +409,14 @@ const EchoManagement: React.FC = () => {
 
       {showUpload && (
         <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
+          <div className={styles.modal} style={{ position: 'relative' }}>
+            <button 
+              className={styles.closeBtn} 
+              onClick={() => setShowUpload(null)}
+              title="Close"
+            >
+              ×
+            </button>
             <h3>Upload Image for {showUpload.name}</h3>
             <div style={{display:'flex',gap:8,alignItems:'center'}}>
               <input type="file" onChange={e=>setFile(e.target.files ? e.target.files[0] : null)} />

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './SetEchoManagement.module.css';
+import { showToast } from '../utils/toast';
 
 type SetEcho = {
   id: number;
@@ -30,6 +31,8 @@ const SetEchoManagement: React.FC = () => {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [sortOption, setSortOption] = useState<'createdDesc' | 'createdAsc' | 'nameAsc' | 'nameDesc'>('createdDesc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchItems = async () => {
     setLoading(true);
@@ -52,12 +55,20 @@ const SetEchoManagement: React.FC = () => {
       const res = await fetch('/api/set-echoes', { method: 'POST', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, description: form.description, skill: form.skill }) });
       if (res.ok) {
         const data = await res.json();
-        setShowCreate(false); setForm({ name: '', description: '', skill: '' });
+        setShowCreate(false);
+        setForm({ name: '', description: '', skill: '' });
         // open upload modal to add icon
         setShowUpload({ id: data.id, name: data.name, currentIcon: data.icon });
         fetchItems();
-      } else { const txt = await res.text(); alert(txt || 'Create failed'); }
-    } catch (err) { console.error(err); }
+        showToast.success('Set Echo created successfully');
+      } else {
+        const txt = await res.text();
+        showToast.error(txt || 'Create failed');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const openEdit = (s: SetEcho) => { setShowEdit(s); setForm({ name: s.name, description: s.description || '', skill: s.skill || '' }); }
@@ -68,29 +79,60 @@ const SetEchoManagement: React.FC = () => {
     if (!showEdit) return;
     try {
       const res = await fetch(`/api/set-echoes/${showEdit.id}`, { method: 'PUT', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, description: form.description, skill: form.skill }) });
-      if (res.ok) { setShowEdit(null); setForm({ name: '', description: '', skill: '' }); fetchItems(); }
-    } catch (err) { console.error(err); }
+      if (res.ok) {
+        setShowEdit(null);
+        setForm({ name: '', description: '', skill: '' });
+        fetchItems();
+        showToast.success('Set Echo updated successfully');
+      } else {
+        showToast.error('Update failed');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleDeactivate = async (id: number, active: boolean) => {
     try {
       const res = await fetch(`/api/set-echoes/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
-      if (res.ok) fetchItems();
-    } catch (err) { console.error(err); }
+      if (res.ok) {
+        fetchItems();
+        showToast.success(active ? 'Set Echo deactivated' : 'Set Echo activated');
+      } else {
+        showToast.error('Action failed');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure to delete this item?')) return;
     try {
       const res = await fetch(`/api/set-echoes/${id}`, { method: 'DELETE', headers: buildHeaders() });
-      if (res.ok) fetchItems();
-    } catch (err) { console.error(err); }
+      if (res.ok) {
+        fetchItems();
+        showToast.success('Set Echo deleted successfully');
+      } else {
+        showToast.error('Delete failed');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleUploadIcon = async (id: number, f: File) => {
     const fd = new FormData(); fd.append('icon', f);
     const res = await fetch(`/api/set-echoes/${id}/upload-icon`, { method: 'POST', headers: buildHeaders(), body: fd });
-    if (res.ok) fetchItems();
+    if (res.ok) {
+      fetchItems();
+      showToast.success('Icon uploaded successfully');
+    } else {
+      showToast.error('Upload failed');
+    }
     return res.ok;
   }
 
@@ -113,6 +155,15 @@ const SetEchoManagement: React.FC = () => {
     });
     return filtered;
   })();
+
+  // Pagination
+  const totalPages = Math.ceil(displayed.length / itemsPerPage);
+  const paginatedItems = displayed.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, activeFilter, sortOption]);
 
   return (
     <div className={styles.container}>
@@ -142,7 +193,7 @@ const SetEchoManagement: React.FC = () => {
         <thead><tr><th>Icon</th><th>Name</th><th>Description</th><th>Active</th><th>Created</th><th>Actions</th></tr></thead>
         <tbody>
           {loading ? <tr><td colSpan={6}>Loading...</td></tr> : (
-            displayed.map(i => (
+            paginatedItems.map(i => (
               <tr key={i.id}>
                 <td>{i.icon ? <img src={i.icon} className={styles.iconImg} alt="icon" /> : <div style={{width:48,height:48,background:'#eee',borderRadius:6}}/>}</td>
                 <td>{i.name}</td>
@@ -160,6 +211,39 @@ const SetEchoManagement: React.FC = () => {
           )}
         </tbody>
       </table>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            ← Prev
+          </button>
+          
+          <div className={styles.pageNumbers}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                className={`${styles.pageNum} ${currentPage === page ? styles.active : ''}`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next →
+          </button>
+        </div>
+      )}
 
       {showCreate && (
         <div className={styles.modalOverlay}>
@@ -204,9 +288,12 @@ const SetEchoManagement: React.FC = () => {
             <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
               <button type="button" className={styles.smallBtn} onClick={()=>{ setShowUpload(null); setUploadFile(null); }}>Cancel</button>
               <button className={styles.smallBtn} onClick={async ()=>{
-                if (!uploadFile || !showUpload) return alert('Choose a file first');
+                if (!uploadFile || !showUpload) {
+                  showToast.warning('Please choose a file first');
+                  return;
+                }
                 const ok = await handleUploadIcon(showUpload.id, uploadFile);
-                if (ok) { setShowUpload(null); setUploadFile(null); fetchItems(); } else alert('Upload failed');
+                if (ok) { setShowUpload(null); setUploadFile(null); fetchItems(); }
               }}>Upload</button>
             </div>
           </div>

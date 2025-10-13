@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './WeaponManagement.module.css';
+import { showToast } from '../utils/toast';
 
 type Weapon = {
   id: number;
@@ -66,6 +67,8 @@ const WeaponManagement: React.FC = () => {
   const [createForm, setCreateForm] = useState({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 });
   const [form, setForm] = useState({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 });
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 21;
 
   const fetchWeapons = async () => {
     setLoading(true);
@@ -97,10 +100,15 @@ const WeaponManagement: React.FC = () => {
         setShowUpload({ id: data.id, name: data.name, currentImage: data.imageUrl });
         // refresh list
         fetchWeapons();
+        showToast.success('Weapon created successfully');
       } else {
-        const txt = await res.text(); alert(txt || 'Create failed');
+        const txt = await res.text();
+        showToast.error(txt || 'Create failed');
       }
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const openEdit = (w: Weapon) => { setEditingId(w.id); setForm({ name: w.name || '', weaponType: w.weaponType || weaponOptions[0], description: w.description || '', mainStats: w.mainStats || '', subStats: w.subStats || '', subStatsType: w.subStatsType || subStatsOptions[0].value, skill: w.skill || '', rarity: w.rarity || 1 }); }
@@ -116,9 +124,19 @@ const WeaponManagement: React.FC = () => {
     headers: buildHeaders('application/json'),
   body: JSON.stringify({ name: form.name, weaponType: form.weaponType, description: form.description, mainStats: form.mainStats, subStats: form.subStats, subStatsType: form.subStatsType, skill: form.skill, rarity: form.rarity }),
   });
-  if (res.ok) { setEditingId(null); setForm({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 }); fetchWeapons(); }
-      else { const txt = await res.text(); alert(txt || 'Update failed'); }
-    } catch (err) { console.error(err); }
+  if (res.ok) {
+    setEditingId(null);
+    setForm({ name: '', weaponType: weaponOptions[0], description: '', mainStats: '', subStats: '', subStatsType: subStatsOptions[0].value, skill: '', rarity: 1 });
+    fetchWeapons();
+    showToast.success('Weapon updated successfully');
+  } else {
+    const txt = await res.text();
+    showToast.error(txt || 'Update failed');
+  }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleDeactivate = async (id: number, active?: boolean) => {
@@ -131,8 +149,14 @@ const WeaponManagement: React.FC = () => {
         if (showDetail && showDetail.id === id) {
           setShowDetail({ ...showDetail, isActive: !active });
         }
+        showToast.success(active ? 'Weapon deactivated' : 'Weapon activated');
+      } else {
+        showToast.error('Action failed');
       }
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleDelete = async (id: number) => {
@@ -142,14 +166,25 @@ const WeaponManagement: React.FC = () => {
       if (res.ok) {
         fetchWeapons();
         setShowDetail(null);
+        showToast.success('Weapon deleted successfully');
+      } else {
+        showToast.error('Delete failed');
       }
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleUploadImage = async (id: number, f: File) => {
     const fd = new FormData(); fd.append('image', f);
     const res = await fetch(`/api/weapons/${id}/upload-image`, { method: 'POST', headers: buildHeaders(), body: fd });
-    if (res.ok) fetchWeapons();
+    if (res.ok) {
+      fetchWeapons();
+      showToast.success('Image uploaded successfully');
+    } else {
+      showToast.error('Upload failed');
+    }
     return res.ok;
   }
 
@@ -172,6 +207,15 @@ const WeaponManagement: React.FC = () => {
     });
     return filtered;
   })();
+
+  // Pagination
+  const totalPages = Math.ceil(displayed.length / itemsPerPage);
+  const paginatedWeapons = displayed.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, activeFilter, sortOption]);
 
   // visual styles for rarity (1..5)
   const rarityStyles: Record<number, React.CSSProperties> = {
@@ -208,7 +252,7 @@ const WeaponManagement: React.FC = () => {
 
       <div className={styles.grid}>
         {loading ? <div className={styles.loading}>Loading...</div> : (
-          displayed.map(w => (
+          paginatedWeapons.map(w => (
             <div key={w.id} className={styles.card} style={w.rarity ? rarityStyles[w.rarity] || undefined : undefined}>
               <div style={{width:'100%',height:'100%',display:'flex',flexDirection:'column'}}>
                 <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setShowDetail(w)}>
@@ -226,9 +270,49 @@ const WeaponManagement: React.FC = () => {
         )}
       </div>
 
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            ← Prev
+          </button>
+          
+          <div className={styles.pageNumbers}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                className={`${styles.pageNum} ${currentPage === page ? styles.active : ''}`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next →
+          </button>
+        </div>
+      )}
+
       {showCreate && (
         <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
+          <div className={styles.modal} style={{ position: 'relative' }}>
+            <button 
+              className={styles.closeBtn} 
+              onClick={() => setShowCreate(false)}
+              title="Close"
+            >
+              ×
+            </button>
             <h3>Create Weapon</h3>
             <form onSubmit={handleCreate}>
               <div className={styles.formRow}>
@@ -346,7 +430,10 @@ const WeaponManagement: React.FC = () => {
             <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
               <button className={styles.smallBtn} onClick={() => setShowUpload(null)}>Cancel</button>
               <button className={styles.smallBtn} onClick={async () => {
-                if (!uploadFile || !showUpload) return alert('Select a file');
+                if (!uploadFile || !showUpload) {
+                  showToast.warning('Please select a file');
+                  return;
+                }
                 const ok = await handleUploadImage(showUpload.id, uploadFile);
                 if (ok) setShowUpload(null);
               }}>Upload</button>
@@ -357,33 +444,52 @@ const WeaponManagement: React.FC = () => {
 
       {showDetail && (
         <div className={styles.modalOverlay}>
-          <div className={styles.modal} style={{width:720}}>
-            <h3>{showDetail.name}</h3>
-            <div style={{display:'flex',gap:16}}>
+          <div className={styles.modal} style={{width:820, maxWidth: '96vw', position: 'relative'}}>
+            <button 
+              className={styles.closeBtn} 
+              onClick={() => setShowDetail(null)}
+              title="Close"
+            >
+              ×
+            </button>
+            <h3>{showDetail.name} {showDetail.rarity ? `• ${showDetail.rarity}★` : ''}</h3>
+            <div style={{display:'flex',gap:16, flexWrap: 'wrap'}}>
               <div style={{minWidth:200}}>
                 {showDetail.imageUrl ? <img src={showDetail.imageUrl} alt={showDetail.name} style={{width:200,height:200,objectFit:'cover',borderRadius:8}} /> : <div style={{width:200,height:200,background:'#111',borderRadius:8}} />}
-              </div>
-              <div style={{flex:1}}>
-                <div style={{marginBottom:8}}><strong>Type:</strong> {showDetail.weaponType}</div>
-                <div style={{marginBottom:8}}><strong>Active:</strong> {showDetail.isActive ? 'Yes' : 'No'}</div>
-                <div style={{marginBottom:8}}><strong>Created:</strong> {showDetail.createdDate || ''}</div>
-                <div style={{marginBottom:8}}><strong>Description:</strong>
-                  <div style={{marginTop:6}} dangerouslySetInnerHTML={{__html: renderFormattedText(String(showDetail.description || ''))}} />
-                </div>
-                {showDetail.mainStats && <div style={{marginBottom:8}}><strong>Main stats:</strong> <div style={{marginTop:6}}>{showDetail.mainStats}</div></div>}
-                {showDetail.subStats && <div style={{marginBottom:8}}><strong>Sub stats:</strong> <div style={{marginTop:6}}>{showDetail.subStats}</div></div>}
-                {showDetail.subStatsType && <div style={{marginBottom:8}}><strong>Sub stats type:</strong> <div style={{marginTop:6}}>{getSubStatsLabel(showDetail.subStatsType)}</div></div>}
-                {showDetail.skill && <div style={{marginBottom:8}}><strong>Skill:</strong> <div style={{marginTop:6}} dangerouslySetInnerHTML={{__html: renderFormattedText(String(showDetail.skill || ''))}} /></div>}
-                <div style={{display:'flex',gap:8,marginTop:12}}>
+                <div style={{display:'flex',gap:8,marginTop:12,flexDirection:'column'}}>
                   <button className={styles.smallBtn} onClick={() => { setShowDetail(null); openUploadModal(showDetail); }}>Upload Image</button>
                   <button className={styles.smallBtn} onClick={() => { setShowDetail(null); openEdit(showDetail); }}>Edit</button>
-                  <button
-                    className={`${styles.smallBtn} ${styles.muted}`}
-                    onClick={() => handleDeactivate(showDetail.id, showDetail.isActive)}
-                  >{showDetail.isActive ? 'Deactivate' : 'Activate'}</button>
-                  <button className={`${styles.smallBtn} ${styles.danger}`} onClick={() => { if (showDetail) { if (confirm('Are you sure to delete this weapon?')) handleDelete(showDetail.id); } }}>Delete</button>
-                  <button className={styles.smallBtn} onClick={() => setShowDetail(null)}>Close</button>
+                  <button className={`${styles.smallBtn} ${styles.muted}`} onClick={() => handleDeactivate(showDetail.id, showDetail.isActive)}>{showDetail.isActive ? 'Deactivate' : 'Activate'}</button>
+                  <button className={`${styles.smallBtn} ${styles.danger}`} onClick={async ()=>{ if (!confirm('Delete?')) return; await handleDelete(showDetail.id); setShowDetail(null); }}>Delete</button>
                 </div>
+              </div>
+              <div style={{flex:1, minWidth: 300}}>
+                <div style={{marginBottom:12,padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8}}>
+                  <div style={{marginBottom:8}}><strong>Type:</strong> {showDetail.weaponType}</div>
+                  <div style={{marginBottom:8}}><strong>Active:</strong> {showDetail.isActive ? 'Yes' : 'No'}</div>
+                  <div style={{marginBottom:8}}><strong>Created:</strong> {showDetail.createdDate || ''}</div>
+                </div>
+                
+                <div style={{marginBottom:12,padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8}}>
+                  <strong>Description:</strong>
+                  <div style={{marginTop:6, lineHeight:1.5}} dangerouslySetInnerHTML={{__html: renderFormattedText(String(showDetail.description || ''))}} />
+                </div>
+                
+                {(showDetail.mainStats || showDetail.subStats || showDetail.subStatsType) && (
+                  <div style={{marginBottom:12,padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8}}>
+                    <strong>Stats:</strong>
+                    {showDetail.mainStats && <div style={{marginTop:6}}><span style={{opacity:0.7}}>Main:</span> {showDetail.mainStats}</div>}
+                    {showDetail.subStats && <div style={{marginTop:6}}><span style={{opacity:0.7}}>Sub:</span> {showDetail.subStats}</div>}
+                    {showDetail.subStatsType && <div style={{marginTop:6}}><span style={{opacity:0.7}}>Sub Type:</span> {getSubStatsLabel(showDetail.subStatsType)}</div>}
+                  </div>
+                )}
+                
+                {showDetail.skill && (
+                  <div style={{marginBottom:12,padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8}}>
+                    <strong>Skill:</strong>
+                    <div style={{marginTop:6, lineHeight:1.5}} dangerouslySetInnerHTML={{__html: renderFormattedText(String(showDetail.skill || ''))}} />
+                  </div>
+                )}
               </div>
             </div>
           </div>

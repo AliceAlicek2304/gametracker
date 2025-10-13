@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './RoleManagement.module.css';
+import { showToast } from '../utils/toast';
 
 type Role = {
   id: number;
@@ -29,6 +30,8 @@ const RoleManagement: React.FC = () => {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [sortOption, setSortOption] = useState<'createdDesc' | 'createdAsc' | 'nameAsc' | 'nameDesc'>('createdDesc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchRoles = async () => {
     setLoading(true);
@@ -69,10 +72,15 @@ const RoleManagement: React.FC = () => {
         setShowUpload({ id: data.id, name: data.name, currentIcon: data.icon });
         // refresh list in background
         fetchRoles();
+        showToast.success('Role created successfully');
       } else {
-        const txt = await res.text(); alert(txt || 'Create failed');
+        const txt = await res.text();
+        showToast.error(txt || 'Create failed');
       }
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const openEdit = (r: Role) => { setShowEdit(r); setForm({ name: r.name, description: r.description || '' }); }
@@ -89,29 +97,60 @@ const RoleManagement: React.FC = () => {
         headers: buildHeaders('application/json'),
         body: JSON.stringify({ name: form.name, description: form.description }),
       });
-      if (res.ok) { setShowEdit(null); setForm({ name: '', description: '' }); fetchRoles(); }
-    } catch (err) { console.error(err); }
+      if (res.ok) {
+        setShowEdit(null);
+        setForm({ name: '', description: '' });
+        fetchRoles();
+        showToast.success('Role updated successfully');
+      } else {
+        showToast.error('Update failed');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleDeactivate = async (id: number, active: boolean) => {
     try {
-  const res = await fetch(`/api/roles/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
-      if (res.ok) fetchRoles();
-    } catch (err) { console.error(err); }
+      const res = await fetch(`/api/roles/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
+      if (res.ok) {
+        fetchRoles();
+        showToast.success(active ? 'Role deactivated' : 'Role activated');
+      } else {
+        showToast.error('Action failed');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure to delete this role?')) return;
     try {
-  const res = await fetch(`/api/roles/${id}`, { method: 'DELETE', headers: buildHeaders() });
-      if (res.ok) fetchRoles();
-    } catch (err) { console.error(err); }
+      const res = await fetch(`/api/roles/${id}`, { method: 'DELETE', headers: buildHeaders() });
+      if (res.ok) {
+        fetchRoles();
+        showToast.success('Role deleted successfully');
+      } else {
+        showToast.error('Delete failed');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast.error('Network error');
+    }
   }
 
   const handleUploadIcon = async (id: number, f: File) => {
     const fd = new FormData(); fd.append('icon', f);
     const res = await fetch(`/api/roles/${id}/upload-icon`, { method: 'POST', headers: buildHeaders(), body: fd });
-    if (res.ok) fetchRoles();
+    if (res.ok) {
+      fetchRoles();
+      showToast.success('Icon uploaded successfully');
+    } else {
+      showToast.error('Upload failed');
+    }
     return res.ok;
   }
 
@@ -135,6 +174,15 @@ const RoleManagement: React.FC = () => {
     });
     return filtered;
   })();
+
+  // Pagination
+  const totalPages = Math.ceil(displayedRoles.length / itemsPerPage);
+  const paginatedRoles = displayedRoles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, activeFilter, sortOption]);
 
   return (
     <div className={styles.container}>
@@ -166,7 +214,7 @@ const RoleManagement: React.FC = () => {
         </thead>
         <tbody>
           {loading ? <tr><td colSpan={6}>Loading...</td></tr> : (
-            displayedRoles.map(r => (
+            paginatedRoles.map(r => (
             
             
             
@@ -230,6 +278,39 @@ const RoleManagement: React.FC = () => {
         </tbody>
       </table>
 
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            ← Prev
+          </button>
+          
+          <div className={styles.pageNumbers}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                className={`${styles.pageNum} ${currentPage === page ? styles.active : ''}`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button
+            className={styles.pageBtn}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next →
+          </button>
+        </div>
+      )}
+
       {showCreate && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -276,10 +357,12 @@ const RoleManagement: React.FC = () => {
             <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
               <button type="button" className={styles.smallBtn} onClick={()=>{ setShowUpload(null); setUploadFile(null); }}>Cancel</button>
               <button className={styles.smallBtn} onClick={async ()=>{
-                if (!uploadFile || !showUpload) return alert('Choose a file first');
+                if (!uploadFile || !showUpload) {
+                  showToast.warning('Please choose a file first');
+                  return;
+                }
                 const ok = await handleUploadIcon(showUpload.id, uploadFile);
                 if (ok) { setShowUpload(null); setUploadFile(null); fetchRoles(); }
-                else alert('Upload failed');
               }}>Upload</button>
             </div>
           </div>
