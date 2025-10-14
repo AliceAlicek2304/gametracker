@@ -6,7 +6,6 @@ public class CreateSetEchoRequest {
     @NotBlank(message = "Name is required")
     private String name;
 
-    private String description;
     private String skill;
     private String icon;
 
@@ -14,9 +13,6 @@ public class CreateSetEchoRequest {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
 
     public String getSkill() { return skill; }
     public void setSkill(String skill) { this.skill = skill; }

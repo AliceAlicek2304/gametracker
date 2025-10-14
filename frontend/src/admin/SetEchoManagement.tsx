@@ -6,7 +6,6 @@ type SetEcho = {
   id: number;
   icon?: string;
   name: string;
-  description?: string;
   skill?: string;
   isActive?: boolean;
   createdDate?: string;
@@ -26,7 +25,7 @@ const SetEchoManagement: React.FC = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState<null | SetEcho>(null);
   const [showUpload, setShowUpload] = useState<null | { id: number; name?: string; currentIcon?: string }>(null);
-  const [form, setForm] = useState({ name: '', description: '', skill: '' });
+  const [form, setForm] = useState({ name: '', skill: '' });
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
@@ -52,11 +51,11 @@ const SetEchoManagement: React.FC = () => {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/set-echoes', { method: 'POST', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, description: form.description, skill: form.skill }) });
+      const res = await fetch('/api/set-echoes', { method: 'POST', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, skill: form.skill }) });
       if (res.ok) {
         const data = await res.json();
         setShowCreate(false);
-        setForm({ name: '', description: '', skill: '' });
+        setForm({ name: '', skill: '' });
         // open upload modal to add icon
         setShowUpload({ id: data.id, name: data.name, currentIcon: data.icon });
         fetchItems();
@@ -71,17 +70,17 @@ const SetEchoManagement: React.FC = () => {
     }
   }
 
-  const openEdit = (s: SetEcho) => { setShowEdit(s); setForm({ name: s.name, description: s.description || '', skill: s.skill || '' }); }
+  const openEdit = (s: SetEcho) => { setShowEdit(s); setForm({ name: s.name, skill: s.skill || '' }); }
   const openUploadModal = (s: SetEcho) => { setShowUpload({ id: s.id, name: s.name, currentIcon: s.icon }); setUploadFile(null); }
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!showEdit) return;
     try {
-      const res = await fetch(`/api/set-echoes/${showEdit.id}`, { method: 'PUT', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, description: form.description, skill: form.skill }) });
+      const res = await fetch(`/api/set-echoes/${showEdit.id}`, { method: 'PUT', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, skill: form.skill }) });
       if (res.ok) {
         setShowEdit(null);
-        setForm({ name: '', description: '', skill: '' });
+        setForm({ name: '', skill: '' });
         fetchItems();
         showToast.success('Set Echo updated successfully');
       } else {
@@ -143,8 +142,7 @@ const SetEchoManagement: React.FC = () => {
       if (activeFilter === 'inactive' && i.isActive) return false;
       if (!q) return true;
       const name = (i.name || '').toLowerCase();
-      const desc = (i.description || '').toLowerCase();
-      return name.includes(q) || desc.includes(q);
+      return name.includes(q);
     });
     filtered.sort((a,b) => {
       if (sortOption === 'createdDesc') return (b.createdDate ? new Date(b.createdDate).getTime() : 0) - (a.createdDate ? new Date(a.createdDate).getTime() : 0);
@@ -170,7 +168,7 @@ const SetEchoManagement: React.FC = () => {
       <div className={styles.topBar}>
         <div className={styles.title}>Set Echo Management</div>
         <div className={styles.topBarCenter}>
-          <input placeholder="Search name or description" value={search} onChange={e=>setSearch(e.target.value)} className={styles.searchInput} />
+          <input placeholder="Search name" value={search} onChange={e=>setSearch(e.target.value)} className={styles.searchInput} />
           <select value={activeFilter} onChange={e=>setActiveFilter(e.target.value as any)} className={styles.select}>
             <option value="all">All</option>
             <option value="active">Active</option>
@@ -184,20 +182,20 @@ const SetEchoManagement: React.FC = () => {
           </select>
         </div>
         <div className={styles.controls}>
-          <button className={styles.btn} onClick={() => { setForm({ name: '', description: '', skill: '' }); setShowCreate(true); }}>Create Set Echo</button>
+          <button className={styles.btn} onClick={() => { setForm({ name: '', skill: '' }); setShowCreate(true); }}>Create Set Echo</button>
           <button className={styles.btn} onClick={() => fetchItems()}>Refresh</button>
         </div>
       </div>
 
-      <table className={styles.table}>
-        <thead><tr><th>Icon</th><th>Name</th><th>Description</th><th>Active</th><th>Created</th><th>Actions</th></tr></thead>
-        <tbody>
-          {loading ? <tr><td colSpan={6}>Loading...</td></tr> : (
-            paginatedItems.map(i => (
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead><tr><th>Icon</th><th>Name</th><th>Active</th><th>Created</th><th>Actions</th></tr></thead>
+          <tbody>
+            {loading ? <tr><td colSpan={5}>Loading...</td></tr> : (
+              paginatedItems.map(i => (
               <tr key={i.id}>
                 <td>{i.icon ? <img src={i.icon} className={styles.iconImg} alt="icon" /> : <div style={{width:48,height:48,background:'#eee',borderRadius:6}}/>}</td>
                 <td>{i.name}</td>
-                <td>{i.description}</td>
                 <td>{i.isActive ? 'Yes' : 'No'}</td>
                 <td>{i.createdDate ? new Date(i.createdDate).toLocaleString() : ''}</td>
                 <td className={styles.actions}>
@@ -211,6 +209,7 @@ const SetEchoManagement: React.FC = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
@@ -251,7 +250,6 @@ const SetEchoManagement: React.FC = () => {
             <h3>Create Set Echo</h3>
             <form onSubmit={handleCreate}>
               <div className={styles.formRow}><label>Name</label><input type="text" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} required /></div>
-              <div className={styles.formRow}><label>Description</label><textarea value={form.description} onChange={e=>setForm({...form, description: e.target.value})} rows={4} /></div>
               <div className={styles.formRow}><label>Skill</label><textarea value={form.skill} onChange={e=>setForm({...form, skill: e.target.value})} rows={4} /></div>
               <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
                 <button type="button" className={styles.smallBtn} onClick={()=>setShowCreate(false)}>Cancel</button>
@@ -268,10 +266,9 @@ const SetEchoManagement: React.FC = () => {
             <h3>Edit Set Echo</h3>
             <form onSubmit={handleUpdate}>
               <div className={styles.formRow}><label>Name</label><input type="text" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} required /></div>
-              <div className={styles.formRow}><label>Description</label><textarea value={form.description} onChange={e=>setForm({...form, description: e.target.value})} rows={4} /></div>
               <div className={styles.formRow}><label>Skill</label><textarea value={form.skill} onChange={e=>setForm({...form, skill: e.target.value})} rows={4} /></div>
               <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
-                <button type="button" className={styles.smallBtn} onClick={()=>{ setShowEdit(null); setForm({ name:'', description:'', skill: '' }); }}>Cancel</button>
+                <button type="button" className={styles.smallBtn} onClick={()=>{ setShowEdit(null); setForm({ name:'', skill: '' }); }}>Cancel</button>
                 <button className={styles.smallBtn} type="submit">Save</button>
               </div>
             </form>

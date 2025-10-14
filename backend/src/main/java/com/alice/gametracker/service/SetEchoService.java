@@ -29,7 +29,7 @@ public class SetEchoService {
     private FileStorageService fileStorageService;
 
     public SetEchoResponse createSetEcho(CreateSetEchoRequest request, MultipartFile iconFile) throws Exception {
-        SetEcho s = new SetEcho(request.getName(), request.getDescription(), request.getSkill(), request.getIcon());
+        SetEcho s = new SetEcho(request.getName(), request.getSkill(), request.getIcon());
 
         if (iconFile != null && !iconFile.isEmpty()) {
             String iconUrl = fileStorageService.storeSetEchoIcon(iconFile);
@@ -46,7 +46,6 @@ public class SetEchoService {
 
         SetEcho s = opt.get();
         if (request.getName() != null) s.setName(request.getName());
-        s.setDescription(request.getDescription());
         s.setSkill(request.getSkill());
         if (request.getIcon() != null) s.setIcon(request.getIcon());
 
@@ -102,6 +101,6 @@ public class SetEchoService {
     public Optional<SetEcho> findById(Long id) { return setEchoRepository.findById(id); }
 
     private SetEchoResponse convertToResponse(SetEcho s) {
-        return new SetEchoResponse(s.getId(), s.getName(), s.getDescription(), s.getSkill(), s.getIcon(), s.isActive(), s.getCreatedDate());
+        return new SetEchoResponse(s.getId(), s.getName(), s.getSkill(), s.getIcon(), s.isActive(), s.getCreatedDate());
     }
 }

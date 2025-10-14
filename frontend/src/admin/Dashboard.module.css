@@ -81,3 +81,90 @@
   margin-bottom: 1rem;
   color: #dff8ff;
 }
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .content {
+    padding: 1.5rem;
+  }
+
+  .contentCard {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardRoot {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .brand {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .menu {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .menuItem {
+    padding: 0.6rem 1rem;
+    white-space: nowrap;
+    font-size: 0.9rem;
+  }
+
+  .homeItem {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .contentCard {
+    padding: 0.75rem;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 0.75rem;
+  }
+
+  .menu {
+    gap: 0.35rem;
+  }
+
+  .menuItem {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .homeItem {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .content {
+    padding: 0.75rem;
+  }
+
+  .contentCard {
+    padding: 0.5rem;
+  }
+
+  .title {
+    font-size: 1.2rem;
+  }
+}

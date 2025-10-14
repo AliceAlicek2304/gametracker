@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 public class SetEchoResponse {
     private Long id;
     private String name;
-    private String description;
     private String skill;
     private String icon;
     private Boolean isActive;
@@ -13,10 +12,9 @@ public class SetEchoResponse {
 
     public SetEchoResponse() {}
 
-    public SetEchoResponse(Long id, String name, String description, String skill, String icon, Boolean isActive, LocalDateTime createdDate) {
+    public SetEchoResponse(Long id, String name, String skill, String icon, Boolean isActive, LocalDateTime createdDate) {
         this.id = id;
         this.name = name;
-        this.description = description;
         this.skill = skill;
         this.icon = icon;
         this.isActive = isActive;
@@ -28,9 +26,6 @@ public class SetEchoResponse {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
 
     public String getSkill() { return skill; }
     public void setSkill(String skill) { this.skill = skill; }

@@ -208,13 +208,14 @@ const RoleManagement: React.FC = () => {
         </div>
       </div>
 
-      <table className={styles.table}>
-        <thead>
-          <tr><th>Icon</th><th>Name</th><th>Description</th><th>Active</th><th>Created</th><th>Actions</th></tr>
-        </thead>
-        <tbody>
-          {loading ? <tr><td colSpan={6}>Loading...</td></tr> : (
-            paginatedRoles.map(r => (
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr><th>Icon</th><th>Name</th><th>Description</th><th>Active</th><th>Created</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {loading ? <tr><td colSpan={6}>Loading...</td></tr> : (
+              paginatedRoles.map(r => (
             
             
             
@@ -277,6 +278,7 @@ const RoleManagement: React.FC = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {/* Pagination */}
       {totalPages > 1 && (

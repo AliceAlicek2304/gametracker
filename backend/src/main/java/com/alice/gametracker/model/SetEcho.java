@@ -25,9 +25,6 @@ public class SetEcho {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(columnDefinition = "NVARCHAR(500)")
-    private String description;
-
     @Column(columnDefinition = "NVARCHAR(1000)")
     private String skill;
 
@@ -51,9 +48,8 @@ public class SetEcho {
     // Constructors
     public SetEcho() {}
 
-    public SetEcho(String name, String description, String skill, String icon) {
+    public SetEcho(String name, String skill, String icon) {
         this.name = name;
-        this.description = description;
         this.skill = skill;
         this.icon = icon;
     }
@@ -64,9 +60,6 @@ public class SetEcho {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
 
     public String getSkill() { return skill; }
     public void setSkill(String skill) { this.skill = skill; }
