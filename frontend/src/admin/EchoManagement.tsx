@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './EchoManagement.module.css';
 import { showToast } from '../utils/toast';
 
-type Echo = { id:number; name:string; imageUrl?:string; description?:string; cost?:number; skill?:any; setEchoId?:number | null; isActive?:boolean; createdDate?:string };
+type Echo = { id:number; name:string; imageUrl?:string; description?:string; cost?:number; skill?:any; setEchoIds?:number[]; isActive?:boolean; createdDate?:string };
 type SetEcho = { id:number; name:string; icon?:string };
 
 const buildHeaders = (contentType?: string): HeadersInit => {
@@ -40,7 +40,9 @@ const EchoManagement: React.FC = () => {
   const [showDetail, setShowDetail] = useState<Echo|null>(null);
   const [setEchos, setSetEchos] = useState<SetEcho[]>([]);
   const [showUpload, setShowUpload] = useState<{id:number;name?:string;currentImage?:string}|null>(null);
-  const [form, setForm] = useState<any>({ name:'', description:'', cost:0, skill:'', setEchoId: null });
+  const [form, setForm] = useState<any>({ name:'', description:'', cost:1, skill:'', setEchoIds: [] });
+  const [setEchoSearch, setSetEchoSearch] = useState('');
+  const [showSetEchoDropdown, setShowSetEchoDropdown] = useState(false);
   const [file, setFile] = useState<File|null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 21;
@@ -100,7 +102,7 @@ const EchoManagement: React.FC = () => {
     setCurrentPage(1);
   }, [search, activeFilter, sortOption]);
 
-  const handleOpenCreate = () => { setEditing(null); setForm({ name:'', description:'', cost:0, skill:'', setEchoId: null }); setShowCreate(true); }
+  const handleOpenCreate = () => { setEditing(null); setForm({ name:'', description:'', cost:1, skill:'', setEchoIds: [] }); setShowCreate(true); }
 
   const handleSubmit = async (ev:React.FormEvent) => {
     ev.preventDefault();
@@ -226,17 +228,81 @@ const EchoManagement: React.FC = () => {
             <h3>{editing ? 'Edit Echo' : 'Create Echo'}</h3>
             <form onSubmit={handleSubmit}>
               <div className={styles.formRow}>
-                <div className={styles.formCol}><label className={styles.formLabel}>Name</label><input className={styles.formInput} value={form.name} onChange={e=>setForm({...form,name:e.target.value})} /></div>
-                <div className={styles.formCol}><label className={styles.formLabel}>Cost</label><input type="number" className={styles.formInput} value={form.cost} onChange={e=>setForm({...form,cost: parseInt(e.target.value || '0')})} /></div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.formCol}><label className={styles.formLabel}>Set Echo</label>
-                  <select className={styles.select} value={form.setEchoId ?? ''} onChange={e=>setForm({...form, setEchoId: e.target.value === '' ? null : parseInt(e.target.value)})}>
-                    <option value="">None</option>
-                    {setEchos.map(s=> <option key={s.id} value={s.id}>{s.name}</option>)}
+                <div className={styles.formCol}>
+                  <label className={styles.formLabel}>Name</label>
+                  <input className={styles.formInput} value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required />
+                </div>
+                <div className={styles.formCol}>
+                  <label className={styles.formLabel}>Cost</label>
+                  <select className={styles.formInput} value={form.cost} onChange={e=>setForm({...form,cost: parseInt(e.target.value)})}>
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                    <option value={4}>4</option>
                   </select>
                 </div>
               </div>
+              
+              <div className={styles.formRow}>
+                <div className={styles.formCol}>
+                  <label className={styles.formLabel}>Set Echo(s)</label>
+                  <div className={styles.roleMulti}>
+                    <div className={styles.chipsRow} onClick={() => setShowSetEchoDropdown(!showSetEchoDropdown)}>
+                      {form.setEchoIds && form.setEchoIds.length > 0 ? (
+                        form.setEchoIds.map((id: number) => {
+                          const s = setEchos.find(se => se.id === id);
+                          return s ? (
+                            <span key={id} className={styles.chip}>
+                              {s.name}
+                              <span className={styles.chipX} onClick={(e) => { 
+                                e.stopPropagation(); 
+                                setForm({...form, setEchoIds: form.setEchoIds.filter((sid: number) => sid !== id)}); 
+                              }}>×</span>
+                            </span>
+                          ) : null;
+                        })
+                      ) : (
+                        <span className={styles.placeholder}>Select Set Echoes...</span>
+                      )}
+                      <span className={styles.caret}>▼</span>
+                    </div>
+                    {showSetEchoDropdown && (
+                      <div className={styles.roleDropdown}>
+                        <input 
+                          type="text" 
+                          className={styles.roleSearch} 
+                          placeholder="Search set echoes..." 
+                          value={setEchoSearch}
+                          onChange={e => setSetEchoSearch(e.target.value)}
+                          onClick={e => e.stopPropagation()}
+                        />
+                        <div className={styles.roleOptions}>
+                          {setEchos
+                            .filter(s => s.name.toLowerCase().includes(setEchoSearch.toLowerCase()))
+                            .map(s => (
+                              <label key={s.id} className={styles.roleOption}>
+                                <input 
+                                  type="checkbox" 
+                                  checked={form.setEchoIds?.includes(s.id) || false}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setForm({...form, setEchoIds: [...(form.setEchoIds || []), s.id]});
+                                    } else {
+                                      setForm({...form, setEchoIds: (form.setEchoIds || []).filter((id: number) => id !== s.id)});
+                                    }
+                                  }}
+                                />
+                                <span className={styles.roleName}>{s.name}</span>
+                              </label>
+                            ))
+                          }
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
               <div className={styles.formRow}><div className={styles.formCol}><label className={styles.formLabel}>Skill</label><textarea rows={4} className={styles.formInput} value={form.skill} onChange={e=>setForm({...form,skill:e.target.value})} /></div></div>
               <div className={styles.formRow}><div className={styles.formCol}><label className={styles.formLabel}>Description</label><textarea rows={4} className={styles.formInput} value={form.description} onChange={e=>setForm({...form,description:e.target.value})} /></div></div>
               <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:8}}>
@@ -265,7 +331,7 @@ const EchoManagement: React.FC = () => {
                 {showDetail.imageUrl ? <img src={showDetail.imageUrl} alt={showDetail.name} style={{width:200,height:200,objectFit:'cover',borderRadius:8}} /> : <div style={{width:200,height:200,background:'#111',borderRadius:8}} />}
                 <div style={{display:'flex',gap:8,marginTop:12,flexDirection:'column'}}>
                   <button className={styles.smallBtn} onClick={() => { setShowDetail(null); setShowUpload({ id: showDetail.id, name: showDetail.name, currentImage: showDetail.imageUrl }); setFile(null); }}>Upload Image</button>
-                  <button className={styles.smallBtn} onClick={() => { setShowDetail(null); setEditing(showDetail); setForm({ name: showDetail.name, description: showDetail.description || '', cost: showDetail.cost || 0, skill: showDetail.skill || '', setEchoId: showDetail.setEchoId ?? null, imageUrl: showDetail.imageUrl ?? null }); setShowCreate(true); }}>Edit</button>
+                  <button className={styles.smallBtn} onClick={() => { setShowDetail(null); setEditing(showDetail); setForm({ name: showDetail.name, description: showDetail.description || '', cost: showDetail.cost || 1, skill: showDetail.skill || '', setEchoIds: showDetail.setEchoIds || [], imageUrl: showDetail.imageUrl ?? null }); setShowCreate(true); }}>Edit</button>
                   <button className={`${styles.smallBtn} ${styles.muted}`} onClick={async () => {
                     try {
                       const res = await fetch(`/api/echoes/${showDetail.id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !showDetail.isActive }) });
@@ -306,8 +372,12 @@ const EchoManagement: React.FC = () => {
                 <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:12}}>
                   <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
                     <div style={{flex:'1 1 150px'}}>
-                      <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:4}}>Set Echo</div>
-                      <div style={{fontWeight:600}}>{setEchos.find(s => s.id === showDetail.setEchoId)?.name || 'None'}</div>
+                      <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:4}}>Set Echo(s)</div>
+                      <div style={{fontWeight:600}}>
+                        {showDetail.setEchoIds && showDetail.setEchoIds.length > 0 
+                          ? showDetail.setEchoIds.map(id => setEchos.find(s => s.id === id)?.name).filter(Boolean).join(', ')
+                          : 'None'}
+                      </div>
                     </div>
                     <div style={{flex:'1 1 150px'}}>
                       <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:4}}>Status</div>

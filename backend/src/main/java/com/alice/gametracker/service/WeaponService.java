@@ -15,7 +15,9 @@ import com.alice.gametracker.dto.DeactivateWeaponRequest;
 import com.alice.gametracker.dto.UpdateWeaponRequest;
 import com.alice.gametracker.dto.WeaponCardResponse;
 import com.alice.gametracker.dto.WeaponResponse;
+import com.alice.gametracker.model.SubStatsType;
 import com.alice.gametracker.model.Weapon;
+import com.alice.gametracker.model.WeaponType;
 import com.alice.gametracker.repository.WeaponRepository;
 
 @Service
@@ -32,13 +34,13 @@ public class WeaponService {
     // Create new weapon (service accepts optional imageFile)
     public WeaponResponse createWeapon(CreateWeaponRequest request, MultipartFile imageFile) throws Exception {
         Weapon weapon = new Weapon(
-            com.alice.gametracker.model.WeaponType.valueOf(request.getWeaponType()),
+            WeaponType.valueOf(request.getWeaponType()),
             request.getName(),
             null,
             request.getDescription(),
             request.getMainStats(),
             request.getSubStats(),
-            request.getSubStatsType() != null ? com.alice.gametracker.model.SubStatsType.valueOf(request.getSubStatsType()) : null,
+            request.getSubStatsType() != null ? SubStatsType.valueOf(request.getSubStatsType()) : null,
             request.getSkill(),
             request.getRarity() != null ? request.getRarity() : 1
         );
@@ -58,12 +60,12 @@ public class WeaponService {
         if (optional.isEmpty()) throw new RuntimeException("Weapon not found");
 
         Weapon weapon = optional.get();
-        weapon.setWeaponType(com.alice.gametracker.model.WeaponType.valueOf(request.getWeaponType()));
+        weapon.setWeaponType(WeaponType.valueOf(request.getWeaponType()));
         weapon.setName(request.getName());
         weapon.setDescription(request.getDescription());
         weapon.setMainStats(request.getMainStats());
         weapon.setSubStats(request.getSubStats());
-    if (request.getSubStatsType() != null) weapon.setSubStatsType(com.alice.gametracker.model.SubStatsType.valueOf(request.getSubStatsType()));
+    if (request.getSubStatsType() != null) weapon.setSubStatsType(SubStatsType.valueOf(request.getSubStatsType()));
     weapon.setSkill(request.getSkill());
     if (request.getRarity() != null) weapon.setRarity(request.getRarity());
 

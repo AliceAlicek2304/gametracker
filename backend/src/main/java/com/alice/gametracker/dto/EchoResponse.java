@@ -1,6 +1,7 @@
 package com.alice.gametracker.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class EchoResponse {
 
@@ -10,21 +11,21 @@ public class EchoResponse {
     private String description;
     private Integer cost;
     private String skill;
-    private Long setEchoId;
+    private List<Long> setEchoIds;
     private Boolean isActive;
     private LocalDateTime createdDate;
 
     public EchoResponse() {}
 
     public EchoResponse(Long id, String imageUrl, String name, String description,
-                        Integer cost, String skill, Long setEchoId, Boolean isActive, LocalDateTime createdDate) {
+                        Integer cost, String skill, List<Long> setEchoIds, Boolean isActive, LocalDateTime createdDate) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.name = name;
         this.description = description;
         this.cost = cost;
         this.skill = skill;
-        this.setEchoId = setEchoId;
+        this.setEchoIds = setEchoIds;
         this.isActive = isActive;
         this.createdDate = createdDate;
     }
@@ -48,8 +49,8 @@ public class EchoResponse {
     public String getSkill() { return skill; }
     public void setSkill(String skill) { this.skill = skill; }
 
-    public Long getSetEchoId() { return setEchoId; }
-    public void setSetEchoId(Long setEchoId) { this.setEchoId = setEchoId; }
+    public List<Long> getSetEchoIds() { return setEchoIds; }
+    public void setSetEchoIds(List<Long> setEchoIds) { this.setEchoIds = setEchoIds; }
 
     public Boolean getIsActive() { return isActive; }
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }

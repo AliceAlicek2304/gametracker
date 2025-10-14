@@ -1,7 +1,9 @@
 package com.alice.gametracker.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,20 +51,23 @@ public class EchoService {
     }
 
     public Echo createFromDto(CreateEchoRequest req) {
-        SetEcho setEcho = null;
-        if (req.getSetEchoId() != null) {
-            setEcho = setEchoService.findById(req.getSetEchoId()).orElse(null);
+        List<SetEcho> setEchoes = new ArrayList<>();
+        if (req.getSetEchoIds() != null && !req.getSetEchoIds().isEmpty()) {
+            setEchoes = req.getSetEchoIds().stream()
+                .map(id -> setEchoService.findById(id).orElse(null))
+                .filter(s -> s != null)
+                .collect(Collectors.toList());
         }
-    Integer c = req.getCost();
-    int cost = c != null ? c : 0;
+        Integer c = req.getCost();
+        int cost = c != null ? c : 0;
         Echo e = new Echo(
             req.getImageUrl(),
             req.getName(),
             req.getDescription(),
             cost,
-            req.getSkill(),
-            setEcho
+            req.getSkill()
         );
+        e.setSetEchoes(setEchoes);
         return echoRepository.save(e);
     }
 
@@ -71,29 +76,40 @@ public class EchoService {
         echo.setImageUrl(req.getImageUrl());
         echo.setName(req.getName());
         echo.setDescription(req.getDescription());
-    Integer uc = req.getCost();
-    echo.setCost(uc != null ? uc : 0);
+        Integer uc = req.getCost();
+        echo.setCost(uc != null ? uc : 0);
         echo.setSkill(req.getSkill());
-        if (req.getSetEchoId() != null) {
-            setEchoService.findById(req.getSetEchoId()).ifPresent(echo::setSetEcho);
-        } else {
-            echo.setSetEcho(null);
+        
+        // Update set echoes
+        List<SetEcho> setEchoes = new ArrayList<>();
+        if (req.getSetEchoIds() != null && !req.getSetEchoIds().isEmpty()) {
+            setEchoes = req.getSetEchoIds().stream()
+                .map(setId -> setEchoService.findById(setId).orElse(null))
+                .filter(s -> s != null)
+                .collect(Collectors.toList());
         }
+        echo.setSetEchoes(setEchoes);
+        
         return echoRepository.save(echo);
     }
 
     // DTO-based create that accepts optional image file
     public EchoResponse createEcho(CreateEchoRequest req, MultipartFile imageFile) throws Exception {
         Echo e = new Echo();
-        SetEcho setEcho = null;
-        if (req.getSetEchoId() != null) setEcho = setEchoService.findById(req.getSetEchoId()).orElse(null);
+        List<SetEcho> setEchoes = new ArrayList<>();
+        if (req.getSetEchoIds() != null && !req.getSetEchoIds().isEmpty()) {
+            setEchoes = req.getSetEchoIds().stream()
+                .map(id -> setEchoService.findById(id).orElse(null))
+                .filter(s -> s != null)
+                .collect(Collectors.toList());
+        }
         e.setImageUrl(req.getImageUrl());
         e.setName(req.getName());
         e.setDescription(req.getDescription());
         Integer createCost = req.getCost();
         e.setCost(createCost != null ? createCost : 0);
         e.setSkill(req.getSkill());
-        e.setSetEcho(setEcho);
+        e.setSetEchoes(setEchoes);
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String url = fileStorageService.storeEchoImage(imageFile);
@@ -112,8 +128,17 @@ public class EchoService {
         Integer updateCost = req.getCost();
         echo.setCost(updateCost != null ? updateCost : 0);
         echo.setSkill(req.getSkill());
-        if (req.getSetEchoId() != null) setEchoService.findById(req.getSetEchoId()).ifPresent(echo::setSetEcho);
-        else echo.setSetEcho(null);
+        
+        // Update set echoes
+        List<SetEcho> setEchoes = new ArrayList<>();
+        if (req.getSetEchoIds() != null && !req.getSetEchoIds().isEmpty()) {
+            setEchoes = req.getSetEchoIds().stream()
+                .map(setId -> setEchoService.findById(setId).orElse(null))
+                .filter(s -> s != null)
+                .collect(Collectors.toList());
+        }
+        echo.setSetEchoes(setEchoes);
+        
         Echo updated = echoRepository.save(echo);
         return convertToResponse(updated);
     }
@@ -150,7 +175,11 @@ public class EchoService {
     public List<EchoResponse> findActiveResponses() { return echoRepository.findAll().stream().filter(Echo::isActive).map(this::convertToResponse).toList(); }
 
     private EchoResponse convertToResponse(Echo e) {
-        return new EchoResponse(e.getId(), e.getImageUrl(), e.getName(), e.getDescription(), e.getCost(), e.getSkill(), e.getSetEcho() != null ? e.getSetEcho().getId() : null, e.isActive(), e.getCreatedDate());
+        List<Long> setEchoIds = e.getSetEchoes().stream()
+            .map(SetEcho::getId)
+            .collect(Collectors.toList());
+        return new EchoResponse(e.getId(), e.getImageUrl(), e.getName(), e.getDescription(), 
+            e.getCost(), e.getSkill(), setEchoIds, e.isActive(), e.getCreatedDate());
     }
 
     public void deleteById(Long id) {

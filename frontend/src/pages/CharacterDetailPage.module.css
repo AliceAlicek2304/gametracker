@@ -1,0 +1,556 @@
+:root {
+  --bg: #07101a;
+  --bg-2: #0b1220;
+  --muted: #e6f7ff;
+  --accent: #00d4ff;
+  --panel: rgba(255,255,255,0.02);
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--bg);
+  color: var(--muted);
+}
+
+/* Background with 60% opacity */
+.bgImage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.container {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.backBtn {
+  padding: 0.75rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  border: none;
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.backBtn:hover {
+  background: rgba(0, 212, 255, 0.2);
+  transform: translateX(-4px);
+}
+
+.detailCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, 
+    rgba(11, 18, 32, 0.95), 
+    rgba(7, 16, 26, 0.95)
+  );
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+}
+
+/* Top Row - Image and Info side by side */
+.topRow {
+  display: grid;
+  grid-template-columns: 450px 1fr;
+  gap: 1.5rem;
+}
+
+/* Left Side - Image */
+.imageSection {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(255, 107, 107, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.characterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Right Side - Info */
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+}
+
+.elementIconImg {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 212, 255, 0.4));
+}
+
+.elementIconSmall {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.headerText {
+  flex: 1;
+}
+
+.name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem 0;
+  color: #dff8ff;
+  text-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+}
+
+.stars {
+  font-size: 1.2rem;
+  color: #ffd700;
+  letter-spacing: 0.15rem;
+  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+}
+
+.description {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #dceff6;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.description::-webkit-scrollbar {
+  width: 6px;
+}
+
+.description::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.02);
+  border-radius: 3px;
+}
+
+.description::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.2);
+  border-radius: 3px;
+}
+
+.description::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 255, 0.3);
+}
+
+/* Basic Info Grid */
+.basicInfo {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
+.infoItem {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.infoLabel {
+  font-weight: 600;
+  color: rgba(230, 247, 255, 0.7);
+  font-size: 0.85rem;
+}
+
+.infoValue {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #dff8ff;
+}
+
+.icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Roles */
+.rolesContainer {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.roleIcon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 107, 107, 0.1));
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.roleIcon:hover {
+  transform: scale(1.1);
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.4);
+}
+
+.roleIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.roleText {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.roleTooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #0b1220, #07101a);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  z-index: 100;
+  min-width: 220px;
+  max-width: 300px;
+  pointer-events: none;
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.roleTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #0b1220;
+}
+
+.tooltipTitle {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.tooltipDesc {
+  font-size: 0.875rem;
+  color: rgba(230, 247, 255, 0.85);
+  line-height: 1.5;
+}
+
+/* Stats Section - Full Width Bottom Row */
+.statsSection {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #dff8ff;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+}
+
+/* Level Control */
+.levelControl {
+  margin-bottom: 1.25rem;
+}
+
+.levelLabel {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: var(--muted);
+}
+
+.levelValue {
+  color: var(--accent);
+  font-size: 1.15rem;
+  margin-left: 0.5rem;
+}
+
+.levelSlider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+}
+
+/* Track gradient - shows progress */
+.levelSlider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    #00d4ff 0%,
+    #00d4ff var(--slider-progress, 0%),
+    rgba(255, 255, 255, 0.1) var(--slider-progress, 0%),
+    rgba(255, 255, 255, 0.1) 100%
+  );
+}
+
+.levelSlider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.levelSlider::-moz-range-progress {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #00d4ff, #0099ff);
+}
+
+.levelSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00d4ff, #0099ff);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.5);
+  transition: all 0.2s ease;
+  margin-top: -6px; /* Centers 20px thumb on 8px track */
+}
+
+.levelSlider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.7);
+}
+
+.levelSlider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00d4ff, #0099ff);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.5);
+  transition: all 0.2s ease;
+}
+
+.levelSlider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.7);
+}
+
+.levelMarks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: rgba(230, 247, 255, 0.6);
+  margin-top: 0.5rem;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.statItem {
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(255, 107, 107, 0.05));
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.statItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(230, 247, 255, 0.7);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+}
+
+.statFormula {
+  font-size: 0.7rem;
+  color: rgba(230, 247, 255, 0.5);
+  line-height: 1.4;
+}
+
+/* Loading and Error */
+.loading,
+.error {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.error h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #ff6b6b;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .topRow {
+    grid-template-columns: 380px 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .topRow {
+    grid-template-columns: 1fr;
+  }
+
+  .imageSection {
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+    margin: 1rem auto;
+  }
+
+  .detailCard {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .name {
+    font-size: 1.5rem;
+  }
+
+  .infoItem {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .elementIconImg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .name {
+    font-size: 1.25rem;
+  }
+
+  .stars {
+    font-size: 1rem;
+  }
+
+  .statValue {
+    font-size: 1.25rem;
+  }
+  
+  .roleIcon {
+    width: 36px;
+    height: 36px;
+  }
+}

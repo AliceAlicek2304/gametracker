@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './CharacterPage.module.css';
@@ -13,6 +14,7 @@ type Character = {
 };
 
 const CharacterPage: React.FC = () => {
+  const navigate = useNavigate();
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -184,7 +186,12 @@ const CharacterPage: React.FC = () => {
             <>
               <div className={styles.characterGrid}>
                 {paginatedCharacters.map(character => (
-                  <div key={character.id} className={styles.characterCard}>
+                  <div 
+                    key={character.id} 
+                    className={styles.characterCard}
+                    onClick={() => navigate(`/characters/${character.id}`)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className={styles.characterImageWrapper}>
                       <img
                         src={character.imageUrl}

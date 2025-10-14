@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,10 @@ import com.alice.gametracker.dto.CreateEchoRequest;
 import com.alice.gametracker.dto.DeactivateWeaponRequest;
 import com.alice.gametracker.dto.EchoResponse;
 import com.alice.gametracker.dto.UpdateEchoRequest;
+import com.alice.gametracker.model.Echo;
+import com.alice.gametracker.model.SetEcho;
 import com.alice.gametracker.service.EchoService;
+import com.alice.gametracker.service.FileStorageService;
 
 import jakarta.annotation.PostConstruct;
 
@@ -45,7 +49,7 @@ public class EchoController {
     private EchoService echoService;
 
     @Autowired
-    private com.alice.gametracker.service.FileStorageService fileStorageService;
+    private FileStorageService fileStorageService;
 
     private static final Logger log = LoggerFactory.getLogger(EchoController.class);
 
@@ -76,7 +80,7 @@ public class EchoController {
 
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<EchoResponse> deactivateEcho(@PathVariable Long id, @RequestBody DeactivateWeaponRequest req) {
-        com.alice.gametracker.model.Echo e = echoService.findById(id).orElseThrow(() -> new RuntimeException("Echo not found"));
+        Echo e = echoService.findById(id).orElseThrow(() -> new RuntimeException("Echo not found"));
         e.setActive(req.getIsActive());
         echoService.update(e);
         return ResponseEntity.ok(convertToResponse(e));
@@ -85,7 +89,7 @@ public class EchoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEcho(@PathVariable Long id) throws Exception {
         // Delete image if exists, echoService.deleteById will remove DB record
-        com.alice.gametracker.model.Echo e = echoService.findById(id).orElseThrow(() -> new RuntimeException("Echo not found"));
+        Echo e = echoService.findById(id).orElseThrow(() -> new RuntimeException("Echo not found"));
         if (e.getImageUrl() != null) {
             try { fileStorageService.deleteFile(e.getImageUrl()); } catch (java.io.IOException ex) { log.warn("Failed to delete echo image: {}", ex.getMessage()); }
         }
@@ -95,25 +99,25 @@ public class EchoController {
 
     @GetMapping
     public ResponseEntity<List<EchoResponse>> getAll() {
-        List<com.alice.gametracker.model.Echo> list = echoService.findAll();
+        List<Echo> list = echoService.findAll();
         return ResponseEntity.ok(list.stream().map(this::convertToResponse).toList());
     }
 
     @GetMapping("/active")
     public ResponseEntity<List<EchoResponse>> getActive() {
-        List<com.alice.gametracker.model.Echo> list = echoService.findAll().stream().filter(com.alice.gametracker.model.Echo::isActive).toList();
+        List<Echo> list = echoService.findAll().stream().filter(Echo::isActive).toList();
         return ResponseEntity.ok(list.stream().map(this::convertToResponse).toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EchoResponse> getById(@PathVariable Long id) {
-        Optional<com.alice.gametracker.model.Echo> opt = echoService.findById(id);
+        Optional<Echo> opt = echoService.findById(id);
         return opt.map(e -> ResponseEntity.ok(convertToResponse(e))).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<EchoResponse> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) throws Exception {
-        com.alice.gametracker.model.Echo e = echoService.findById(id).orElseThrow(() -> new RuntimeException("Echo not found"));
+        Echo e = echoService.findById(id).orElseThrow(() -> new RuntimeException("Echo not found"));
         if (file == null || file.isEmpty()) return ResponseEntity.badRequest().build();
         // delete old
         if (e.getImageUrl() != null) {
@@ -142,7 +146,11 @@ public class EchoController {
         }
     }
 
-    private EchoResponse convertToResponse(com.alice.gametracker.model.Echo e) {
-        return new EchoResponse(e.getId(), e.getImageUrl(), e.getName(), e.getDescription(), e.getCost(), e.getSkill(), e.getSetEcho() != null ? e.getSetEcho().getId() : null, e.isActive(), e.getCreatedDate());
+    private EchoResponse convertToResponse(Echo e) {
+        List<Long> setEchoIds = e.getSetEchoes().stream()
+            .map(SetEcho::getId)
+            .collect(Collectors.toList());
+        return new EchoResponse(e.getId(), e.getImageUrl(), e.getName(), e.getDescription(), 
+                                e.getCost(), e.getSkill(), setEchoIds, e.isActive(), e.getCreatedDate());
     }
 }

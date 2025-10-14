@@ -1,6 +1,8 @@
 package com.alice.gametracker.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -35,9 +38,13 @@ public class Echo {
     @Column(columnDefinition = "NVARCHAR(1000)")
     private String skill;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "set_echo_id")
-    private SetEcho setEcho;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "echo_set_echoes",
+        joinColumns = @JoinColumn(name = "echo_id"),
+        inverseJoinColumns = @JoinColumn(name = "set_echo_id")
+    )
+    private List<SetEcho> setEchoes = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean isActive = true;
@@ -48,13 +55,12 @@ public class Echo {
     // Constructors
     public Echo() {}
 
-    public Echo(String imageUrl, String name, String description, int cost, String skill, SetEcho setEcho) {
+    public Echo(String imageUrl, String name, String description, int cost, String skill) {
         this.imageUrl = imageUrl;
         this.name = name;
         this.description = description;
         this.cost = cost;
         this.skill = skill;
-        this.setEcho = setEcho;
     }
 
     // Getters and Setters
@@ -76,8 +82,8 @@ public class Echo {
     public String getSkill() { return skill; }
     public void setSkill(String skill) { this.skill = skill; }
 
-    public SetEcho getSetEcho() { return setEcho; }
-    public void setSetEcho(SetEcho setEcho) { this.setEcho = setEcho; }
+    public List<SetEcho> getSetEchoes() { return setEchoes; }
+    public void setSetEchoes(List<SetEcho> setEchoes) { this.setEchoes = setEchoes; }
 
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }

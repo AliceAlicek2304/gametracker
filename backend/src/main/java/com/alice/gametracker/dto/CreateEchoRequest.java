@@ -1,5 +1,7 @@
 package com.alice.gametracker.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,7 +17,7 @@ public class CreateEchoRequest {
     private Integer cost;
 
     private String skill;
-    private Long setEchoId; // FK reference
+    private List<Long> setEchoIds; // FK references to multiple set echoes
 
     public CreateEchoRequest() {}
 
@@ -35,6 +37,6 @@ public class CreateEchoRequest {
     public String getSkill() { return skill; }
     public void setSkill(String skill) { this.skill = skill; }
 
-    public Long getSetEchoId() { return setEchoId; }
-    public void setSetEchoId(Long setEchoId) { this.setEchoId = setEchoId; }
+    public List<Long> getSetEchoIds() { return setEchoIds; }
+    public void setSetEchoIds(List<Long> setEchoIds) { this.setEchoIds = setEchoIds; }
 }
