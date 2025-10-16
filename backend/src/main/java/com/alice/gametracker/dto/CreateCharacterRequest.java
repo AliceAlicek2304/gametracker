@@ -46,6 +46,12 @@ public class CreateCharacterRequest {
     @NotNull(message = "HP up is required")
     private Double hpUp;
 
+    // New stats fields (optional with defaults)
+    private Double critRate = 5.0; // Default 5%
+    private Double critDamage = 150.0; // Default 150%
+    private String minorForte1; // Example: "CRIT Rate +8%"
+    private String minorForte2; // Example: "ATK +12%"
+
     // Skill information
     // Skill information - expanded fields
         // Structured skill payload (optional).
@@ -149,6 +155,38 @@ public class CreateCharacterRequest {
 
     public void setHpUp(Double hpUp) {
         this.hpUp = hpUp;
+    }
+
+    public Double getCritRate() {
+        return critRate;
+    }
+
+    public void setCritRate(Double critRate) {
+        this.critRate = critRate;
+    }
+
+    public Double getCritDamage() {
+        return critDamage;
+    }
+
+    public void setCritDamage(Double critDamage) {
+        this.critDamage = critDamage;
+    }
+
+    public String getMinorForte1() {
+        return minorForte1;
+    }
+
+    public void setMinorForte1(String minorForte1) {
+        this.minorForte1 = minorForte1;
+    }
+
+    public String getMinorForte2() {
+        return minorForte2;
+    }
+
+    public void setMinorForte2(String minorForte2) {
+        this.minorForte2 = minorForte2;
     }
 
     // (skill-specific getters removed; using expanded skill fields below)

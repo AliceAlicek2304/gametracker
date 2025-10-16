@@ -92,7 +92,11 @@ public class CharacterService {
             request.getHp() != null ? request.getHp() : 0.0,
             request.getAtkUp() != null ? request.getAtkUp() : 0.0,
             request.getDefUp() != null ? request.getDefUp() : 0.0,
-            request.getHpUp() != null ? request.getHpUp() : 0.0
+            request.getHpUp() != null ? request.getHpUp() : 0.0,
+            request.getCritRate() != null ? request.getCritRate() : 5.0,
+            request.getCritDamage() != null ? request.getCritDamage() : 150.0,
+            request.getMinorForte1(),
+            request.getMinorForte2()
         );
         stats = statsRepository.save(stats);
 
@@ -146,6 +150,10 @@ public class CharacterService {
     stats.setAtkUp(request.getAtkUp() != null ? request.getAtkUp() : 0.0);
     stats.setDefUp(request.getDefUp() != null ? request.getDefUp() : 0.0);
     stats.setHpUp(request.getHpUp() != null ? request.getHpUp() : 0.0);
+    stats.setCritRate(request.getCritRate() != null ? request.getCritRate() : 5.0);
+    stats.setCritDamage(request.getCritDamage() != null ? request.getCritDamage() : 150.0);
+    stats.setMinorForte1(request.getMinorForte1());
+    stats.setMinorForte2(request.getMinorForte2());
         statsRepository.save(stats);
 
         // Update skill: replace JSON if provided
@@ -294,6 +302,10 @@ public class CharacterService {
             character.getStats().getAtkUp(),
             character.getStats().getDefUp(),
             character.getStats().getHpUp(),
+            character.getStats().getCritRate(),
+            character.getStats().getCritDamage(),
+            character.getStats().getMinorForte1(),
+            character.getStats().getMinorForte2(),
             character.getStats().isActive(),
             character.getStats().getCreatedDate()
         );

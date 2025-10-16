@@ -11,6 +11,10 @@ public class StatsResponse {
     private Double atkUp;
     private Double defUp;
     private Double hpUp;
+    private Double critRate;
+    private Double critDamage;
+    private String minorForte1;
+    private String minorForte2;
     private Boolean isActive;
     private LocalDateTime createdDate;
 
@@ -18,7 +22,8 @@ public class StatsResponse {
     public StatsResponse() {}
 
     public StatsResponse(Long id, Double atk, Double def, Double hp, Double atkUp,
-                        Double defUp, Double hpUp, Boolean isActive, LocalDateTime createdDate) {
+                        Double defUp, Double hpUp, Double critRate, Double critDamage,
+                        String minorForte1, String minorForte2, Boolean isActive, LocalDateTime createdDate) {
         this.id = id;
         this.atk = atk;
         this.def = def;
@@ -26,6 +31,10 @@ public class StatsResponse {
         this.atkUp = atkUp;
         this.defUp = defUp;
         this.hpUp = hpUp;
+        this.critRate = critRate;
+        this.critDamage = critDamage;
+        this.minorForte1 = minorForte1;
+        this.minorForte2 = minorForte2;
         this.isActive = isActive;
         this.createdDate = createdDate;
     }
@@ -85,6 +94,38 @@ public class StatsResponse {
 
     public void setHpUp(Double hpUp) {
         this.hpUp = hpUp;
+    }
+
+    public Double getCritRate() {
+        return critRate;
+    }
+
+    public void setCritRate(Double critRate) {
+        this.critRate = critRate;
+    }
+
+    public Double getCritDamage() {
+        return critDamage;
+    }
+
+    public void setCritDamage(Double critDamage) {
+        this.critDamage = critDamage;
+    }
+
+    public String getMinorForte1() {
+        return minorForte1;
+    }
+
+    public void setMinorForte1(String minorForte1) {
+        this.minorForte1 = minorForte1;
+    }
+
+    public String getMinorForte2() {
+        return minorForte2;
+    }
+
+    public void setMinorForte2(String minorForte2) {
+        this.minorForte2 = minorForte2;
     }
 
     public Boolean getIsActive() {

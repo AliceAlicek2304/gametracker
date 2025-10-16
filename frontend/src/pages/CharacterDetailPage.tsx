@@ -19,6 +19,10 @@ type Stats = {
   atkUp: number;
   defUp: number;
   hpUp: number;
+  critRate?: number;
+  critDamage?: number;
+  minorForte1?: string;
+  minorForte2?: string;
 };
 
 type Skill = {
@@ -355,7 +359,7 @@ const CharacterDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Stats Display */}
+              {/* Stats Display - Row 1: Main Stats (3 columns) */}
               <div className={styles.statsGrid}>
                 <div className={styles.statItem}>
                   <div className={styles.statLabel}>ATK</div>
@@ -375,6 +379,37 @@ const CharacterDetailPage: React.FC = () => {
                   <div className={styles.statLabel}>HP</div>
                   <div className={styles.statValue}>
                     {calculateStat(character.stats.hp, character.stats.hpUp)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats Display - Row 2: Additional Stats (4 columns) */}
+              <div className={styles.statsGrid}>
+                <div className={styles.statItem}>
+                  <div className={styles.statLabel}>CRIT Rate</div>
+                  <div className={styles.statValue}>
+                    {character.stats.critRate ?? 5}%
+                  </div>
+                </div>
+
+                <div className={styles.statItem}>
+                  <div className={styles.statLabel}>CRIT DMG</div>
+                  <div className={styles.statValue}>
+                    {character.stats.critDamage ?? 150}%
+                  </div>
+                </div>
+
+                <div className={styles.statItem}>
+                  <div className={styles.statLabel}>Minor Forte 1</div>
+                  <div className={styles.statValue}>
+                    {character.stats.minorForte1 || '-'}
+                  </div>
+                </div>
+
+                <div className={styles.statItem}>
+                  <div className={styles.statLabel}>Minor Forte 2</div>
+                  <div className={styles.statValue}>
+                    {character.stats.minorForte2 || '-'}
                   </div>
                 </div>
               </div>

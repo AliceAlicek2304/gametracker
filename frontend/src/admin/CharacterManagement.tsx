@@ -4,7 +4,7 @@ import { showToast } from '../utils/toast';
 
 type Role = { id: number; name: string; icon?: string };
 
-type Stats = { atk?: number; def?: number; hp?: number; atkUp?: number; defUp?: number; hpUp?: number };
+type Stats = { atk?: number; def?: number; hp?: number; atkUp?: number; defUp?: number; hpUp?: number; critRate?: number; critDamage?: number; minorForte1?: string; minorForte2?: string };
 type Skill = any;
 
 // Section block: each section groups a description (text) and an optional level table
@@ -68,6 +68,7 @@ const CharacterManagement: React.FC = () => {
   const [createForm, setCreateForm] = useState<any>({
     name:'', rarity:5, roleIds: [] as number[], element:'', weaponType:'', description:'',
     atk:0, def:0, hp:0, atkUp:0, defUp:0, hpUp:0,
+    critRate: 5, critDamage: 150, minorForte1: '', minorForte2: '',
     // skill will be an object stored as JSON; editor uses skillText
     skill: {}
   });
@@ -199,7 +200,7 @@ const CharacterManagement: React.FC = () => {
           </select>
         </div>
           <div className={styles.controls}>
-          <button className={styles.btn} onClick={() => { setEditingId(null); setCreateForm({ name:'', rarity:5, roleIds: [], element:'', weaponType:'', description:'', atk:0, def:0, hp:0, atkUp:0, defUp:0, hpUp:0, skill: {} }); setSkillText(''); setSkillSections([]); setSkillEditorMode('sections'); setShowCreate(true); }}>Create Character</button>
+          <button className={styles.btn} onClick={() => { setEditingId(null); setCreateForm({ name:'', rarity:5, roleIds: [], element:'', weaponType:'', description:'', atk:0, def:0, hp:0, atkUp:0, defUp:0, hpUp:0, critRate:5, critDamage:150, minorForte1:'', minorForte2:'', skill: {} }); setSkillText(''); setSkillSections([]); setSkillEditorMode('sections'); setShowCreate(true); }}>Create Character</button>
           <button className={styles.btn} onClick={() => fetchChars()}>Refresh</button>
         </div>
       </div>
@@ -277,6 +278,7 @@ const CharacterManagement: React.FC = () => {
                     setCreateForm({
                       name: c.name || '', rarity: c.rarity || 5, roleIds: (c.roles || []).map(r => r.id), element: c.element || '', weaponType: c.weaponType || '', description: c.description || '',
                       atk: c.stats?.atk || 0, def: c.stats?.def || 0, hp: c.stats?.hp || 0, atkUp: c.stats?.atkUp || 0, defUp: c.stats?.defUp || 0, hpUp: c.stats?.hpUp || 0,
+                      critRate: c.stats?.critRate ?? 5, critDamage: c.stats?.critDamage ?? 150, minorForte1: c.stats?.minorForte1 || '', minorForte2: c.stats?.minorForte2 || '',
                       skill: c.skill || {}
                     });
                     try {
@@ -603,6 +605,16 @@ const CharacterManagement: React.FC = () => {
                 <div style={{display:'flex',gap:8}}>
                   <div style={{flex:1}} className={styles.formRow}><label>HP</label><input type="number" step="1" value={createForm.hp} onChange={e=>setCreateForm({...createForm, hp: Number(e.target.value)})} required /></div>
                   <div style={{flex:1}} className={styles.formRow}><label>HP Up</label><input type="number" step="any" value={createForm.hpUp} onChange={e=>setCreateForm({...createForm, hpUp: parseFloat(e.target.value || '0')})} required /></div>
+                </div>
+
+                <h4>Additional Stats</h4>
+                <div style={{display:'flex',gap:8}}>
+                  <div style={{flex:1}} className={styles.formRow}><label>Crit Rate (%)</label><input type="number" step="0.1" value={createForm.critRate} onChange={e=>setCreateForm({...createForm, critRate: parseFloat(e.target.value || '5')})} /></div>
+                  <div style={{flex:1}} className={styles.formRow}><label>Crit Damage (%)</label><input type="number" step="0.1" value={createForm.critDamage} onChange={e=>setCreateForm({...createForm, critDamage: parseFloat(e.target.value || '150')})} /></div>
+                </div>
+                <div style={{display:'flex',gap:8}}>
+                  <div style={{flex:1}} className={styles.formRow}><label>Minor Forte 1</label><input type="text" placeholder="e.g., CRIT Rate +8%" value={createForm.minorForte1} onChange={e=>setCreateForm({...createForm, minorForte1: e.target.value})} /></div>
+                  <div style={{flex:1}} className={styles.formRow}><label>Minor Forte 2</label><input type="text" placeholder="e.g., ATK +12%" value={createForm.minorForte2} onChange={e=>setCreateForm({...createForm, minorForte2: e.target.value})} /></div>
                 </div>
 
                 <h4>Skill (JSON)</h4>
