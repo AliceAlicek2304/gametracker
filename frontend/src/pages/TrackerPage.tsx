@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './TrackerPage.module.css';
+import { showToast } from '../utils/toast';
 
 type GachaItem = {
   cardPoolType: string;
@@ -200,7 +201,7 @@ const TrackerPage: React.FC = () => {
 
   const handleCopyCommand = () => {
     navigator.clipboard.writeText(powershellCommand);
-    alert('Đã copy lệnh PowerShell vào clipboard!');
+    showToast.success('Đã copy lệnh PowerShell vào clipboard!');
   };
 
   return (

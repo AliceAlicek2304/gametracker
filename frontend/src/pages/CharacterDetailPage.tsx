@@ -49,6 +49,8 @@ const CharacterDetailPage: React.FC = () => {
   const [error, setError] = useState('');
   const [level, setLevel] = useState(1);
   const [hoveredRole, setHoveredRole] = useState<number | null>(null);
+  const [expandedSkills, setExpandedSkills] = useState<Set<string>>(new Set());
+  const [skillLevels, setSkillLevels] = useState<Map<string, number>>(new Map());
 
   // Background image logic
   const [backgrounds, setBackgrounds] = useState<string[]>([]);
@@ -127,6 +129,74 @@ const CharacterDetailPage: React.FC = () => {
 
   const renderStars = (rarity: number) => {
     return '★'.repeat(rarity);
+  };
+
+  const toggleSkillExpanded = (skillId: string) => {
+    setExpandedSkills(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(skillId)) {
+        newSet.delete(skillId);
+      } else {
+        newSet.add(skillId);
+        // Initialize skill level to 1 if not exists
+        if (!skillLevels.has(skillId)) {
+          setSkillLevels(prev => new Map(prev).set(skillId, 1));
+        }
+      }
+      return newSet;
+    });
+  };
+
+  const getSkillLevel = (skillId: string): number => {
+    return skillLevels.get(skillId) || 1;
+  };
+
+  const setSkillLevel = (skillId: string, level: number) => {
+    setSkillLevels(prev => new Map(prev).set(skillId, level));
+  };
+
+  const parseSkillData = () => {
+    if (!character?.skill) return [];
+    
+    let skillObj: any = character.skill;
+    
+    // If skill is a string, try to parse it
+    if (typeof skillObj === 'string') {
+      try {
+        skillObj = JSON.parse(skillObj);
+      } catch (e) {
+        return [];
+      }
+    }
+    
+    // Handle nested structure
+    if (skillObj.skill && Array.isArray(skillObj.skill.sections)) {
+      return skillObj.skill.sections;
+    }
+    
+    if (Array.isArray(skillObj.sections)) {
+      return skillObj.sections;
+    }
+    
+    return [];
+  };
+
+  const formatDescription = (text: string) => {
+    if (!text) return '';
+    return text.split('\n').map((line, idx) => {
+      // Handle bold text **text**
+      const parts = line.split(/(\*\*.*?\*\*)/g);
+      return (
+        <p key={idx} style={{ margin: '0.5rem 0' }}>
+          {parts.map((part, i) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+              return <strong key={i}>{part.slice(2, -2)}</strong>;
+            }
+            return <span key={i}>{part}</span>;
+          })}
+        </p>
+      );
+    });
   };
 
   if (loading) {
@@ -256,7 +326,7 @@ const CharacterDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Bottom Row - Stats Section */}
+          {/* Stats Section */}
           {character.stats && (
             <div className={styles.statsSection}>
               {/* Level Slider */}
@@ -310,6 +380,102 @@ const CharacterDetailPage: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* Skills Section */}
+          <div className={styles.skillsSection}>
+            <h2 className={styles.sectionTitle}>Skills</h2>
+            
+            {/* Skills List */}
+            <div className={styles.skillsList}>
+              {parseSkillData().map((skill: any) => (
+                <div key={skill.id} className={styles.skillItem}>
+                  {/* Skill Header */}
+                  <div className={styles.skillHeader}>
+                    <div className={styles.skillHeaderLeft}>
+                      <div className={styles.skillIcon}>
+                        {skill.skillType && skill.skillType.charAt(0)}
+                      </div>
+                      <div className={styles.skillInfo}>
+                        <div className={styles.skillTitle}>{skill.title}</div>
+                        {skill.skillType && (
+                          <div className={styles.skillType}>{skill.skillType}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Skill Description */}
+                  {skill.description && (
+                    <div className={styles.skillDescription}>
+                      {formatDescription(skill.description)}
+                    </div>
+                  )}
+
+                  {/* Detail Button - Centered below description */}
+                  {skill.rows && skill.rows.length > 0 && (
+                    <button 
+                      className={styles.detailBtn}
+                      onClick={() => toggleSkillExpanded(skill.id)}
+                    >
+                      {expandedSkills.has(skill.id) ? 'Thu gọn ▲' : 'Chi tiết ▼'}
+                    </button>
+                  )}
+
+                  {/* Skill Stats Table (Expandable) */}
+                  {expandedSkills.has(skill.id) && skill.rows && skill.rows.length > 0 && (
+                    <div className={styles.skillDetailContainer}>
+                      {/* Skill Level Slider for this specific skill */}
+                      <div className={styles.skillLevelControl}>
+                        <label className={styles.skillLevelLabel}>
+                          Skill Level: <span className={styles.skillLevelValue}>{getSkillLevel(skill.id)}</span>
+                        </label>
+                        <input 
+                          type="range" 
+                          min="1" 
+                          max="10" 
+                          value={getSkillLevel(skill.id)}
+                          onChange={(e) => {
+                            const newLevel = parseInt(e.target.value);
+                            setSkillLevel(skill.id, newLevel);
+                            const progress = ((newLevel - 1) / (10 - 1)) * 100;
+                            e.target.style.setProperty('--slider-progress', `${progress}%`);
+                          }}
+                          className={styles.skillLevelSlider}
+                          style={{ '--slider-progress': `${((getSkillLevel(skill.id) - 1) / (10 - 1)) * 100}%` } as React.CSSProperties}
+                        />
+                        <div className={styles.skillLevelMarks}>
+                          <span>1</span>
+                          <span>10</span>
+                        </div>
+                      </div>
+
+                      {/* Skill Table - 2 columns only */}
+                      <div className={styles.skillTable}>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Thông số</th>
+                              <th>Lv {getSkillLevel(skill.id)}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {skill.rows.map((row: any, rowIdx: number) => (
+                              <tr key={rowIdx}>
+                                <td className={styles.labelCell}>{row.label}</td>
+                                <td className={styles.valueCell}>
+                                  {row.values && row.values[getSkillLevel(skill.id) - 1]}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -319,3 +485,5 @@ const CharacterDetailPage: React.FC = () => {
 };
 
 export default CharacterDetailPage;
+
+
