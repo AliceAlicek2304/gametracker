@@ -70,6 +70,7 @@
   justify-content: center;
   gap: 2rem;
   z-index: 2001;
+  perspective: 1200px;
 }
 
 .card {
@@ -85,6 +86,8 @@
   justify-content: center;
   position: relative;
   animation: cardAppear 0.5s ease;
+  transform-style: preserve-3d;
+  overflow: hidden;
 }
 
 @keyframes cardAppear {
@@ -96,6 +99,27 @@
     transform: scale(1) rotateY(0deg);
     opacity: 1;
   }
+}
+
+.confettiBurst {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  pointer-events: none;
+  z-index: 2002;
+  background-image: radial-gradient(circle at 20% 20%, rgba(255,215,0,0.15) 0 10%, transparent 11%),
+                    radial-gradient(circle at 80% 30%, rgba(168,85,247,0.12) 0 10%, transparent 11%),
+                    radial-gradient(circle at 50% 70%, rgba(59,130,246,0.12) 0 10%, transparent 11%);
+  animation: confettiFlash 0.6s ease;
+}
+
+@keyframes confettiFlash {
+  0% { opacity: 0; filter: blur(6px) saturate(0.5); transform: translateX(-50%) scale(0.9); }
+  40% { opacity: 1; filter: blur(0px) saturate(1.2); transform: translateX(-50%) scale(1.03); }
+  100% { opacity: 0; filter: blur(2px); transform: translateX(-50%) scale(1.1); }
 }
 
 .cardImage {
@@ -393,6 +417,162 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(251, 191, 36, 0.5);
 }
+/* Advanced Animation Effects */
+
+/* Animated Background Gradient */
+.bgGradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  pointer-events: none;
+  animation: gradientPulse 3s ease-in-out infinite;
+}
+
+@keyframes gradientPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Light Rays for 5-star */
+.lightRays {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  z-index: 2000;
+  pointer-events: none;
+  animation: rotateRays 20s linear infinite;
+}
+
+.ray {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 400px;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    rgba(251, 191, 36, 0.4) 50%, 
+    transparent 100%
+  );
+  transform-origin: top center;
+  margin-left: -2px;
+  margin-top: -400px;
+  animation: rayFade 3s ease-in-out infinite;
+  filter: blur(2px);
+}
+
+@keyframes rotateRays {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes rayFade {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Floating Particles */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2001;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatParticle 7s ease-in-out infinite;
+  box-shadow: 0 0 10px currentColor;
+}
+
+@keyframes floatParticle {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(-10vh) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(-90vh) scale(0.8);
+  }
+  100% {
+    transform: translateY(-100vh) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Shimmer Effect on Card */
+.shimmer {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.1) 55%,
+    transparent 100%
+  );
+  transform: rotate(45deg);
+  animation: shimmerSlide 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSlide {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+/* Shake Effect for 5-star Card */
+.cardFiveStar {
+  animation: cardAppear 0.5s ease, shake 0.3s ease 0.8s;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-10px) rotate(-5deg);
+  }
+  75% {
+    transform: translateX(10px) rotate(5deg);
+  }
+}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -427,5 +607,15 @@
     left: 5%;
     width: 120px;
     height: 180px;
+  }
+
+  .lightRays {
+    width: 500px;
+    height: 500px;
+  }
+
+  .ray {
+    height: 250px;
+    margin-top: -250px;
   }
 }

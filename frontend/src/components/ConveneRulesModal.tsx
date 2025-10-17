@@ -13,104 +13,104 @@ const ConveneRulesModal: React.FC<ConveneRulesModalProps> = ({ isOpen, onClose }
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h2>Convene Rules</h2>
+          <h2>Quy Tắc Triệu Hồi</h2>
           <button className={styles.closeButton} onClick={onClose}>×</button>
         </div>
         <div className={styles.modalBody}>
           <section className={styles.section}>
-            <h3>Convene Rules</h3>
+            <h3>Quy Tắc Triệu Hồi</h3>
             <ul>
               <li>
-                <strong>[From Ashes]</strong> is a <strong>[Featured Resonator Convene]</strong> event banner. 
-                Details on the contents available for Convene can be found in the table below.
+                Đây là banner <strong>[Triệu Hồi Nhân Vật Nổi Bật]</strong> sự kiện. 
+                Chi tiết về nội dung có thể triệu hồi được liệt kê trong bảng bên dưới.
               </li>
               <li>
-                Use <strong>[Radiant Tide]</strong> to Convene. You are guaranteed at least one 4-Star or higher 
-                rarity Resonator or weapon every <span className={styles.highlight}>10 attempts</span>.
+                Sử dụng <strong>[Thủy Triều Rực Rỡ]</strong> để Triệu Hồi. Bạn được đảm bảo ít nhất một 
+                Nhân Vật hoặc Vũ Khí 4 Sao trở lên mỗi <span className={styles.highlight}>10 lần</span> triệu hồi.
               </li>
               <li>
-                The Guarantee count is shared among all <strong>[Featured Resonator Convene]</strong> event banners. 
-                If a 5-Star Resonator is not obtained in this event banner, the Guarantee count is carried over to 
-                other <strong>[Featured Resonator Convene]</strong> event banners and resets once a 5-Star Resonator is obtained.
+                Số lần đảm bảo được chia sẻ giữa tất cả các banner <strong>[Triệu Hồi Nhân Vật Nổi Bật]</strong> sự kiện. 
+                Nếu không nhận được Nhân Vật 5 Sao trong banner này, số lần đảm bảo sẽ được chuyển sang 
+                các banner <strong>[Triệu Hồi Nhân Vật Nổi Bật]</strong> khác và reset khi nhận được Nhân Vật 5 Sao.
               </li>
             </ul>
           </section>
 
           <section className={styles.section}>
-            <h3>Rates</h3>
+            <h3>Tỷ Lệ</h3>
             <ul>
               <li>
-                The base 5-Star Resonator drop rate is <span className={styles.rate}>0.80000%</span>. 
-                The average drop rate (including the Guarantee) is <span className={styles.rate}>1.80000%</span>. 
-                You are guaranteed to obtain at least one 5-Star Resonator every <span className={styles.highlight}>80</span> Convenes.
+                Tỷ lệ cơ bản nhận Nhân Vật 5 Sao là <span className={styles.rate}>0.80000%</span>. 
+                Tỷ lệ trung bình (bao gồm Đảm Bảo) là <span className={styles.rate}>1.80000%</span>. 
+                Bạn được đảm bảo nhận ít nhất một Nhân Vật 5 Sao mỗi <span className={styles.highlight}>80</span> lần Triệu Hồi.
               </li>
               <li>
-                Every time a 5-Star Resonator is obtained, there is a <span className={styles.rateUp}>50.00000%</span> chance 
-                it will be the Featured 5-Star Resonator of this event banner, and a <span className={styles.rateUp}>50.00000%</span> chance 
-                to be a random non-Featured 5-Star Resonator. All 5-Star non-Featured Resonators have equal drop rate. 
-                If the 5-Star Resonator obtained is not the Featured Resonator, the next 5-Star Resonator is{' '}
-                <span className={styles.guaranteed}>guaranteed</span> to be the Featured Resonator.
+                Mỗi khi nhận được Nhân Vật 5 Sao, có <span className={styles.rateUp}>50.00000%</span> cơ hội 
+                đó là Nhân Vật 5 Sao Nổi Bật của banner này, và <span className={styles.rateUp}>50.00000%</span> cơ hội 
+                là Nhân Vật 5 Sao thường ngẫu nhiên. Tất cả Nhân Vật 5 Sao thường có tỷ lệ rơi bằng nhau. 
+                Nếu Nhân Vật 5 Sao nhận được không phải là Nhân Vật Nổi Bật, Nhân Vật 5 Sao tiếp theo{' '}
+                <span className={styles.guaranteed}>được đảm bảo</span> là Nhân Vật Nổi Bật.
               </li>
               <li>
-                The base 4-Star Resonator or Weapon drop rate is <span className={styles.rate}>6.00000%</span>. 
-                The average drop rate (including the Guarantee) is <span className={styles.rate}>12.00000%</span>. 
-                You are guaranteed to obtain at least one Resonator or Weapon of 4-Star or higher rarity every{' '}
-                <span className={styles.highlight}>10</span> Convenes.
+                Tỷ lệ cơ bản nhận Nhân Vật hoặc Vũ Khí 4 Sao là <span className={styles.rate}>6.00000%</span>. 
+                Tỷ lệ trung bình (bao gồm Đảm Bảo) là <span className={styles.rate}>12.00000%</span>. 
+                Bạn được đảm bảo nhận ít nhất một Nhân Vật hoặc Vũ Khí 4 Sao trở lên mỗi{' '}
+                <span className={styles.highlight}>10</span> lần Triệu Hồi.
               </li>
               <li>
-                Every time a 4-Star item is obtained, there is a <span className={styles.rateUp}>50.00000%</span> chance 
-                it will be a Featured 4-Star Resonator of this event banner. All Featured 4-Star Resonators have equal drop rate; 
-                and a <span className={styles.rateUp}>50.00000%</span> chance to be a random non-Featured 4-Star item. 
-                All non-Featured 4-Star items have equal drop rate. If the 4-Star item obtained is not among the Featured Resonators, 
-                the next 4-Star item is <span className={styles.guaranteed}>guaranteed</span> to be a random Featured 4-Star Resonator. 
-                All Featured 4-Star Resonators have equal drop rate.
+                Mỗi khi nhận được vật phẩm 4 Sao, có <span className={styles.rateUp}>50.00000%</span> cơ hội 
+                đó là Nhân Vật 4 Sao Nổi Bật của banner này. Tất cả Nhân Vật 4 Sao Nổi Bật có tỷ lệ rơi bằng nhau; 
+                và <span className={styles.rateUp}>50.00000%</span> cơ hội là vật phẩm 4 Sao thường ngẫu nhiên. 
+                Tất cả vật phẩm 4 Sao thường có tỷ lệ rơi bằng nhau. Nếu vật phẩm 4 Sao nhận được không thuộc Nhân Vật Nổi Bật, 
+                vật phẩm 4 Sao tiếp theo <span className={styles.guaranteed}>được đảm bảo</span> là Nhân Vật 4 Sao Nổi Bật ngẫu nhiên. 
+                Tất cả Nhân Vật 4 Sao Nổi Bật có tỷ lệ rơi bằng nhau.
               </li>
               <li>
-                The base 3-Star Weapon drop rate is 93.20000%. All 3-Star Weapons have equal drop rate.
+                Tỷ lệ cơ bản nhận Vũ Khí 3 Sao là 93.20000%. Tất cả Vũ Khí 3 Sao có tỷ lệ rơi bằng nhau.
               </li>
               <li className={styles.note}>
-                ※Please refer to the Wuthering Waves Official Website for more details on the drop rates.
+                ※Vui lòng tham khảo Trang Web Chính Thức của Wuthering Waves để biết thêm chi tiết về tỷ lệ rơi.
               </li>
             </ul>
           </section>
 
           <section className={styles.section}>
-            <h3>Extra Rewards</h3>
+            <h3>Phần Thưởng Bổ Sung</h3>
             <ul>
               <li>
-                On obtaining a 5-Star Resonator for the first time, you will get <span className={styles.reward}>15</span> Afterglow Corals. 
-                On obtaining a 5-Star Resonator that you already own for the 2nd – 7th time, you will get{' '}
-                <span className={styles.reward}>1</span> Waveband of that Resonator and <span className={styles.reward}>15</span> Afterglow Corals. 
-                From the 8th time onward, you will get <span className={styles.reward}>40</span> Afterglow Corals.
+                Khi nhận Nhân Vật 5 Sao lần đầu tiên, bạn sẽ nhận <span className={styles.reward}>15</span> Afterglow Corals. 
+                Khi nhận Nhân Vật 5 Sao mà bạn đã sở hữu lần thứ 2 – 7, bạn sẽ nhận{' '}
+                <span className={styles.reward}>1</span> Waveband của Nhân Vật đó và <span className={styles.reward}>15</span> Afterglow Corals. 
+                Từ lần thứ 8 trở đi, bạn sẽ nhận <span className={styles.reward}>40</span> Afterglow Corals.
               </li>
               <li>
-                On obtaining a 4-Star Resonator for the first time, you will get <span className={styles.reward}>3</span> Afterglow Corals. 
-                On obtaining a 4-Star Resonator that you already own for the 2nd – 7th time, you will get{' '}
-                <span className={styles.reward}>1</span> Waveband of that Resonator and <span className={styles.reward}>3</span> Afterglow Corals. 
-                From the 8th time onward, you will get <span className={styles.reward}>8</span> Afterglow Corals.
+                Khi nhận Nhân Vật 4 Sao lần đầu tiên, bạn sẽ nhận <span className={styles.reward}>3</span> Afterglow Corals. 
+                Khi nhận Nhân Vật 4 Sao mà bạn đã sở hữu lần thứ 2 – 7, bạn sẽ nhận{' '}
+                <span className={styles.reward}>1</span> Waveband của Nhân Vật đó và <span className={styles.reward}>3</span> Afterglow Corals. 
+                Từ lần thứ 8 trở đi, bạn sẽ nhận <span className={styles.reward}>8</span> Afterglow Corals.
               </li>
               <li>
-                Whenever you obtain a 4-Star Weapon, you will get <span className={styles.reward}>3</span> Afterglow Corals.
+                Mỗi khi bạn nhận được Vũ Khí 4 Sao, bạn sẽ nhận <span className={styles.reward}>3</span> Afterglow Corals.
               </li>
               <li>
-                Whenever you obtain a 3-Star Weapon, you will get <span className={styles.reward}>15</span> Oscillated Corals.
+                Mỗi khi bạn nhận được Vũ Khí 3 Sao, bạn sẽ nhận <span className={styles.reward}>15</span> Oscillated Corals.
               </li>
               <li>
-                Whenever you obtain a 5-Star Resonator that is not the Featured one, you will get an additional{' '}
+                Mỗi khi bạn nhận được Nhân Vật 5 Sao không phải là Nhân Vật Nổi Bật, bạn sẽ nhận thêm{' '}
                 <span className={styles.reward}>30</span> Afterglow Corals.
               </li>
             </ul>
           </section>
 
           <section className={styles.section}>
-            <h3>Notes</h3>
+            <h3>Ghi Chú</h3>
             <ul>
               <li>
-                You may redeem <strong>up to 2</strong> limited stock Wavebands for each 5-Star Resonator with Afterglow Corals.
+                Bạn có thể đổi <strong>tối đa 2</strong> Waveband giới hạn cho mỗi Nhân Vật 5 Sao bằng Afterglow Corals.
               </li>
               <li>
-                You may redeem various items with Oscillated Corals. Please visit the in-game Store page for current options 
-                and redemption limits, which reset with each version update.
+                Bạn có thể đổi nhiều vật phẩm khác bằng Oscillated Corals. Vui lòng truy cập trang Cửa Hàng trong game 
+                để biết các tùy chọn hiện tại và giới hạn đổi thưởng, sẽ được reset mỗi phiên bản cập nhật.
               </li>
             </ul>
           </section>
