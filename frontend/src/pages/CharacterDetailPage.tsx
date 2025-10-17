@@ -60,6 +60,49 @@ const CharacterDetailPage: React.FC = () => {
   const [backgrounds, setBackgrounds] = useState<string[]>([]);
   const [currentBg, setCurrentBg] = useState('');
 
+  // Get element theme colors
+  const getElementTheme = (element: string) => {
+    const themes: Record<string, { primary: string; secondary: string; glow: string; gradient: string }> = {
+      'HAVOC': {
+        primary: '#ec4899',      // More pink (hot pink)
+        secondary: '#f472b6',    // Light pink
+        glow: 'rgba(236, 72, 153, 0.5)',
+        gradient: 'linear-gradient(135deg, #ec4899, #f472b6)'
+      },
+      'AERO': {
+        primary: '#22c55e',      // Green
+        secondary: '#4ade80',    // Light green
+        glow: 'rgba(34, 197, 94, 0.5)',
+        gradient: 'linear-gradient(135deg, #22c55e, #4ade80)'
+      },
+      'SPECTRO': {
+        primary: '#eab308',      // Yellow/Gold
+        secondary: '#fbbf24',    // Light yellow
+        glow: 'rgba(234, 179, 8, 0.5)',
+        gradient: 'linear-gradient(135deg, #eab308, #fbbf24)'
+      },
+      'ELECTRO': {
+        primary: '#8b5cf6',      // Purple
+        secondary: '#a78bfa',    // Light purple
+        glow: 'rgba(139, 92, 246, 0.5)',
+        gradient: 'linear-gradient(135deg, #8b5cf6, #a78bfa)'
+      },
+      'FUSION': {
+        primary: '#f97316',      // Orange
+        secondary: '#fb923c',    // Light orange-red
+        glow: 'rgba(249, 115, 22, 0.5)',
+        gradient: 'linear-gradient(135deg, #f97316, #ef4444)'
+      },
+      'GLACIO': {
+        primary: '#00d4ff',      // Cyan (default web color)
+        secondary: '#60a5fa',    // Light blue
+        glow: 'rgba(0, 212, 255, 0.5)',
+        gradient: 'linear-gradient(135deg, #00d4ff, #60a5fa)'
+      }
+    };
+    return themes[element.toUpperCase()] || themes['GLACIO']; // Default to GLACIO
+  };
+
   useEffect(() => {
     // Fetch backgrounds
     fetch('/api/background')
@@ -228,8 +271,19 @@ const CharacterDetailPage: React.FC = () => {
     );
   }
 
+  // Get theme colors for current character
+  const theme = getElementTheme(character.element);
+
   return (
-    <div className={styles.page}>
+    <div 
+      className={styles.page}
+      style={{
+        '--theme-primary': theme.primary,
+        '--theme-secondary': theme.secondary,
+        '--theme-glow': theme.glow,
+        '--theme-gradient': theme.gradient,
+      } as React.CSSProperties}
+    >
       {currentBg && (
         <div 
           className={styles.bgImage} 
@@ -427,9 +481,6 @@ const CharacterDetailPage: React.FC = () => {
                   {/* Skill Header */}
                   <div className={styles.skillHeader}>
                     <div className={styles.skillHeaderLeft}>
-                      <div className={styles.skillIcon}>
-                        {skill.skillType && skill.skillType.charAt(0)}
-                      </div>
                       <div className={styles.skillInfo}>
                         <div className={styles.skillTitle}>{skill.title}</div>
                         {skill.skillType && (

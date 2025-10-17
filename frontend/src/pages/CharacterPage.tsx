@@ -23,6 +23,7 @@ const CharacterPage: React.FC = () => {
   const [selectedWeapon, setSelectedWeapon] = useState<string>('all');
   const [selectedRarity, setSelectedRarity] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [featuredCharacterIds, setFeaturedCharacterIds] = useState<Set<number>>(new Set());
   const itemsPerPage = 28;
 
   // Background image logic
@@ -41,6 +42,14 @@ const CharacterPage: React.FC = () => {
         }
       })
       .catch(error => console.error('Error fetching backgrounds:', error));
+
+    // Fetch featured 5-star IDs from active banners
+    fetch('/api/banners/featured-ids')
+      .then(response => response.json())
+      .then(data => {
+        setFeaturedCharacterIds(new Set(data.characterIds || []));
+      })
+      .catch(error => console.error('Error fetching featured IDs:', error));
 
     // Fetch characters
     fetch('/api/characters/cards')
@@ -206,6 +215,9 @@ const CharacterPage: React.FC = () => {
                             className={styles.elementIconImg}
                           />
                         </div>
+                      )}
+                      {featuredCharacterIds.has(character.id) && (
+                        <div className={styles.bannerBadge}>Banner</div>
                       )}
                       <div className={styles.rarity}>
                         {'★'.repeat(character.rarity)}

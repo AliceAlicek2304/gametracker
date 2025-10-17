@@ -5,6 +5,7 @@ import CharacterManagement from './CharacterManagement';
 import WeaponManagement from './WeaponManagement';
 import SetEchoManagement from './SetEchoManagement';
 import EchoManagement from './EchoManagement';
+import BannerManagement from './BannerManagement';
 
 const Dashboard: React.FC = () => {
   const [active, setActive] = useState('role');
@@ -44,6 +45,12 @@ const Dashboard: React.FC = () => {
           >
             Echo Management
           </div>
+          <div
+            className={`${styles.menuItem} ${active === 'banner' ? styles.active : ''}`}
+            onClick={() => setActive('banner')}
+          >
+            Banner Management
+          </div>
           <div style={{flex:1}} />
           <div
             className={`${styles.menuItem} ${styles.homeItem}`}
@@ -61,6 +68,7 @@ const Dashboard: React.FC = () => {
           {active === 'weapon' && <WeaponManagement />}
           {active === 'setecho' && <SetEchoManagement />}
           {active === 'echo' && <EchoManagement />}
+          {active === 'banner' && <BannerManagement />}
           {/* Home navigates out to the main site */}
         </div>
       </main>

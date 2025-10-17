@@ -4,6 +4,8 @@ import TrackerPage from './pages/TrackerPage';
 import CharacterPage from './pages/CharacterPage';
 import CharacterDetailPage from './pages/CharacterDetailPage';
 import WeaponPage from './pages/WeaponPage';
+import WeaponDetailPage from './pages/WeaponDetailPage';
+import BannerPage from './pages/BannerPage';
 import Dashboard from './admin/Dashboard';
 import styles from './App.module.css';
 import { ToastContainer } from 'react-toastify';
@@ -32,6 +34,8 @@ function App() {
             <Route path="/characters" element={<CharacterPage />} />
             <Route path="/characters/:id" element={<CharacterDetailPage />} />
             <Route path="/weapons" element={<WeaponPage />} />
+            <Route path="/weapons/:id" element={<WeaponDetailPage />} />
+            <Route path="/banners" element={<BannerPage />} />
             <Route path="/tracker" element={<TrackerPage />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
           </Routes>

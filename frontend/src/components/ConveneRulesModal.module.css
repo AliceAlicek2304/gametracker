@@ -1,0 +1,190 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.modalContent {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid #fbbf24;    
+  border-radius: 12px;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modalHeader {
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid rgba(251, 191, 36, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: #fbbf24;
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 2.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(90deg);
+}
+
+.modalBody {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: rgba(251, 191, 36, 0.5);
+  border-radius: 4px;
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: rgba(251, 191, 36, 0.7);
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section h3 {
+  color: #fbbf24;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(251, 191, 36, 0.3);
+}
+
+.section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.section li {
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.section li::before {
+  content: '●';
+  color: #64748b;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.highlight {
+  color: #ef4444;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.rate {
+  color: #f59e0b;
+  font-weight: bold;
+}
+
+.rateUp {
+  color: #ec4899;
+  font-weight: bold;
+}
+
+.guaranteed {
+  color: #22c55e;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.reward {
+  color: #a855f7;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.note {
+  font-style: italic;
+  color: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 1rem;
+  }
+
+  .modalContent {
+    max-width: 100%;
+  }
+
+  .modalHeader {
+    padding: 1rem 1.5rem;
+  }
+
+  .modalHeader h2 {
+    font-size: 1.4rem;
+  }
+
+  .modalBody {
+    padding: 1.5rem;
+  }
+
+  .section h3 {
+    font-size: 1.1rem;
+  }
+
+  .section li {
+    font-size: 0.9rem;
+  }
+}

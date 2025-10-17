@@ -6,6 +6,14 @@
   --panel: rgba(255,255,255,0.02);
 }
 
+/* Dynamic theme colors injected from CharacterDetailPage component */
+.page {
+  --theme-primary: #00d4ff;
+  --theme-secondary: #60a5fa;
+  --theme-glow: rgba(0, 212, 255, 0.5);
+  --theme-gradient: linear-gradient(135deg, #00d4ff, #60a5fa);
+}
+
 .page {
   min-height: 100vh;
   display: flex;
@@ -47,7 +55,7 @@
   border-radius: 8px;
   border: none;
   background: rgba(0, 212, 255, 0.1);
-  color: var(--accent);
+  color: var(--theme-primary);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -89,8 +97,8 @@
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(255, 107, 107, 0.05));
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--theme-primary);
 }
 
 .characterImage {
@@ -118,7 +126,7 @@
   width: 64px;
   height: 64px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(0, 212, 255, 0.4));
+  filter: drop-shadow(0 4px 12px var(--theme-glow));
 }
 
 .elementIconSmall {
@@ -137,7 +145,7 @@
   font-weight: 700;
   margin: 0 0 0.35rem 0;
   color: #dff8ff;
-  text-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+  text-shadow: 0 2px 8px var(--theme-glow);
 }
 
 .stars {
@@ -154,7 +162,7 @@
   padding: 0.75rem;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--theme-primary);
   max-height: 150px;
   overflow-y: auto;
 }
@@ -169,12 +177,12 @@
 }
 
 .description::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 255, 0.2);
+  background: var(--theme-glow);
   border-radius: 3px;
 }
 
 .description::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 212, 255, 0.3);
+  background: var(--theme-primary);
 }
 
 /* Basic Info Grid */
@@ -225,8 +233,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 107, 107, 0.1));
-  border: 2px solid rgba(0, 212, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--theme-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -236,8 +244,8 @@
 
 .roleIcon:hover {
   transform: scale(1.1);
-  border-color: var(--accent);
-  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.4);
+  border-color: var(--theme-primary);
+  box-shadow: 0 4px 16px var(--theme-glow);
 }
 
 .roleIcon img {
@@ -250,7 +258,7 @@
 .roleText {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--theme-primary);
 }
 
 .roleTooltip {
@@ -261,8 +269,8 @@
   background: linear-gradient(135deg, #0b1220, #07101a);
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 212, 255, 0.2);
-  border: 1px solid rgba(0, 212, 255, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 20px var(--theme-glow);
+  border: 1px solid var(--theme-primary);
   z-index: 100;
   min-width: 220px;
   max-width: 300px;
@@ -294,9 +302,9 @@
 .tooltipTitle {
   font-weight: 700;
   font-size: 1rem;
-  color: var(--accent);
+  color: var(--theme-primary);
   margin-bottom: 0.4rem;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+  text-shadow: 0 0 10px var(--theme-glow);
 }
 
 .tooltipDesc {
@@ -335,7 +343,7 @@
 }
 
 .levelValue {
-  color: var(--accent);
+  color: var(--theme-primary);
   font-size: 1.15rem;
   margin-left: 0.5rem;
 }
@@ -359,8 +367,8 @@
   border-radius: 4px;
   background: linear-gradient(
     to right,
-    #00d4ff 0%,
-    #00d4ff var(--slider-progress, 0%),
+    var(--theme-primary) 0%,
+    var(--theme-primary) var(--slider-progress, 0%),
     rgba(255, 255, 255, 0.1) var(--slider-progress, 0%),
     rgba(255, 255, 255, 0.1) 100%
   );
@@ -376,7 +384,7 @@
 .levelSlider::-moz-range-progress {
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(90deg, #00d4ff, #0099ff);
+  background: var(--theme-gradient);
 }
 
 .levelSlider::-webkit-slider-thumb {
@@ -385,32 +393,32 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #00d4ff, #0099ff);
+  background: var(--theme-gradient);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.5);
+  box-shadow: 0 2px 8px var(--theme-glow);
   transition: all 0.2s ease;
   margin-top: -6px; /* Centers 20px thumb on 8px track */
 }
 
 .levelSlider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.7);
+  box-shadow: 0 4px 16px var(--theme-glow);
 }
 
 .levelSlider::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #00d4ff, #0099ff);
+  background: var(--theme-gradient);
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.5);
+  box-shadow: 0 2px 8px var(--theme-glow);
   transition: all 0.2s ease;
 }
 
 .levelSlider::-moz-range-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.7);
+  box-shadow: 0 4px 16px var(--theme-glow);
 }
 
 .levelMarks {
@@ -436,17 +444,17 @@
 
 .statItem {
   padding: 0.6rem 0.75rem;
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(255, 107, 107, 0.05));
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--theme-primary);
   text-align: center;
   transition: all 0.3s ease;
 }
 
 .statItem:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
-  border-color: rgba(0, 212, 255, 0.3);
+  box-shadow: 0 8px 24px var(--theme-glow);
+  border-color: var(--theme-primary);
 }
 
 .statLabel {
@@ -461,8 +469,8 @@
 .statValue {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--accent);
-  text-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+  color: var(--theme-primary);
+  text-shadow: 0 2px 8px var(--theme-glow);
 }
 
 .statFormula {
@@ -584,8 +592,8 @@
   color: #dff8ff;
   margin: 0 0 1.5rem 0;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid rgba(0, 212, 255, 0.3);
-  text-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+  border-bottom: 2px solid var(--theme-primary);
+  text-shadow: 0 2px 8px var(--theme-glow);
 }
 
 .skillDetailContainer {
@@ -593,7 +601,7 @@
   padding: 1rem;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--theme-primary);
 }
 
 .skillLevelControl {
@@ -609,7 +617,7 @@
 }
 
 .skillLevelValue {
-  color: var(--accent);
+  color: var(--theme-primary);
   font-size: 1.15rem;
   margin-left: 0.5rem;
 }
@@ -632,8 +640,8 @@
   border-radius: 4px;
   background: linear-gradient(
     to right,
-    #00d4ff 0%,
-    #00d4ff var(--slider-progress, 0%),
+    var(--theme-primary) 0%,
+    var(--theme-primary) var(--slider-progress, 0%),
     rgba(255, 255, 255, 0.1) var(--slider-progress, 0%),
     rgba(255, 255, 255, 0.1) 100%
   );
@@ -645,16 +653,16 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #00d4ff, #0099ff);
+  background: var(--theme-gradient);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.5);
+  box-shadow: 0 2px 8px var(--theme-glow);
   transition: all 0.2s ease;
   margin-top: -6px;
 }
 
 .skillLevelSlider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.7);
+  box-shadow: 0 4px 16px var(--theme-glow);
 }
 
 .skillLevelMarks {
@@ -673,16 +681,16 @@
 }
 
 .skillItem {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), rgba(255, 107, 107, 0.03));
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--theme-primary);
   border-radius: 10px;
   padding: 1rem;
   transition: all 0.3s ease;
 }
 
 .skillItem:hover {
-  border-color: rgba(0, 212, 255, 0.3);
-  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.1);
+  border-color: var(--theme-primary);
+  box-shadow: 0 4px 16px var(--theme-glow);
 }
 
 .skillHeader {
@@ -703,15 +711,15 @@
   width: 50px;
   height: 50px;
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 150, 255, 0.2));
-  border: 2px solid rgba(0, 212, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--theme-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--accent);
-  text-shadow: 0 2px 8px rgba(0, 212, 255, 0.5);
+  color: var(--theme-primary);
+  text-shadow: 0 2px 8px var(--theme-glow);
 }
 
 .skillInfo {
@@ -728,16 +736,16 @@
 
 .skillType {
   font-size: 0.85rem;
-  color: rgba(0, 212, 255, 0.8);
+  color: var(--theme-primary);
   font-weight: 600;
 }
 
 .detailBtn {
   padding: 0.5rem 1.25rem;
   border-radius: 6px;
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  background: rgba(0, 212, 255, 0.1);
-  color: var(--accent);
+  border: 1px solid var(--theme-primary);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--theme-primary);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -749,9 +757,9 @@
 }
 
 .detailBtn:hover {
-  background: rgba(0, 212, 255, 0.2);
-  border-color: rgba(0, 212, 255, 0.5);
-  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--theme-primary);
+  box-shadow: 0 4px 12px var(--theme-glow);
 }
 
 .skillDescription {
@@ -761,7 +769,7 @@
   padding: 0.75rem;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  border-left: 3px solid rgba(0, 212, 255, 0.5);
+  border-left: 3px solid var(--theme-primary);
   margin-bottom: 0.75rem;
 }
 
@@ -770,7 +778,7 @@
 }
 
 .skillDescription strong {
-  color: var(--accent);
+  color: var(--theme-primary);
   font-weight: 700;
 }
 
@@ -789,15 +797,15 @@
 }
 
 .skillTable thead {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 150, 255, 0.2));
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .skillTable th {
   padding: 0.75rem 1rem;
   text-align: left;
   font-weight: 700;
-  color: var(--accent);
-  border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+  color: var(--theme-primary);
+  border-bottom: 2px solid var(--theme-primary);
   white-space: nowrap;
 }
 
@@ -809,7 +817,7 @@
 }
 
 .skillTable tbody tr:hover {
-  background: rgba(0, 212, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .labelCell {
@@ -821,7 +829,7 @@
 
 .valueCell {
   font-weight: 700;
-  color: var(--accent);
+  color: var(--theme-primary);
   text-align: left !important;
   font-size: 1rem;
 }

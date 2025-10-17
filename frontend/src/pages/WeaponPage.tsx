@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './CharacterPage.module.css';
@@ -12,6 +13,7 @@ type Weapon = {
 };
 
 const WeaponPage: React.FC = () => {
+  const navigate = useNavigate();
   const [weapons, setWeapons] = useState<Weapon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -19,6 +21,7 @@ const WeaponPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedRarity, setSelectedRarity] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [featuredWeaponIds, setFeaturedWeaponIds] = useState<Set<number>>(new Set());
   const itemsPerPage = 28;
 
   // Background image logic
@@ -37,6 +40,14 @@ const WeaponPage: React.FC = () => {
         }
       })
       .catch(error => console.error('Error fetching backgrounds:', error));
+
+    // Fetch featured 5-star IDs from active banners
+    fetch('/api/banners/featured-ids')
+      .then(response => response.json())
+      .then(data => {
+        setFeaturedWeaponIds(new Set(data.weaponIds || []));
+      })
+      .catch(error => console.error('Error fetching featured IDs:', error));
 
     // Fetch weapons
     fetch('/api/weapons/cards')
@@ -151,13 +162,21 @@ const WeaponPage: React.FC = () => {
             <>
               <div className={styles.characterGrid}>
                 {paginatedWeapons.map(weapon => (
-                  <div key={weapon.id} className={styles.characterCard}>
+                  <div 
+                    key={weapon.id} 
+                    className={styles.characterCard}
+                    onClick={() => navigate(`/weapons/${weapon.id}`)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className={styles.characterImageWrapper}>
                       <img
                         src={weapon.imageUrl}
                         alt={weapon.name}
                         className={styles.characterImage}
                       />
+                      {featuredWeaponIds.has(weapon.id) && (
+                        <div className={styles.bannerBadge}>Banner</div>
+                      )}
                       <div className={styles.rarity}>
                         {'★'.repeat(weapon.rarity)}
                       </div>

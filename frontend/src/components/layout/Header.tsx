@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import LoginModal from '../auth/LoginModal';
 import RegisterModal from '../auth/RegisterModal';
 import ForgotPasswordModal from '../auth/ForgotPasswordModal';
@@ -13,6 +13,7 @@ const Header: React.FC = () => {
   const [showForgot, setShowForgot] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -37,10 +38,36 @@ const Header: React.FC = () => {
             </a>
           </div>
           <nav className={styles.nav}>
-            <Link to="/" className={styles['nav-link']}>Trang chủ</Link>
-            <Link to="/characters" className={styles['nav-link']}>Nhân vật</Link>
-            <Link to="/weapons" className={styles['nav-link']}>Vũ khí</Link>
-            <Link to="/tracker" className={styles['nav-link']}>Tracker</Link>
+            <Link 
+              to="/" 
+              className={`${styles['nav-link']} ${location.pathname === '/' ? styles['nav-link-active'] : ''}`}
+            >
+              Trang chủ
+            </Link>
+            <Link 
+              to="/characters" 
+              className={`${styles['nav-link']} ${location.pathname.startsWith('/characters') ? styles['nav-link-active'] : ''}`}
+            >
+              Nhân vật
+            </Link>
+            <Link 
+              to="/weapons" 
+              className={`${styles['nav-link']} ${location.pathname.startsWith('/weapons') ? styles['nav-link-active'] : ''}`}
+            >
+              Vũ khí
+            </Link>
+            <Link 
+              to="/banners" 
+              className={`${styles['nav-link']} ${location.pathname === '/banners' ? styles['nav-link-active'] : ''}`}
+            >
+              Banner
+            </Link>
+            <Link 
+              to="/tracker" 
+              className={`${styles['nav-link']} ${location.pathname === '/tracker' ? styles['nav-link-active'] : ''}`}
+            >
+              Tracker
+            </Link>
           </nav>
           <div className={styles['auth-buttons']}>
             {isAuthenticated && user ? (

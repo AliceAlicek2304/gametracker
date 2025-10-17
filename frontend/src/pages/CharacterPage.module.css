@@ -16,7 +16,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
+  right: 0; 
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1;
@@ -24,6 +24,7 @@
 
 .contentWrapper {
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
   position: relative;
@@ -165,9 +166,11 @@
 /* Character Grid */
 .characterGrid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
+  min-height: 600px;
+  width: 100%;
 }
 
 .characterCard {
@@ -178,6 +181,7 @@
   transition: all 0.3s ease;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  height: fit-content;
 }
 
 .characterCard:hover {
@@ -228,6 +232,22 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.bannerBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .rarity {
@@ -307,23 +327,27 @@
 .pageButton {
   padding: 0.5rem 1rem;
   background: rgba(59, 130, 246, 0.2);
-  border: none;
+  border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 6px;
   color: #60a5fa;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .pageButton:hover:not(:disabled) {
   background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
   color: #3b82f6;
+  transform: translateY(-2px);
 }
 
 .pageButton:disabled {
-  opacity: 0.3;
+  opacity: 0.5;
   cursor: not-allowed;
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.2);
 }
 
 .pageNumbers {
@@ -334,26 +358,30 @@
 }
 
 .pageNumber {
-  padding: 0.4rem 0.7rem;
-  min-width: 2rem;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
+  padding: 0.5rem 0.8rem;
+  min-width: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
   color: #94a3b8;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .pageNumber:hover {
-  background: rgba(59, 130, 246, 0.1);
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
   color: #60a5fa;
+  transform: translateY(-2px);
 }
 
 .pageNumber.active {
   background: #3b82f6;
+  border-color: #3b82f6;
   color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 /* Responsive */
