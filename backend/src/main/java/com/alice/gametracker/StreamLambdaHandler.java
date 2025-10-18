@@ -17,10 +17,7 @@ public class StreamLambdaHandler implements RequestStreamHandler {
     static {
         try {
             handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(GametrackerApplication.class);
-            // Enable SnapStart optimization
-            handler.activateSpringProfiles("prod");
         } catch (ContainerInitializationException e) {
-            e.printStackTrace();
             throw new RuntimeException("Could not initialize Spring Boot application", e);
         }
     }
