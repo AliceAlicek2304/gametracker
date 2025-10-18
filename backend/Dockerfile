@@ -15,10 +15,24 @@ RUN mvn clean package -DskipTests
 FROM public.ecr.aws/lambda/java:21
 
 RUN mkdir -p ${LAMBDA_TASK_ROOT}/lib
-COPY --from=build /app/target/*-aws.jar ${LAMBDA_TASK_ROOT}/app.jar
-COPY --from=build /app/target/*.jar ${LAMBDA_TASK_ROOT}/app.jar
+# Copy all built jars to a temp directory, then select the shaded (-aws) jar if present,
+# otherwise pick the largest jar as a sensible fallback. This prevents a fallback COPY
+# from overwriting a correct shaded jar.
+RUN mkdir -p ${LAMBDA_TASK_ROOT}/jars
+COPY --from=build /app/target/*.jar ${LAMBDA_TASK_ROOT}/jars/
 
-# Set working directory (optional)
+# Choose the -aws jar if exists, otherwise choose the largest jar
+RUN set -e; \
+	if ls ${LAMBDA_TASK_ROOT}/jars/*-aws.jar 1>/dev/null 2>&1; then \
+		chosen=$(ls -1 ${LAMBDA_TASK_ROOT}/jars/*-aws.jar | head -n 1); \
+	else \
+		chosen=$(ls -1S ${LAMBDA_TASK_ROOT}/jars/*.jar | head -n 1); \
+	fi; \
+	echo "Selected jar: $chosen"; \
+	mv "$chosen" ${LAMBDA_TASK_ROOT}/app.jar; \
+	rm -rf ${LAMBDA_TASK_ROOT}/jars
+
+# Set working directory
 WORKDIR ${LAMBDA_TASK_ROOT}
 
 # Lambda handler
