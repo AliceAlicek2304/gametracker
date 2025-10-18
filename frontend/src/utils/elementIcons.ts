@@ -1,3 +1,5 @@
+import { config } from '../config/api';
+
 // Utility to get element icon URL - supports both local and S3 storage modes
 const ELEMENT_ICONS_CACHE: Record<string, string> = {};
 let isFetching = false;
@@ -19,7 +21,7 @@ export const getElementIconUrl = async (element: string): Promise<string | null>
 
   // Fetch element icons from API
   isFetching = true;
-  fetchPromise = fetch('/api/elements/icons')
+  fetchPromise = fetch(`${config.apiUrl}/elements/icons`)
     .then(response => response.json())
     .then(data => {
       // API returns array of {filename, url}

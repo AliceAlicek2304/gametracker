@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './CharacterDetailPage.module.css';
+import { apiFetch } from '../utils/apiHelper';
 
 type Role = {
   id: number;
@@ -105,7 +106,7 @@ const CharacterDetailPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch backgrounds
-    fetch('/api/background')
+    apiFetch('background')
       .then(response => response.json())
       .then(data => {
         const bgUrls = data.map((file: string) => `/uploads/background/${file}`);
@@ -118,7 +119,7 @@ const CharacterDetailPage: React.FC = () => {
 
     // Fetch character details
     if (id) {
-      fetch(`/api/characters/${id}`)
+      apiFetch(`characters/${id}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Character not found');

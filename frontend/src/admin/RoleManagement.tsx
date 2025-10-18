@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './RoleManagement.module.css';
 import { showToast } from '../utils/toast';
+import { apiFetch } from '../utils/apiHelper';
 
 type Role = {
   id: number;
@@ -36,7 +37,7 @@ const RoleManagement: React.FC = () => {
   const fetchRoles = async () => {
     setLoading(true);
     try {
-  const res = await fetch('/api/roles', { headers: buildHeaders() });
+  const res = await apiFetch('roles', { headers: buildHeaders() });
       if (res.ok) {
         const data: Role[] = await res.json();
         // Sort newest first by createdDate (fallback to 0 if missing)
@@ -57,7 +58,7 @@ const RoleManagement: React.FC = () => {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/roles', {
+      const res = await apiFetch('roles', {
         method: 'POST',
         headers: buildHeaders('application/json'),
         body: JSON.stringify({ name: form.name, description: form.description }),
@@ -92,7 +93,7 @@ const RoleManagement: React.FC = () => {
     if (!showEdit) return;
     try {
       // JSON-only update (name/description). Icon handled separately by upload modal.
-      const res = await fetch(`/api/roles/${showEdit.id}`, {
+      const res = await apiFetch(`roles/${showEdit.id}`, {
         method: 'PUT',
         headers: buildHeaders('application/json'),
         body: JSON.stringify({ name: form.name, description: form.description }),
@@ -113,7 +114,7 @@ const RoleManagement: React.FC = () => {
 
   const handleDeactivate = async (id: number, active: boolean) => {
     try {
-      const res = await fetch(`/api/roles/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
+      const res = await apiFetch(`roles/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
       if (res.ok) {
         fetchRoles();
         showToast.success(active ? 'Role deactivated' : 'Role activated');
@@ -129,7 +130,7 @@ const RoleManagement: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure to delete this role?')) return;
     try {
-      const res = await fetch(`/api/roles/${id}`, { method: 'DELETE', headers: buildHeaders() });
+      const res = await apiFetch(`roles/${id}`, { method: 'DELETE', headers: buildHeaders() });
       if (res.ok) {
         fetchRoles();
         showToast.success('Role deleted successfully');
@@ -144,7 +145,7 @@ const RoleManagement: React.FC = () => {
 
   const handleUploadIcon = async (id: number, f: File) => {
     const fd = new FormData(); fd.append('icon', f);
-    const res = await fetch(`/api/roles/${id}/upload-icon`, { method: 'POST', headers: buildHeaders(), body: fd });
+    const res = await apiFetch(`roles/${id}/upload-icon`, { method: 'POST', headers: buildHeaders(), body: fd });
     if (res.ok) {
       fetchRoles();
       showToast.success('Icon uploaded successfully');

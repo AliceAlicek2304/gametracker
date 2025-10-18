@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from './CharacterManagement.module.css';
 import { showToast } from '../utils/toast';
+import { apiFetch } from '../utils/apiHelper';
 
 type Role = { id: number; name: string; icon?: string };
 
@@ -109,7 +110,7 @@ const CharacterManagement: React.FC = () => {
   const fetchChars = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/characters', { headers: buildHeaders() });
+      const res = await apiFetch('characters', { headers: buildHeaders() });
       if (res.ok) {
         const data: Character[] = await res.json();
         // default sort newest first
@@ -123,7 +124,7 @@ const CharacterManagement: React.FC = () => {
   useEffect(() => { fetchChars(); }, []);
 
   useEffect(() => { // fetch roles for picker
-    fetch('/api/roles', { headers: buildHeaders() }).then(r=>r.ok? r.json():[]).then((data: Role[])=> setRolesOptions(data)).catch(()=>{});
+    apiFetch('roles', { headers: buildHeaders() }).then(r=>r.ok? r.json():[]).then((data: Role[])=> setRolesOptions(data)).catch(()=>{});
   }, []);
 
   // close role dropdown when clicking outside
@@ -168,7 +169,7 @@ const CharacterManagement: React.FC = () => {
 
   const handleToggleActive = async (id: number, active?: boolean) => {
     try {
-      const res = await fetch(`/api/characters/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
+      const res = await apiFetch(`characters/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
       if (res.ok) { fetchChars(); if (showDetail?.id === id) setShowDetail(null); }
     } catch (err) { console.error(err); }
   }
@@ -305,7 +306,7 @@ const CharacterManagement: React.FC = () => {
                   }}>Edit</button>
 
                   <button type="button" className={styles.smallBtn} style={{flex:'0 0 calc(50% - 4px)'}} onClick={()=>handleToggleActive(showDetail.id, !!showDetail.isActive)}>{showDetail.isActive ? 'Deactivate' : 'Activate'}</button>
-                  <button type="button" className={`${styles.smallBtn} ${styles.danger}`} style={{flex:'0 0 calc(50% - 4px)'}} onClick={() => { if (confirm('Are you sure to delete this character?')) { fetch(`/api/characters/${showDetail.id}`, { method:'DELETE', headers: buildHeaders() }).then(r=>{ if (r.ok) { fetchChars(); setShowDetail(null); } }).catch(()=>{}); } }}>Delete</button>
+                  <button type="button" className={`${styles.smallBtn} ${styles.danger}`} style={{flex:'0 0 calc(50% - 4px)'}} onClick={() => { if (confirm('Are you sure to delete this character?')) { apiFetch(`characters/${showDetail.id}`, { method:'DELETE', headers: buildHeaders() }).then(r=>{ if (r.ok) { fetchChars(); setShowDetail(null); } }).catch(()=>{}); } }}>Delete</button>
 
                   <div style={{flex:'0 0 100%'}}>
                     <button type="button" className={`${styles.smallBtn} ${styles.muted}`} style={{width:'100%'}} onClick={()=>setShowDetail(null)}>Close</button>
@@ -506,9 +507,9 @@ const CharacterManagement: React.FC = () => {
                 try {
                   let res: Response;
                   if (editingId) {
-                    res = await fetch(`/api/characters/${editingId}`, { method:'PUT', headers: buildHeaders('application/json'), body: JSON.stringify(payload) });
+                    res = await apiFetch(`characters/${editingId}`, { method:'PUT', headers: buildHeaders('application/json'), body: JSON.stringify(payload) });
                   } else {
-                    res = await fetch('/api/characters', { method:'POST', headers: buildHeaders('application/json'), body: JSON.stringify(payload) });
+                    res = await apiFetch('characters', { method:'POST', headers: buildHeaders('application/json'), body: JSON.stringify(payload) });
                   }
                   if (res.ok) {
                     const data = await res.json();
@@ -729,7 +730,7 @@ const CharacterManagement: React.FC = () => {
                 <button className={styles.smallBtn} onClick={async ()=>{
                   if (!uploadFile || !showUpload) return alert('Choose a file');
                   const fd = new FormData(); fd.append('image', uploadFile);
-                  const res = await fetch(`/api/characters/${showUpload.id}/upload-image`, { method:'POST', headers: buildHeaders(), body: fd });
+                  const res = await apiFetch(`characters/${showUpload.id}/upload-image`, { method:'POST', headers: buildHeaders(), body: fd });
                   if (res.ok) { setShowUpload(null); setUploadFile(null); fetchChars(); }
                   else { alert('Upload failed'); }
                 }}>Upload</button>

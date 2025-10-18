@@ -5,6 +5,7 @@ import Footer from '../components/layout/Footer';
 import ConveneRulesModal from '../components/ConveneRulesModal';
 import GachaResultModal from '../components/GachaResultModal';
 import styles from './BannerPage.module.css';
+import { apiFetch } from '../utils/apiHelper';
 
 interface Banner {
   id: number;
@@ -84,7 +85,7 @@ const BannerPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch backgrounds
-    fetch('/api/background')
+    apiFetch('background')
       .then(response => response.json())
       .then(data => {
         const bgUrls = data.map((file: string) => `/uploads/background/${file}`);
@@ -96,7 +97,7 @@ const BannerPage: React.FC = () => {
       .catch(error => console.error('Error fetching backgrounds:', error));
 
     // Fetch current active banners
-    fetch('/api/banners/current')
+    apiFetch('banners/current')
       .then(response => response.json())
       .then(data => {
         setBanners(data);
@@ -136,7 +137,7 @@ const BannerPage: React.FC = () => {
     try {
       const currentPity = getPityState(selectedBanner.id);
       
-      const response = await fetch('/api/banners/gacha', {
+      const response = await apiFetch('banners/gacha', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -181,7 +182,7 @@ const BannerPage: React.FC = () => {
     try {
       const currentPity = getPityState(selectedBanner.id);
       
-      const response = await fetch('/api/banners/gacha', {
+      const response = await apiFetch('banners/gacha', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

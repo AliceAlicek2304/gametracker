@@ -1,4 +1,6 @@
-const API_URL = '/api/banners';
+import { config } from '../config/api';
+
+const API_URL = config.endpoints.banners;
 
 const getAuthHeaders = (): HeadersInit => {
   const headers: Record<string, string> = {

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { getElementIconUrlSync, preloadElementIcons } from '../utils/elementIcons';
+import { apiFetch } from '../utils/apiHelper';
 import styles from './HomePage.module.css';
 
 interface Character {
@@ -54,7 +55,7 @@ const HomePage: React.FC = () => {
     preloadElementIcons();
 
     // Fetch backgrounds - supports both local and S3 mode
-    fetch('/api/background')
+    apiFetch('background')
       .then(response => response.json())
       .then(data => {
         // Check if response is array of objects {filename, url} or array of strings
@@ -69,7 +70,7 @@ const HomePage: React.FC = () => {
       .catch(error => console.error('Error fetching backgrounds:', error));
 
     // Fetch featured 5-star IDs from active banners
-    fetch('/api/banners/featured-ids')
+    apiFetch('banners/featured-ids')
       .then(response => response.json())
       .then(data => {
         setFeaturedCharacterIds(new Set(data.characterIds || []));
@@ -77,7 +78,7 @@ const HomePage: React.FC = () => {
       .catch(error => console.error('Error fetching featured IDs:', error));
 
     // Fetch latest 12 characters
-    fetch('/api/characters')
+    apiFetch('characters')
       .then(response => response.json())
       .then(data => {
         const sorted = data.sort((a: Character, b: Character) => b.id - a.id);
@@ -86,7 +87,7 @@ const HomePage: React.FC = () => {
       .catch(error => console.error('Error fetching characters:', error));
 
     // Fetch active banners
-    fetch('/api/banners')
+    apiFetch('banners')
       .then(response => response.json())
       .then(data => {
         const activeBanners = data.filter((b: Banner) => b.status === 'ACTIVE');

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './CharacterPage.module.css';
+import { apiFetch } from '../utils/apiHelper';
 
 type Character = {
   id: number;
@@ -32,7 +33,7 @@ const CharacterPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch backgrounds
-    fetch('/api/background')
+    apiFetch('background')
       .then(response => response.json())
       .then(data => {
         const bgUrls = data.map((file: string) => `/uploads/background/${file}`);
@@ -44,7 +45,7 @@ const CharacterPage: React.FC = () => {
       .catch(error => console.error('Error fetching backgrounds:', error));
 
     // Fetch featured 5-star IDs from active banners
-    fetch('/api/banners/featured-ids')
+    apiFetch('banners/featured-ids')
       .then(response => response.json())
       .then(data => {
         setFeaturedCharacterIds(new Set(data.characterIds || []));
@@ -52,7 +53,7 @@ const CharacterPage: React.FC = () => {
       .catch(error => console.error('Error fetching featured IDs:', error));
 
     // Fetch characters
-    fetch('/api/characters/cards')
+    apiFetch('characters/cards')
       .then(response => response.json())
       .then(data => {
         // Sort by ID descending (newest first)

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './BannerManagement.module.css';
 import { showToast } from '../utils/toast';
+import { apiFetch } from '../utils/apiHelper';
 
 type Character = {
   id: number;
@@ -94,7 +95,7 @@ const BannerManagement: React.FC = () => {
   const fetchBanners = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/banners', { headers: buildHeaders() });
+      const res = await apiFetch('banners', { headers: buildHeaders() });
       if (res.ok) {
         const data: Banner[] = await res.json();
         data.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
@@ -109,7 +110,7 @@ const BannerManagement: React.FC = () => {
 
   const fetchCharacters = async () => {
     try {
-      const res = await fetch('/api/characters/active', { headers: buildHeaders() });
+      const res = await apiFetch('characters/active', { headers: buildHeaders() });
       if (res.ok) {
         const data: Character[] = await res.json();
         setCharacters(data);
@@ -121,7 +122,7 @@ const BannerManagement: React.FC = () => {
 
   const fetchWeapons = async () => {
     try {
-      const res = await fetch('/api/weapons/active', { headers: buildHeaders() });
+      const res = await apiFetch('weapons/active', { headers: buildHeaders() });
       if (res.ok) {
         const data: Weapon[] = await res.json();
         setWeapons(data);
@@ -275,7 +276,7 @@ const BannerManagement: React.FC = () => {
   const handleDelete = async (id: number, name: string) => {
     if (!confirm(`Delete banner "${name}"?`)) return;
     try {
-      const res = await fetch(`/api/banners/${id}`, {
+      const res = await apiFetch(`banners/${id}`, {
         method: 'DELETE',
         headers: buildHeaders(),
       });

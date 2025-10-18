@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './SetEchoManagement.module.css';
 import { showToast } from '../utils/toast';
+import { apiFetch } from '../utils/apiHelper';
 
 type SetEcho = {
   id: number;
@@ -36,7 +37,7 @@ const SetEchoManagement: React.FC = () => {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/set-echoes', { headers: buildHeaders() });
+      const res = await apiFetch('set-echoes', { headers: buildHeaders() });
       if (res.ok) {
         const data: SetEcho[] = await res.json();
         data.sort((a,b) => (b.createdDate ? new Date(b.createdDate).getTime() : 0) - (a.createdDate ? new Date(a.createdDate).getTime() : 0));
@@ -51,7 +52,7 @@ const SetEchoManagement: React.FC = () => {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/set-echoes', { method: 'POST', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, skill: form.skill }) });
+      const res = await apiFetch('set-echoes', { method: 'POST', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, skill: form.skill }) });
       if (res.ok) {
         const data = await res.json();
         setShowCreate(false);
@@ -77,7 +78,7 @@ const SetEchoManagement: React.FC = () => {
     e.preventDefault();
     if (!showEdit) return;
     try {
-      const res = await fetch(`/api/set-echoes/${showEdit.id}`, { method: 'PUT', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, skill: form.skill }) });
+      const res = await apiFetch(`set-echoes/${showEdit.id}`, { method: 'PUT', headers: buildHeaders('application/json'), body: JSON.stringify({ name: form.name, skill: form.skill }) });
       if (res.ok) {
         setShowEdit(null);
         setForm({ name: '', skill: '' });
@@ -94,7 +95,7 @@ const SetEchoManagement: React.FC = () => {
 
   const handleDeactivate = async (id: number, active: boolean) => {
     try {
-      const res = await fetch(`/api/set-echoes/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
+      const res = await apiFetch(`set-echoes/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
       if (res.ok) {
         fetchItems();
         showToast.success(active ? 'Set Echo deactivated' : 'Set Echo activated');
@@ -110,7 +111,7 @@ const SetEchoManagement: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure to delete this item?')) return;
     try {
-      const res = await fetch(`/api/set-echoes/${id}`, { method: 'DELETE', headers: buildHeaders() });
+      const res = await apiFetch(`set-echoes/${id}`, { method: 'DELETE', headers: buildHeaders() });
       if (res.ok) {
         fetchItems();
         showToast.success('Set Echo deleted successfully');
@@ -125,7 +126,7 @@ const SetEchoManagement: React.FC = () => {
 
   const handleUploadIcon = async (id: number, f: File) => {
     const fd = new FormData(); fd.append('icon', f);
-    const res = await fetch(`/api/set-echoes/${id}/upload-icon`, { method: 'POST', headers: buildHeaders(), body: fd });
+    const res = await apiFetch(`set-echoes/${id}/upload-icon`, { method: 'POST', headers: buildHeaders(), body: fd });
     if (res.ok) {
       fetchItems();
       showToast.success('Icon uploaded successfully');

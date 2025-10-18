@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './WeaponManagement.module.css';
 import { showToast } from '../utils/toast';
+import { apiFetch } from '../utils/apiHelper';
 
 type Weapon = {
   id: number;
@@ -73,7 +74,7 @@ const WeaponManagement: React.FC = () => {
   const fetchWeapons = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/weapons', { headers: buildHeaders() });
+      const res = await apiFetch('weapons', { headers: buildHeaders() });
       if (res.ok) {
         const data: Weapon[] = await res.json();
         data.sort((a,b) => (b.createdDate ? new Date(b.createdDate).getTime() : 0) - (a.createdDate ? new Date(a.createdDate).getTime() : 0));
@@ -88,7 +89,7 @@ const WeaponManagement: React.FC = () => {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-  const res = await fetch('/api/weapons', {
+  const res = await apiFetch('weapons', {
     method: 'POST',
     headers: buildHeaders('application/json'),
   body: JSON.stringify({ name: createForm.name, weaponType: createForm.weaponType, description: createForm.description, mainStats: createForm.mainStats, subStats: createForm.subStats, subStatsType: createForm.subStatsType, skill: createForm.skill, rarity: createForm.rarity }),
@@ -119,7 +120,7 @@ const WeaponManagement: React.FC = () => {
     e.preventDefault();
     if (!editingId) return;
     try {
-  const res = await fetch(`/api/weapons/${editingId}`, {
+  const res = await apiFetch(`weapons/${editingId}`, {
     method: 'PUT',
     headers: buildHeaders('application/json'),
   body: JSON.stringify({ name: form.name, weaponType: form.weaponType, description: form.description, mainStats: form.mainStats, subStats: form.subStats, subStatsType: form.subStatsType, skill: form.skill, rarity: form.rarity }),
@@ -141,7 +142,7 @@ const WeaponManagement: React.FC = () => {
 
   const handleDeactivate = async (id: number, active?: boolean) => {
     try {
-      const res = await fetch(`/api/weapons/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
+      const res = await apiFetch(`weapons/${id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !active }) });
       if (res.ok) {
         // refresh list
         fetchWeapons();
@@ -162,7 +163,7 @@ const WeaponManagement: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure to delete this weapon?')) return;
     try {
-      const res = await fetch(`/api/weapons/${id}`, { method: 'DELETE', headers: buildHeaders() });
+      const res = await apiFetch(`weapons/${id}`, { method: 'DELETE', headers: buildHeaders() });
       if (res.ok) {
         fetchWeapons();
         setShowDetail(null);
@@ -178,7 +179,7 @@ const WeaponManagement: React.FC = () => {
 
   const handleUploadImage = async (id: number, f: File) => {
     const fd = new FormData(); fd.append('image', f);
-    const res = await fetch(`/api/weapons/${id}/upload-image`, { method: 'POST', headers: buildHeaders(), body: fd });
+    const res = await apiFetch(`weapons/${id}/upload-image`, { method: 'POST', headers: buildHeaders(), body: fd });
     if (res.ok) {
       fetchWeapons();
       showToast.success('Image uploaded successfully');

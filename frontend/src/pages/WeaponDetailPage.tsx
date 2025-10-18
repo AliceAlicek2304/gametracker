@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './WeaponDetailPage.module.css';
+import { apiFetch } from '../utils/apiHelper';
 
 type Weapon = {
   id: number;
@@ -27,7 +28,7 @@ const WeaponDetailPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch background
-    fetch('/api/background')
+    apiFetch('background')
       .then(response => response.json())
       .then(data => {
         const bgUrls = data.map((file: string) => `/uploads/background/${file}`);
@@ -38,7 +39,7 @@ const WeaponDetailPage: React.FC = () => {
       .catch(error => console.error('Error fetching backgrounds:', error));
 
     // Fetch weapon details
-    fetch(`/api/weapons/${id}`)
+    apiFetch(`weapons/${id}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Weapon not found');

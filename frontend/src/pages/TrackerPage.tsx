@@ -3,6 +3,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './TrackerPage.module.css';
 import { showToast } from '../utils/toast';
+import { apiFetch } from '../utils/apiHelper';
 
 type GachaItem = {
   cardPoolType: string;
@@ -59,7 +60,7 @@ const TrackerPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch list of background files
-    fetch('/api/background')
+    apiFetch('background')
       .then(response => response.json())
       .then(data => {
         const bgUrls = data.map((file: string) => `/uploads/background/${file}`);
@@ -119,7 +120,7 @@ const TrackerPage: React.FC = () => {
     setGachaData({});
 
     try {
-      const res = await fetch('/api/gacha/fetch', {
+      const res = await apiFetch('gacha/fetch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url }),

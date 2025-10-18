@@ -1,6 +1,7 @@
 import { showToast } from '../utils/toast';
+import { config } from '../config/api';
 
-const API_BASE = '/api';
+const API_BASE = config.apiUrl;
 
 export interface AuthResponse {
   token: string;

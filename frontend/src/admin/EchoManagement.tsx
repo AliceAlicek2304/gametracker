@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './EchoManagement.module.css';
 import { showToast } from '../utils/toast';
+import { apiFetch } from '../utils/apiHelper';
 
 type Echo = { id:number; name:string; imageUrl?:string; description?:string; cost?:number; skill?:any; setEchoIds?:number[]; isActive?:boolean; createdDate?:string };
 type SetEcho = { id:number; name:string; icon?:string };
@@ -50,7 +51,7 @@ const EchoManagement: React.FC = () => {
   const fetchList = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/echoes', { headers: buildHeaders() });
+      const res = await apiFetch('echoes', { headers: buildHeaders() });
       if (res.ok) {
         const data = await res.json();
         data.sort((a:any,b:any)=> (b.createdDate? new Date(b.createdDate).getTime():0) - (a.createdDate? new Date(a.createdDate).getTime():0));
@@ -62,7 +63,7 @@ const EchoManagement: React.FC = () => {
 
   const fetchSetEchoes = async () => {
     try {
-      const res = await fetch('/api/set-echoes', { headers: buildHeaders() });
+      const res = await apiFetch('set-echoes', { headers: buildHeaders() });
       if (res.ok) {
         const data = await res.json();
         setSetEchos(data);
@@ -110,9 +111,9 @@ const EchoManagement: React.FC = () => {
       const payload = { ...form };
       let res: Response;
       if (editing) {
-        res = await fetch(`/api/echoes/${editing.id}`, { method:'PUT', headers: buildHeaders('application/json'), body: JSON.stringify(payload) });
+        res = await apiFetch(`echoes/${editing.id}`, { method:'PUT', headers: buildHeaders('application/json'), body: JSON.stringify(payload) });
       } else {
-        res = await fetch('/api/echoes', { method:'POST', headers: buildHeaders('application/json'), body: JSON.stringify(payload) });
+        res = await apiFetch('echoes', { method:'POST', headers: buildHeaders('application/json'), body: JSON.stringify(payload) });
       }
       if (res.ok) {
         const data = await res.json();
@@ -138,7 +139,7 @@ const EchoManagement: React.FC = () => {
     try {
       const fd = new FormData();
       fd.append('image', file);
-      const res = await fetch(`/api/echoes/${showUpload.id}/upload-image`, { method:'POST', headers: getAuthHeader() as any, body: fd });
+      const res = await apiFetch(`echoes/${showUpload.id}/upload-image`, { method:'POST', headers: getAuthHeader() as any, body: fd });
       if (res.ok) { showToast.success('Uploaded'); setShowUpload(null); fetchList(); }
       else { showToast.error('Upload failed'); }
     } catch (e:any) { showToast.error('Upload error: ' + (e?.message || e)); }
@@ -332,7 +333,7 @@ const EchoManagement: React.FC = () => {
                   <button className={styles.smallBtn} onClick={() => { setShowDetail(null); setEditing(showDetail); setForm({ name: showDetail.name, description: showDetail.description || '', cost: showDetail.cost || 1, skill: showDetail.skill || '', setEchoIds: showDetail.setEchoIds || [], imageUrl: showDetail.imageUrl ?? null }); setShowCreate(true); }}>Edit</button>
                   <button className={`${styles.smallBtn} ${styles.muted}`} onClick={async () => {
                     try {
-                      const res = await fetch(`/api/echoes/${showDetail.id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !showDetail.isActive }) });
+                      const res = await apiFetch(`echoes/${showDetail.id}/deactivate`, { method: 'PATCH', headers: buildHeaders('application/json'), body: JSON.stringify({ isActive: !showDetail.isActive }) });
                       if (res.ok) {
                         fetchList();
                         setShowDetail({ ...showDetail, isActive: !showDetail.isActive });
@@ -348,7 +349,7 @@ const EchoManagement: React.FC = () => {
                   <button className={`${styles.smallBtn} ${styles.danger}`} onClick={async () => {
                     if (!confirm('Are you sure to delete this echo?')) return;
                     try {
-                      const res = await fetch(`/api/echoes/${showDetail.id}`, { method: 'DELETE', headers: buildHeaders() });
+                      const res = await apiFetch(`echoes/${showDetail.id}`, { method: 'DELETE', headers: buildHeaders() });
                       if (res.ok) {
                         fetchList();
                         setShowDetail(null);

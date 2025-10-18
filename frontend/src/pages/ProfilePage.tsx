@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import { apiFetch } from '../utils/apiHelper';
 
 const ProfilePage: React.FC = () => {
   const { user, updateUser } = useAuth();
@@ -48,7 +49,7 @@ const ProfilePage: React.FC = () => {
     // load backgrounds like homepage
     (async () => {
       try {
-        const resp = await fetch('/api/background');
+        const resp = await apiFetch('background');
         if (resp.ok) {
           const data = await resp.json();
           const bgUrls = data.map((file: string) => `/uploads/background/${file}`);

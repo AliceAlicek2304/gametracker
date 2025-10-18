@@ -5,9 +5,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    proxy: {
-      '/uploads': 'http://localhost:8080',
-      '/api': 'http://localhost:8080'
-    }
+    // Proxy disabled - using production API via VITE_API_URL
+    // Uncomment to use local backend
+    // proxy: {
+    //   '/uploads': 'http://localhost:8080',
+    //   '/api': 'http://localhost:8080'
+    // }
   }
 })
