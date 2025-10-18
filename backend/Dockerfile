@@ -25,7 +25,7 @@ RUN cd ${LAMBDA_TASK_ROOT} && \
     mkdir -p lib && \
     cp -r BOOT-INF/lib/* lib/ && \
     cp -r BOOT-INF/classes/* . && \
-    rm -rf BOOT-INF META-INF org
+    rm -rf BOOT-INF org
 
 # Set the handler
 CMD ["com.alice.gametracker.StreamLambdaHandler::handleRequest"]
