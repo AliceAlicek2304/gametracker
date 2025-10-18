@@ -9,7 +9,12 @@ RUN mvn dependency:go-offline -B
 
 # Copy source code and build the shaded (uber) JAR
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests && \
+    echo "=== JARs created by Maven build ===" && \
+    ls -lh /app/target/*.jar && \
+    echo "=== Verifying shaded JAR contains handler ===" && \
+    jar -tf /app/target/gametracker-0.0.1-SNAPSHOT-aws.jar | grep StreamLambdaHandler || \
+    (echo "ERROR: Handler class not in shaded JAR!" && exit 1)
 
 # Stage 2: AWS Lambda runtime
 FROM public.ecr.aws/lambda/java:21
