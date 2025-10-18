@@ -37,10 +37,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Load user from localStorage on app start
+    // Load user from localStorage on app start and validate token
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const token = localStorage.getItem('token');
+    
+    if (storedUser && token) {
+      // Check if token exists, if not clear user data
       setUser(JSON.parse(storedUser));
+    } else if (storedUser && !token) {
+      // User exists but no token, clear everything
+      localStorage.removeItem('user');
+      setUser(null);
     }
   }, []);
 

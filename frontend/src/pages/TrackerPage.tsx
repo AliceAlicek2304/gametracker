@@ -63,7 +63,10 @@ const TrackerPage: React.FC = () => {
     apiFetch('background')
       .then(response => response.json())
       .then(data => {
-        const bgUrls = data.map((file: string) => `/uploads/background/${file}`);
+        // Check if response is array of objects {filename, url} or array of strings
+        const bgUrls = Array.isArray(data) && data.length > 0 && typeof data[0] === 'object'
+          ? data.map((item: { filename: string; url: string }) => item.url) // S3 mode
+          : data.map((file: string) => `/uploads/background/${file}`); // Local mode fallback
         setBackgrounds(bgUrls);
         if (bgUrls.length > 0) {
           setCurrentBg(bgUrls[Math.floor(Math.random() * bgUrls.length)]);

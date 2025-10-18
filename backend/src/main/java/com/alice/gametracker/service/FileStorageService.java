@@ -25,6 +25,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 // Universal file storage service supporting both local and S3 storage
@@ -378,8 +379,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(size)
-                        .build();
+                        .contentLength(size).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromInputStream(file.getInputStream(), size);
             } else {
                 // Use temp file if size unknown
@@ -391,8 +391,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(actualSize)
-                        .build();
+                        .contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromFile(tempFile);
             }
 
@@ -439,8 +438,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(size)
-                        .build();
+                        .contentLength(size).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromInputStream(file.getInputStream(), size);
             } else {
                 // Use temp file if size unknown
@@ -452,8 +450,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(actualSize)
-                        .build();
+                        .contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromFile(tempFile);
             }
 
@@ -567,8 +564,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(size)
-                        .build();
+                        .contentLength(size).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromInputStream(file.getInputStream(), size);
             } else {
                 Path tempDir = Paths.get(System.getProperty("java.io.tmpdir", "/tmp"));
@@ -579,8 +575,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(actualSize)
-                        .build();
+                        .contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromFile(tempFile);
             }
 
@@ -614,8 +609,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(size)
-                        .build();
+                        .contentLength(size).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromInputStream(file.getInputStream(), size);
             } else {
                 Path tempDir = Paths.get(System.getProperty("java.io.tmpdir", "/tmp"));
@@ -626,8 +620,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(actualSize)
-                        .build();
+                        .contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromFile(tempFile);
             }
 
@@ -679,14 +672,14 @@ public class FileStorageService {
             RequestBody requestBody;
             Path tempFile = null;
             if (size > 0) {
-                putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(s3Key).contentType(file.getContentType()).contentLength(size).build();
+                putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(s3Key).contentType(file.getContentType()).contentLength(size).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromInputStream(file.getInputStream(), size);
             } else {
                 Path tempDir = Paths.get(System.getProperty("java.io.tmpdir", "/tmp"));
                 tempFile = Files.createTempFile(tempDir, "echo", ".tmp");
                 Files.copy(file.getInputStream(), tempFile, StandardCopyOption.REPLACE_EXISTING);
                 long actualSize = Files.size(tempFile);
-                putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(s3Key).contentType(file.getContentType()).contentLength(actualSize).build();
+                putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(s3Key).contentType(file.getContentType()).contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromFile(tempFile);
             }
 
@@ -726,8 +719,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(size)
-                        .build();
+                        .contentLength(size).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromInputStream(file.getInputStream(), size);
             } else {
                 // Use temp file if size unknown
@@ -739,8 +731,7 @@ public class FileStorageService {
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .contentType(file.getContentType())
-                        .contentLength(actualSize)
-                        .build();
+                        .contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ).build();
                 requestBody = RequestBody.fromFile(tempFile);
             }
 

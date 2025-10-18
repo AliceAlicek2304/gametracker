@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './CharacterDetailPage.module.css';
-import { apiFetch } from '../utils/apiHelper';
+import { apiFetch, apiUrl } from '../utils/apiHelper';
 
 type Role = {
   id: number;
@@ -109,7 +109,10 @@ const CharacterDetailPage: React.FC = () => {
     apiFetch('background')
       .then(response => response.json())
       .then(data => {
-        const bgUrls = data.map((file: string) => `/uploads/background/${file}`);
+        // Check if response is array of objects {filename, url} or array of strings
+        const bgUrls = Array.isArray(data) && data.length > 0 && typeof data[0] === 'object'
+          ? data.map((item: { filename: string; url: string }) => item.url) // S3 mode
+          : data.map((file: string) => `/uploads/background/${file}`); // Local mode fallback
         setBackgrounds(bgUrls);
         if (bgUrls.length > 0) {
           setCurrentBg(bgUrls[Math.floor(Math.random() * bgUrls.length)]);
@@ -144,18 +147,18 @@ const CharacterDetailPage: React.FC = () => {
   const getElementIcon = (element: string) => {
     // Map element names to icon URLs from backend
     const elementMap: { [key: string]: string } = {
-      'PYRO': '/api/elements/icon/pyro.png',
-      'HYDRO': '/api/elements/icon/hydro.png',
-      'ELECTRO': '/api/elements/icon/electro.png',
-      'CRYO': '/api/elements/icon/cryo.png',
-      'ANEMO': '/api/elements/icon/anemo.png',
-      'GEO': '/api/elements/icon/geo.png',
-      'DENDRO': '/api/elements/icon/dendro.png',
-      'GLACIO': '/api/elements/icon/glacio.png',
-      'FUSION': '/api/elements/icon/fusion.png',
-      'SPECTRO': '/api/elements/icon/spectro.png',
-      'AERO': '/api/elements/icon/aero.png',
-      'HAVOC': '/api/elements/icon/havoc.png',
+      'PYRO': apiUrl('elements/icon/pyro.png'),
+      'HYDRO': apiUrl('elements/icon/hydro.png'),
+      'ELECTRO': apiUrl('elements/icon/electro.png'),
+      'CRYO': apiUrl('elements/icon/cryo.png'),
+      'ANEMO': apiUrl('elements/icon/anemo.png'),
+      'GEO': apiUrl('elements/icon/geo.png'),
+      'DENDRO': apiUrl('elements/icon/dendro.png'),
+      'GLACIO': apiUrl('elements/icon/glacio.png'),
+      'FUSION': apiUrl('elements/icon/fusion.png'),
+      'SPECTRO': apiUrl('elements/icon/spectro.png'),
+      'AERO': apiUrl('elements/icon/aero.png'),
+      'HAVOC': apiUrl('elements/icon/havoc.png'),
     };
     return elementMap[element.toUpperCase()];
   };

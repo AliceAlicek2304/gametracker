@@ -87,6 +87,7 @@ public class SecurityConfig {
 
                     // Element icons - public (serve element icons without auth)
                     .requestMatchers("/api/elements/icon/**").permitAll()
+                    .requestMatchers("/api/elements/icons").permitAll()
 
                     // Role icons - public (icons served from /api/roles/icon/{filename})
                     .requestMatchers("/api/roles/icon/**").permitAll()

@@ -1,4 +1,5 @@
 import { config } from '../config/api';
+import { apiUrl } from './apiHelper';
 
 // Utility to get element icon URL - supports both local and S3 storage modes
 const ELEMENT_ICONS_CACHE: Record<string, string> = {};
@@ -35,16 +36,16 @@ export const getElementIconUrl = async (element: string): Promise<string | null>
     })
     .catch(error => {
       console.error('Error fetching element icons:', error);
-      // Fallback to local paths if API fails
-      const localIcons: Record<string, string> = {
-        'HAVOC': '/uploads/element/havoc.png',
-        'AERO': '/uploads/element/aero.png',
-        'GLACIO': '/uploads/element/glacio.png',
-        'FUSION': '/uploads/element/fusion.png',
-        'ELECTRO': '/uploads/element/electro.png',
-        'SPECTRO': '/uploads/element/spectro.png'
+      // Fallback to API paths if fetch fails
+      const fallbackIcons: Record<string, string> = {
+        'HAVOC': apiUrl('elements/icon/havoc.png'),
+        'AERO': apiUrl('elements/icon/aero.png'),
+        'GLACIO': apiUrl('elements/icon/glacio.png'),
+        'FUSION': apiUrl('elements/icon/fusion.png'),
+        'ELECTRO': apiUrl('elements/icon/electro.png'),
+        'SPECTRO': apiUrl('elements/icon/spectro.png')
       };
-      Object.assign(ELEMENT_ICONS_CACHE, localIcons);
+      Object.assign(ELEMENT_ICONS_CACHE, fallbackIcons);
     })
     .finally(() => {
       isFetching = false;
@@ -63,17 +64,17 @@ export const getElementIconUrlSync = (element: string): string | null => {
     return ELEMENT_ICONS_CACHE[elementKey];
   }
 
-  // Fallback to local path
-  const localIcons: Record<string, string> = {
-    'HAVOC': '/uploads/element/havoc.png',
-    'AERO': '/uploads/element/aero.png',
-    'GLACIO': '/uploads/element/glacio.png',
-    'FUSION': '/uploads/element/fusion.png',
-    'ELECTRO': '/uploads/element/electro.png',
-    'SPECTRO': '/uploads/element/spectro.png'
+  // Fallback to API path
+  const fallbackIcons: Record<string, string> = {
+    'HAVOC': apiUrl('elements/icon/havoc.png'),
+    'AERO': apiUrl('elements/icon/aero.png'),
+    'GLACIO': apiUrl('elements/icon/glacio.png'),
+    'FUSION': apiUrl('elements/icon/fusion.png'),
+    'ELECTRO': apiUrl('elements/icon/electro.png'),
+    'SPECTRO': apiUrl('elements/icon/spectro.png')
   };
   
-  return localIcons[elementKey] || null;
+  return fallbackIcons[elementKey] || null;
 };
 
 // Preload element icons - call this once when app starts
