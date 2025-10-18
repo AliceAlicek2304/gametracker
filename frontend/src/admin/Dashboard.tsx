@@ -69,7 +69,6 @@ const Dashboard: React.FC = () => {
           {active === 'setecho' && <SetEchoManagement />}
           {active === 'echo' && <EchoManagement />}
           {active === 'banner' && <BannerManagement />}
-          {/* Home navigates out to the main site */}
         </div>
       </main>
     </div>

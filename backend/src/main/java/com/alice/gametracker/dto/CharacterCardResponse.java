@@ -1,9 +1,6 @@
 package com.alice.gametracker.dto;
 
-/**
- * Simplified DTO for displaying character cards on public character listing page
- * Only contains essential fields needed for card display
- */
+// Simplified DTO for displaying character cards on public character listing page
 public class CharacterCardResponse {
 
     private Long id;

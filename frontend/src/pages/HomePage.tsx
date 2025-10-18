@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import { getElementIconUrlSync, preloadElementIcons } from '../utils/elementIcons';
 import styles from './HomePage.module.css';
 
 interface Character {
@@ -49,11 +50,17 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch backgrounds
+    // Preload element icons for faster rendering
+    preloadElementIcons();
+
+    // Fetch backgrounds - supports both local and S3 mode
     fetch('/api/background')
       .then(response => response.json())
       .then(data => {
-        const bgUrls = data.map((file: string) => `/uploads/background/${file}`);
+        // Check if response is array of objects {filename, url} or array of strings
+        const bgUrls = Array.isArray(data) && data.length > 0 && typeof data[0] === 'object'
+          ? data.map((item: { filename: string; url: string }) => item.url) // S3 mode
+          : data.map((file: string) => `/uploads/background/${file}`); // Local mode
         setBackgrounds(bgUrls);
         if (bgUrls.length > 0) {
           setCurrentBg(bgUrls[Math.floor(Math.random() * bgUrls.length)]);
@@ -108,28 +115,8 @@ const HomePage: React.FC = () => {
     }
   }, [location]);
 
-  const getElementColor = (elementName: string) => {
-    const colors: { [key: string]: string } = {
-      'Havoc': '#ec4899',
-      'Aero': '#22c55e',
-      'Glacio': '#3b82f6',
-      'Fusion': '#f97316',
-      'Electro': '#a855f7',
-      'Spectro': '#eab308'
-    };
-    return colors[elementName] || '#888';
-  };
-
   const getElementIcon = (element: string) => {
-    const icons: { [key: string]: string } = {
-      'HAVOC': '/uploads/element/havoc.png',
-      'AERO': '/uploads/element/aero.png',
-      'GLACIO': '/uploads/element/glacio.png',
-      'FUSION': '/uploads/element/fusion.png',
-      'ELECTRO': '/uploads/element/electro.png',
-      'SPECTRO': '/uploads/element/spectro.png'
-    };
-    return icons[element.toUpperCase()] || null;
+    return getElementIconUrlSync(element);
   };
 
   const getRarityStars = (rarity: number) => '★'.repeat(rarity);
@@ -138,16 +125,13 @@ const HomePage: React.FC = () => {
     <div className={styles.homepage} style={{ backgroundImage: `url(${currentBg})` }}>
       <Header />
       <main className={styles.mainContent}>
-        {/* Hero Section */}
         <div className={styles.heroSection}>
           <h1 className={styles.heroTitle}>Welcome to Game Tracker</h1>
           <p className={styles.heroSubtitle}>Track your favorite games and more!</p>
         </div>
 
         <div className={styles.container}>
-          {/* Left Section */}
           <div className={styles.leftSection}>
-            {/* Quick Navigation */}
             <div className={styles.quickNav}>
               <div className={styles.quickNavHeader}>
                 Điều Hướng Nhanh
@@ -168,7 +152,6 @@ const HomePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Latest Characters */}
             <div className={styles.charactersSection}>
               <div className={styles.sectionHeader}>
                 Nhân Vật
@@ -212,7 +195,6 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Section - Banners */}
           <div className={styles.rightSection}>
             <div className={styles.bannersHeader}>
               Banners
@@ -262,7 +244,6 @@ const HomePage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Hover Popup */}
                   {hoveredBanner === banner.id && (
                     <div className={styles.bannerPopup}>
                       <div className={styles.popupHeader}>

@@ -399,12 +399,7 @@ public class BannerService {
         "Calcharo", "Lingyang", "Verina", "Encore", "Jianxin"
     );
 
-    /**
-     * Calculate 5-star rate with soft pity
-     * Soft pity: Roll 60-69: +1% per roll, Roll 70-79: +10% per roll
-     * @param currentPity Current 5-star pity count
-     * @return Adjusted rate as percentage
-     */
+    // Calculate 5-star rate with soft pity (Roll 60-69: +1% per roll, Roll 70-79: +10% per roll)
     private double calculateFiveStarRate(int currentPity) {
         double baseRate = 0.8;
         
@@ -426,13 +421,7 @@ public class BannerService {
         return baseRate;
     }
 
-    /**
-     * Perform gacha roll with pity from client localStorage
-     * @param bannerId The banner to roll on
-     * @param count Number of rolls (1 or 10)
-     * @param request GachaRequest with current pity state
-     * @return GachaResultResponse with items and updated pity info
-     */
+    // Perform gacha roll with pity from client localStorage
     public GachaResultResponse performGacha(Long bannerId, int count, GachaRequest request) {
         if (count != 1 && count != 10) {
             throw new RuntimeException("Invalid count. Must be 1 or 10");
@@ -487,9 +476,7 @@ public class BannerService {
         }
     }
 
-    /**
-     * Roll a single item with provided pity state
-     */
+    // Roll a single item with provided pity state
     private GachaRollResult rollSingle(Banner banner, int pity5Star, int pity4Star, 
                                        boolean guaranteed5StarFeatured, boolean guaranteed4StarFeatured) {
         // Calculate current 5-star rate with soft pity
@@ -517,9 +504,7 @@ public class BannerService {
         return new GachaRollResult(item, pity5Star, pity4Star, guaranteed5StarFeatured, guaranteed4StarFeatured);
     }
 
-    /**
-     * Roll a 5-star item (stateless)
-     */
+    // Roll a 5-star item (stateless)
     private GachaItemResponse roll5Star(Banner banner, boolean isGuaranteed) {
         Character featuredChar = null;
         Weapon featuredWeapon = null;
@@ -568,9 +553,7 @@ public class BannerService {
         throw new RuntimeException("Unable to roll 5-star");
     }
 
-    /**
-     * Roll a 4-star item (stateless)
-     */
+    // Roll a 4-star item (stateless)
     private GachaItemResponse roll4Star(Banner banner, boolean isGuaranteed) {
         List<Character> featuredChars = new ArrayList<>();
         List<Weapon> featuredWeapons = new ArrayList<>();
@@ -644,9 +627,7 @@ public class BannerService {
         }
     }
 
-    /**
-     * Roll a 3-star weapon
-     */
+    // Roll a 3-star weapon
     private GachaItemResponse roll3Star() {
         // Get all 3-star weapons
         List<Weapon> threeStarWeapons = weaponRepository.findAll().stream()
@@ -661,9 +642,7 @@ public class BannerService {
         return createGachaItem(weapon, false);
     }
 
-    /**
-     * Create GachaItemResponse from Character
-     */
+    // Create GachaItemResponse from Character
     private GachaItemResponse createGachaItem(Character character, boolean isFeatured) {
         GachaItemResponse item = new GachaItemResponse();
         item.setId(character.getId());
@@ -678,9 +657,7 @@ public class BannerService {
         return item;
     }
 
-    /**
-     * Create GachaItemResponse from Weapon
-     */
+    // Create GachaItemResponse from Weapon
     private GachaItemResponse createGachaItem(Weapon weapon, boolean isFeatured) {
         GachaItemResponse item = new GachaItemResponse();
         item.setId(weapon.getId());

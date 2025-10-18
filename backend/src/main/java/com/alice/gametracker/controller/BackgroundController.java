@@ -1,11 +1,12 @@
 package com.alice.gametracker.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -27,29 +28,49 @@ public class BackgroundController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    // Get list of background filenames
+    // Get list of background files with full URLs - Returns [{"filename": "file1.jpg", "url": "https://..."}]
     @GetMapping
-    public ResponseEntity<List<String>> getBackgroundFiles() {
-        List<String> files = new ArrayList<>();
-        Path backgroundStoragePath = fileStorageService.getBackgroundStoragePath();
-        File dir = backgroundStoragePath.toFile();
-        if (dir.exists() && dir.isDirectory()) {
-            File[] fileList = dir.listFiles();
-            if (fileList != null) {
-                for (File file : fileList) {
-                    if (file.isFile()) {
-                        files.add(file.getName());
-                    }
-                }
+    public ResponseEntity<List<Map<String, String>>> getBackgroundFiles() {
+        try {
+            List<String> filenames = fileStorageService.listBackgroundFiles();
+            List<Map<String, String>> result = new ArrayList<>();
+            
+            for (String filename : filenames) {
+                Map<String, String> item = new HashMap<>();
+                item.put("filename", filename);
+                item.put("url", fileStorageService.getBackgroundImageUrl(filename));
+                result.add(item);
             }
+            
+            return ResponseEntity.ok(result);
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok(files);
     }
 
-    // Serve background image files (public)
-    // GET /api/background/image/{filename}
+    // Get list of background filenames only (backward compatibility)
+    @GetMapping("/filenames")
+    public ResponseEntity<List<String>> getBackgroundFilenames() {
+        try {
+            List<String> filenames = fileStorageService.listBackgroundFiles();
+            return ResponseEntity.ok(filenames);
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // Serve background image files - redirects to S3 if S3 storage, serves file if local storage
     @GetMapping("/image/{filename:.+}")
     public ResponseEntity<Resource> serveBackgroundImage(@PathVariable String filename) {
+        // If using S3, redirect to S3 URL
+        if (fileStorageService.isS3Storage()) {
+            String s3Url = fileStorageService.getBackgroundImageUrl(filename);
+            return ResponseEntity.status(302)
+                    .header(HttpHeaders.LOCATION, s3Url)
+                    .build();
+        }
+
+        // Local storage: serve file directly
         try {
             Path backgroundStoragePath = fileStorageService.getBackgroundStoragePath();
             Path filePath = backgroundStoragePath.resolve(filename).normalize();

@@ -211,7 +211,6 @@ const SetEchoManagement: React.FC = () => {
       </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className={styles.pagination}>
           <button

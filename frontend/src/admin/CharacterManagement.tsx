@@ -219,7 +219,6 @@ const CharacterManagement: React.FC = () => {
         )}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className={styles.pagination}>
           <button
@@ -254,7 +253,6 @@ const CharacterManagement: React.FC = () => {
 
       {showDetail && (
         <div className={styles.modalOverlay}>
-          {/* Make detail modal wider to accommodate the full detail table on large screens */}
           <div className={styles.modal} style={{ width: 'min(1940px, 96vw)', maxWidth: '96vw', position: 'relative' }}>
             <button 
               className={styles.closeBtn} 
@@ -264,11 +262,9 @@ const CharacterManagement: React.FC = () => {
               ×
             </button>
             <h3>{showDetail.name} {showDetail.rarity ? `• ${showDetail.rarity}★` : ''}</h3>
-            {/* Three-column layout: left image/actions, center vertical tabs, right scrollable content */}
             <div style={{display:'flex',gap:16,alignItems:'flex-start'}}>
               <div style={{flex:'0 0 220px', display:'flex', flexDirection:'column', alignItems:'stretch'}}>
                 {showDetail.imageUrl ? <img src={showDetail.imageUrl} alt={showDetail.name} style={{width:220,height:220,objectFit:'cover',borderRadius:8}} /> : <div style={{width:220,height:220,background:'#111',borderRadius:8}} />}
-                {/* Action buttons moved here so they remain visible while right column scrolls */}
           <div style={{marginTop:12, display:'flex', flexWrap:'wrap', gap:8}}>
             <button type="button" className={`${styles.smallBtn} ${styles.muted}`} style={{flex:'0 0 calc(50% - 4px)'}} onClick={()=>{ setShowUpload({ id: showDetail.id, name: showDetail.name, currentImage: showDetail.imageUrl }); setUploadFile(null); }}>Upload Image</button>
 
@@ -316,7 +312,6 @@ const CharacterManagement: React.FC = () => {
                   </div>
                 </div>
               </div>
-              {/* right: fixed tabs header + scrollable content area */}
               <div style={{flex:1, display:'flex', flexDirection:'column', paddingRight:8}}>
                 <div style={{display:'flex',gap:8,marginBottom:12}}>
                   <button type="button" className={styles.smallBtn} onClick={()=>setDetailTab('profile')} style={{background: detailTab === 'profile' ? '#113' : undefined}}>Profile</button>
@@ -326,10 +321,8 @@ const CharacterManagement: React.FC = () => {
                 <div style={{flex:1, maxHeight:'70vh', overflowY:'auto'}}>
                   {detailTab === 'profile' && (
                     <div style={{paddingRight:8}}>
-                      {/* Description first */}
                       <div className={styles.profileDescription} style={{marginBottom:12}} dangerouslySetInnerHTML={{__html: renderFormattedText(String(showDetail.description || ''))}} />
 
-                      {/* Row of three bordered boxes: Element, Weapon, Roles */}
                       <div className={styles.infoRow} style={{display:'flex',gap:12,marginBottom:12}}>
                         <div className={styles.infoBox}>
                           <div style={{fontSize:12,opacity:0.8,marginBottom:6}}>Nguyên tố</div>
@@ -345,7 +338,6 @@ const CharacterManagement: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Stats table with slider */}
                       <div>
                         <h4 style={{margin: '6px 0 10px 0'}}>Stats by Level</h4>
                         <div style={{display:'flex',gap:12,alignItems:'center',marginBottom:8}}>
@@ -403,7 +395,6 @@ const CharacterManagement: React.FC = () => {
                                       <div style={{fontWeight:700,fontSize:16,color:'#ddd'}}>{sec.title || `Section ${i+1}`}</div>
                                     </div>
                                     <div style={{display:'flex',gap:8,alignItems:'center'}}>
-                                      {/* small badge kept for backwards compatibility */}
                                       {sec.skillType ? <div style={{background:'#112',padding:'4px 8px',borderRadius:999,fontSize:12,color:'#9be7ff'}}>{sec.skillType}</div> : null}
                                     </div>
                                   </div>
@@ -637,7 +628,6 @@ const CharacterManagement: React.FC = () => {
 
                       {(skillSections || []).map((s, idx) => (
                         <div id={`section-${s.id}`} key={s.id} style={{border:'1px solid #112',padding:8,marginBottom:8,borderRadius:6,background:'#061018'}}>
-                          {/* show skill type prominently */}
                           {s.skillType ? <div style={{fontWeight:800,fontSize:18,color:'#9be7ff',marginBottom:6}}>{s.skillType}</div> : null}
                           <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
                             <strong style={{flex:1}}>{idx+1}. {s.title || 'Section'}</strong>

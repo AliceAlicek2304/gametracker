@@ -280,7 +280,6 @@ const RoleManagement: React.FC = () => {
       </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className={styles.pagination}>
           <button
@@ -336,7 +335,6 @@ const RoleManagement: React.FC = () => {
             <form onSubmit={handleUpdate}>
               <div className={styles.formRow}><label>Name</label><input type="text" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} required /></div>
               <div className={styles.formRow}><label>Description</label><textarea value={form.description} onChange={e=>setForm({...form, description: e.target.value})} rows={4} /></div>
-              {/* Icon is handled in the separate Upload Icon modal */}
               <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
                 <button type="button" className={styles.smallBtn} onClick={()=>{ setShowEdit(null); setForm({ name: '', description: '' }); }}>Cancel</button>
                 <button className={styles.smallBtn} type="submit">Save</button>

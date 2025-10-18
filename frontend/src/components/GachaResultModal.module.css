@@ -615,7 +615,7 @@
   }
 
   .ray {
-    height: 250px;
+    height: 250px;                    
     margin-top: -250px;
   }
 }

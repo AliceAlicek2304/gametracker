@@ -182,7 +182,6 @@ const EchoManagement: React.FC = () => {
         )}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className={styles.pagination}>
           <button
@@ -326,7 +325,6 @@ const EchoManagement: React.FC = () => {
             </button>
             <h3>{showDetail.name} {showDetail.cost ? `• Cost ${showDetail.cost}` : ''}</h3>
             <div style={{display:'flex',gap:16, flexWrap: 'wrap'}}>
-              {/* Left column: Image + Actions */}
               <div style={{minWidth:200}}>
                 {showDetail.imageUrl ? <img src={showDetail.imageUrl} alt={showDetail.name} style={{width:200,height:200,objectFit:'cover',borderRadius:8}} /> : <div style={{width:200,height:200,background:'#111',borderRadius:8}} />}
                 <div style={{display:'flex',gap:8,marginTop:12,flexDirection:'column'}}>
@@ -366,9 +364,7 @@ const EchoManagement: React.FC = () => {
                 </div>
               </div>
               
-              {/* Right column: Info sections */}
               <div style={{flex:1, minWidth: 300}}>
-                {/* Basic Info */}
                 <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:12}}>
                   <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
                     <div style={{flex:'1 1 150px'}}>
@@ -390,7 +386,6 @@ const EchoManagement: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Description */}
                 {showDetail.description && (
                   <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:12}}>
                     <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:8}}>Description</div>
@@ -398,7 +393,6 @@ const EchoManagement: React.FC = () => {
                   </div>
                 )}
 
-                {/* Skill */}
                 {showDetail.skill && (
                   <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:12}}>
                     <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:8}}>Skill</div>
@@ -466,7 +460,6 @@ const EchoManagement: React.FC = () => {
                   </div>
                 )}
 
-                {/* Created Date */}
                 <div style={{padding:12,background:'rgba(255,255,255,0.02)',borderRadius:8}}>
                   <div style={{fontSize:'0.85rem',opacity:0.7,marginBottom:4}}>Created Date</div>
                   <div>{showDetail.createdDate || 'N/A'}</div>

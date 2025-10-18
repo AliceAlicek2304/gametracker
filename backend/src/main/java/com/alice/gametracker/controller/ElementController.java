@@ -3,6 +3,9 @@ package com.alice.gametracker.controller;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -24,10 +27,38 @@ public class ElementController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    // Serve element icon files (public)
-    // GET /api/elements/icon/{filename}
+    // List all element icon files with their URLs - Returns [{"filename": "fire.png", "url": "https://..."}]
+    @GetMapping("/icons")
+    public ResponseEntity<List<Map<String, String>>> listElementIcons() {
+        try {
+            List<String> filenames = fileStorageService.listElementFiles();
+            List<Map<String, String>> result = new java.util.ArrayList<>();
+            
+            for (String filename : filenames) {
+                Map<String, String> item = new HashMap<>();
+                item.put("filename", filename);
+                item.put("url", fileStorageService.getElementIconUrl(filename));
+                result.add(item);
+            }
+            
+            return ResponseEntity.ok(result);
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // Serve element icon files - redirects to S3 if S3 storage, serves file if local storage
     @GetMapping("/icon/{filename:.+}")
     public ResponseEntity<Resource> serveElementIcon(@PathVariable String filename) {
+        // If using S3, redirect to S3 URL
+        if (fileStorageService.isS3Storage()) {
+            String s3Url = fileStorageService.getElementIconUrl(filename);
+            return ResponseEntity.status(302)
+                    .header(HttpHeaders.LOCATION, s3Url)
+                    .build();
+        }
+
+        // Local storage: serve file directly
         try {
             Path elementStoragePath = fileStorageService.getElementStoragePath();
             Path filePath = elementStoragePath.resolve(filename).normalize();

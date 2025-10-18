@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -912,5 +914,92 @@ public class FileStorageService {
 
     public Path getBackgroundStoragePath() {
         return backgroundStoragePath;
+    }
+
+    // =====================================================
+    // NEW METHODS FOR ELEMENT & BACKGROUND S3 SUPPORT
+
+    // List all element icon files (works for both local and S3 storage)
+    public List<String> listElementFiles() {
+        if (isS3Storage) {
+            return listS3Files("elements/");
+        } else {
+            return listLocalFiles(elementStoragePath);
+        }
+    }
+
+    // List all background image files (works for both local and S3 storage)
+    public List<String> listBackgroundFiles() {
+        if (isS3Storage) {
+            return listS3Files("backgrounds/");
+        } else {
+            return listLocalFiles(backgroundStoragePath);
+        }
+    }
+
+    // Get full URL for element icon (filename e.g., "fire.png") - returns local or S3 URL
+    public String getElementIconUrl(String filename) {
+        return buildElementIconUrl(filename);
+    }
+
+    // Get full URL for background image (filename e.g., "bg1.jpg") - returns local or S3 URL
+    public String getBackgroundImageUrl(String filename) {
+        return buildBackgroundImageUrl(filename);
+    }
+
+    // List files from S3 bucket with given prefix
+    private List<String> listS3Files(String prefix) {
+        List<String> files = new ArrayList<>();
+        try {
+            software.amazon.awssdk.services.s3.model.ListObjectsV2Request listRequest = 
+                software.amazon.awssdk.services.s3.model.ListObjectsV2Request.builder()
+                    .bucket(s3BucketName)
+                    .prefix(prefix)
+                    .build();
+
+            software.amazon.awssdk.services.s3.model.ListObjectsV2Response listResponse = 
+                s3Client.listObjectsV2(listRequest);
+
+            for (software.amazon.awssdk.services.s3.model.S3Object s3Object : listResponse.contents()) {
+                String key = s3Object.key();
+                // Remove prefix to get just filename
+                if (key.startsWith(prefix)) {
+                    String filename = key.substring(prefix.length());
+                    // Skip directories (keys ending with /)
+                    if (!filename.isEmpty() && !filename.endsWith("/")) {
+                        files.add(filename);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to list S3 files with prefix {}: {}", prefix, e.getMessage());
+        }
+        return files;
+    }
+
+    // List files from local directory
+    private List<String> listLocalFiles(Path directoryPath) {
+        List<String> files = new ArrayList<>();
+        try {
+            java.io.File dir = directoryPath.toFile();
+            if (dir.exists() && dir.isDirectory()) {
+                java.io.File[] fileList = dir.listFiles();
+                if (fileList != null) {
+                    for (java.io.File file : fileList) {
+                        if (file.isFile()) {
+                            files.add(file.getName());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to list local files in {}: {}", directoryPath, e.getMessage());
+        }
+        return files;
+    }
+
+    // Check if storage is S3
+    public boolean isS3Storage() {
+        return isS3Storage;
     }
 }

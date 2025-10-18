@@ -1,9 +1,6 @@
 package com.alice.gametracker.dto;
 
-/**
- * Simplified DTO for displaying weapon cards on public weapon listing page
- * Only contains essential fields needed for card display
- */
+// Simplified DTO for displaying weapon cards on public weapon listing page
 public class WeaponCardResponse {
 
     private Long id;

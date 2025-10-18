@@ -69,7 +69,6 @@ const GachaResultModal: React.FC<GachaResultModalProps> = ({ items, onClose }) =
       return () => clearTimeout(timer);
     }
   }, [currentIndex, items.length]);
-                
   // Trigger confetti when 5-star appears
   useEffect(() => {
     const currentItem = items[currentIndex];
