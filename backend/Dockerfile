@@ -1,4 +1,4 @@
-# Multi-stage build for AWS Lambda with Spring Boot
+# Stage 1: Build with Maven
 FROM public.ecr.aws/docker/library/maven:3.9-amazoncorretto-21 AS build
 
 WORKDIR /app
@@ -7,22 +7,19 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copy source code and build
+# Copy source code and build the shaded JAR
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Final stage - AWS Lambda Java Runtime
+# Stage 2: AWS Lambda runtime
 FROM public.ecr.aws/lambda/java:21
 
-# Install unzip
-RUN microdnf install -y unzip && microdnf clean all
+# Copy the shaded (fat/uber) JAR directly; no unzip
+# Lambda will handle loading classes from the fat JAR
+COPY --from=build /app/target/*-aws.jar ${LAMBDA_TASK_ROOT}/gametracker.jar
 
-# Copy the shaded (uber) JAR built by Maven Shade Plugin
-COPY --from=build /app/target/gametracker-0.0.1-SNAPSHOT-aws.jar ${LAMBDA_TASK_ROOT}/app.jar
-
-# Extract the uber JAR - all classes and dependencies are in root
+# Set working directory (optional)
 WORKDIR ${LAMBDA_TASK_ROOT}
-RUN unzip -q app.jar && rm app.jar
 
-# Set the handler
+# Set the Lambda handler
 CMD ["com.alice.gametracker.StreamLambdaHandler::handleRequest"]
