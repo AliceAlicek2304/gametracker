@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ConveneRulesModal from '../components/ConveneRulesModal';
@@ -52,7 +51,6 @@ interface PityState {
 }
 
 const BannerPage: React.FC = () => {
-  const navigate = useNavigate();
   const [banners, setBanners] = useState<Banner[]>([]);
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
   const [backgrounds, setBackgrounds] = useState<string[]>([]);

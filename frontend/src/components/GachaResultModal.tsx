@@ -221,7 +221,7 @@ const GachaResultModal: React.FC<GachaResultModalProps> = ({ items, onClose }) =
       {/* Deck of cards on the left - only show for multiple items */}
       {items.length > 1 && (
         <div className={styles.deck}>
-          {items.map((item, index) => (
+          {items.map((_, index) => (
             <MDiv
               key={index}
               className={`${styles.deckCard} ${index <= currentIndex ? styles.deckCardDrawn : ''}`}

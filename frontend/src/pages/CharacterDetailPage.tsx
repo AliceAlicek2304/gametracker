@@ -58,7 +58,6 @@ const CharacterDetailPage: React.FC = () => {
   const [skillLevels, setSkillLevels] = useState<Map<string, number>>(new Map());
 
   // Background image logic
-  const [backgrounds, setBackgrounds] = useState<string[]>([]);
   const [currentBg, setCurrentBg] = useState('');
 
   // Get element theme colors
@@ -113,7 +112,6 @@ const CharacterDetailPage: React.FC = () => {
         const bgUrls = Array.isArray(data) && data.length > 0 && typeof data[0] === 'object'
           ? data.map((item: { filename: string; url: string }) => item.url) // S3 mode
           : data.map((file: string) => `/uploads/background/${file}`); // Local mode fallback
-        setBackgrounds(bgUrls);
         if (bgUrls.length > 0) {
           setCurrentBg(bgUrls[Math.floor(Math.random() * bgUrls.length)]);
         }
@@ -161,21 +159,6 @@ const CharacterDetailPage: React.FC = () => {
       'HAVOC': apiUrl('elements/icon/havoc.png'),
     };
     return elementMap[element.toUpperCase()];
-  };
-
-  const getWeaponIcon = (weaponType: string) => {
-    const iconMap: { [key: string]: string } = {
-      'SWORD': '⚔️',
-      'CLAYMORE': '🗡️',
-      'POLEARM': '🔱',
-      'BOW': '🏹',
-      'CATALYST': '📖',
-      'PISTOLS': '🔫',
-      'GAUNTLETS': '🥊',
-      'BROADBLADE': '⚔️',
-      'RECTIFIER': '📿',
-    };
-    return iconMap[weaponType.toUpperCase()] || '⚔️';
   };
 
   const renderStars = (rarity: number) => {
