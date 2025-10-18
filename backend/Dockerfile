@@ -15,9 +15,8 @@ RUN mvn clean package -DskipTests
 FROM public.ecr.aws/lambda/java:21
 
 RUN mkdir -p ${LAMBDA_TASK_ROOT}/lib
-COPY --from=build /app/target/*aws.jar ${LAMBDA_TASK_ROOT}/lib/
-# Fallback: if no classifier, copy any jar (will overwrite/duplicate harmlessly)
-COPY --from=build /app/target/*.jar ${LAMBDA_TASK_ROOT}/lib/
+COPY --from=build /app/target/*-aws.jar ${LAMBDA_TASK_ROOT}/app.jar
+COPY --from=build /app/target/*.jar ${LAMBDA_TASK_ROOT}/app.jar
 
 # Set working directory (optional)
 WORKDIR ${LAMBDA_TASK_ROOT}
