@@ -27,7 +27,7 @@
 # Local configuration and secrets
 # backend Spring Boot properties
 application.properties
-application-*.properties
+# application-*.properties  # Commented out - we need application-prod.properties for Lambda
 **/application.properties
 # env variants
 .env.*
@@ -64,7 +64,7 @@ yarn-error.log*
 
 # Spring Boot application properties
 /backend/src/main/resources/application.properties
-/backend/src/main/resources/application-*.properties
+# /backend/src/main/resources/application-*.properties  # Commented out - we need application-prod.properties for Lambda
 
 # IDE files
 .vscode/
