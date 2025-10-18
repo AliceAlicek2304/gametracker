@@ -14,8 +14,8 @@ RUN mvn clean package -DskipTests
 # Final stage - AWS Lambda Java Runtime
 FROM public.ecr.aws/lambda/java:21
 
-# Install unzip
-RUN yum install -y unzip
+# Install unzip using microdnf (for minimal Amazon Linux images)
+RUN microdnf install -y unzip && microdnf clean all
 
 # Copy and extract the Spring Boot JAR
 COPY --from=build /app/target/gametracker-0.0.1-SNAPSHOT.jar ${LAMBDA_TASK_ROOT}/app.jar
