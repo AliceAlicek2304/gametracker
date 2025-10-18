@@ -22,6 +22,7 @@ COPY --from=build /app/target/gametracker-0.0.1-SNAPSHOT.jar ${LAMBDA_TASK_ROOT}
 RUN cd ${LAMBDA_TASK_ROOT} && \
     unzip -q app.jar && \
     rm app.jar && \
+    mkdir -p lib && \
     cp -r BOOT-INF/lib/* lib/ && \
     cp -r BOOT-INF/classes/* . && \
     rm -rf BOOT-INF META-INF org
