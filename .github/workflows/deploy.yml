@@ -28,6 +28,28 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
         
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'corretto'
+        java-version: '21'
+        
+    - name: Verify shaded JAR in build
+      working-directory: ./backend
+      run: |
+        echo "Building project with Maven..."
+        mvn -DskipTests clean package
+        
+        echo "Verifying shaded JAR contains handler class..."
+        if [ -f target/gametracker-0.0.1-SNAPSHOT-aws.jar ]; then
+          jar -tf target/gametracker-0.0.1-SNAPSHOT-aws.jar | grep 'com/alice/gametracker/StreamLambdaHandler.class' || \
+            (echo 'ERROR: Handler class not found in shaded JAR' && exit 1)
+          echo "✅ Handler class verified in shaded JAR"
+        else
+          echo "ERROR: Shaded JAR not found"
+          exit 2
+        fi
+        
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
@@ -41,15 +63,6 @@ jobs:
         echo "Building Docker image..."
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        
-        echo "Verifying shaded JAR contains handler class..."
-        docker run --rm $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG /bin/sh -c \
-          "if [ -f /var/task/app.jar ]; then \
-             jar -tf /var/task/app.jar | grep 'com/alice/gametracker/StreamLambdaHandler.class' || \
-             (echo 'ERROR: Handler class not found in app.jar' && exit 1); \
-           else \
-             echo 'ERROR: app.jar not found in image' && exit 2; \
-           fi"
         
         echo "Pushing to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
