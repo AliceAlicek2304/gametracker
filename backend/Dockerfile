@@ -14,8 +14,8 @@ RUN mvn clean package -DskipTests
 # Final stage - AWS Lambda Java Runtime
 FROM public.ecr.aws/lambda/java:21
 
-# Copy the built JAR
-COPY --from=build /app/target/gametracker-0.0.1-SNAPSHOT.jar ${LAMBDA_TASK_ROOT}/lib/
+# Copy the built JAR to the correct location
+COPY --from=build /app/target/gametracker-0.0.1-SNAPSHOT.jar ${LAMBDA_TASK_ROOT}/gametracker.jar
 
 # Set the handler
 CMD ["com.alice.gametracker.StreamLambdaHandler::handleRequest"]
