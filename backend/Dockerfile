@@ -14,8 +14,10 @@ RUN mvn clean package -DskipTests
 # Stage 2: AWS Lambda runtime
 FROM public.ecr.aws/lambda/java:21
 
-# Copy the shaded JAR built by Maven Shade Plugin
-COPY --from=build /app/target/*-aws.jar ${LAMBDA_TASK_ROOT}/gametracker.jar
+RUN mkdir -p ${LAMBDA_TASK_ROOT}/lib
+COPY --from=build /app/target/*aws.jar ${LAMBDA_TASK_ROOT}/lib/
+# Fallback: if no classifier, copy any jar (will overwrite/duplicate harmlessly)
+COPY --from=build /app/target/*.jar ${LAMBDA_TASK_ROOT}/lib/
 
 # Set working directory (optional)
 WORKDIR ${LAMBDA_TASK_ROOT}
