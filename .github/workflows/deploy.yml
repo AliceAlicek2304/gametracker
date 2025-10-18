@@ -1,0 +1,65 @@
+name: Deploy Backend to AWS Lambda
+
+# Workflow to build Docker image and deploy to AWS Lambda
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-southeast-2
+  ECR_REPOSITORY: gametracker-backend
+  LAMBDA_FUNCTION: gametracker-api
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      
+    - name: Build and push Docker image
+      working-directory: ./backend
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        echo "Building Docker image..."
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        
+        echo "Pushing to ECR..."
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        
+        echo "IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+      id: build-image
+        
+    - name: Update Lambda function
+      run: |
+        echo "Updating Lambda function with new image..."
+        aws lambda update-function-code \
+          --function-name ${{ env.LAMBDA_FUNCTION }} \
+          --image-uri ${{ steps.build-image.outputs.IMAGE_URI }} \
+          --region ${{ env.AWS_REGION }}
+        
+        echo "Waiting for Lambda update to complete..."
+        aws lambda wait function-updated \
+          --function-name ${{ env.LAMBDA_FUNCTION }} \
+          --region ${{ env.AWS_REGION }}
+        
+        echo "✅ Lambda function updated successfully!"

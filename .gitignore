@@ -31,9 +31,11 @@ application-*.properties
 **/application.properties
 # env variants
 .env.*
-# YAML configs
+# YAML configs (exclude GitHub workflows)
 *.yml
+!.github/**/*.yml
 *.yaml
+!.github/**/*.yaml
 # Local config directories
 config/
 # secret / key files
