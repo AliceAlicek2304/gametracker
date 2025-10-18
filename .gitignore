@@ -36,8 +36,8 @@ application.properties
 !.github/**/*.yml
 *.yaml
 !.github/**/*.yaml
-# Local config directories
-config/
+# Local config directories (backend only)
+/backend/config/
 # secret / key files
 *.secret
 *.key
