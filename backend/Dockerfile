@@ -25,9 +25,10 @@ COPY --from=build /app/target/gametracker-0.0.1-SNAPSHOT-aws.jar /tmp/app.jar
 RUN cd ${LAMBDA_TASK_ROOT} && \
     jar -xf /tmp/app.jar && \
     rm /tmp/app.jar && \
-    echo "Extracted JAR contents to ${LAMBDA_TASK_ROOT}" && \
-    ls -la ${LAMBDA_TASK_ROOT} && \
-    find ${LAMBDA_TASK_ROOT} -name "StreamLambdaHandler.class" -type f
+    echo "✅ Extracted JAR contents to ${LAMBDA_TASK_ROOT}" && \
+    echo "Checking for handler class..." && \
+    ls -la ${LAMBDA_TASK_ROOT}/com/alice/gametracker/StreamLambdaHandler.class 2>/dev/null || \
+    (echo "❌ ERROR: StreamLambdaHandler.class not found!" && exit 1)
 
 # Set working directory
 WORKDIR ${LAMBDA_TASK_ROOT}
