@@ -7,19 +7,18 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copy source code and build the shaded JAR
+# Copy source code and build the shaded (uber) JAR
 COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: AWS Lambda runtime
 FROM public.ecr.aws/lambda/java:21
 
-# Copy the shaded (fat/uber) JAR directly; no unzip
-# Lambda will handle loading classes from the fat JAR
+# Copy the shaded JAR built by Maven Shade Plugin
 COPY --from=build /app/target/*-aws.jar ${LAMBDA_TASK_ROOT}/gametracker.jar
 
 # Set working directory (optional)
 WORKDIR ${LAMBDA_TASK_ROOT}
 
-# Set the Lambda handler
+# Lambda handler
 CMD ["com.alice.gametracker.StreamLambdaHandler::handleRequest"]
