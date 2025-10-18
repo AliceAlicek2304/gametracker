@@ -42,11 +42,29 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
         
+        echo "Verifying shaded JAR contains handler class..."
+        docker run --rm $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG /bin/sh -c \
+          "if [ -f /var/task/app.jar ]; then \
+             jar -tf /var/task/app.jar | grep 'com/alice/gametracker/StreamLambdaHandler.class' || \
+             (echo 'ERROR: Handler class not found in app.jar' && exit 1); \
+           else \
+             echo 'ERROR: app.jar not found in image' && exit 2; \
+           fi"
+        
         echo "Pushing to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         
-        echo "IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+        # Get image digest for the sha tag
+        IMAGE_DIGEST=$(aws ecr describe-images \
+          --repository-name $ECR_REPOSITORY \
+          --image-ids imageTag=$IMAGE_TAG \
+          --query 'imageDetails[0].imageDigest' \
+          --output text \
+          --region ${{ env.AWS_REGION }})
+        
+        echo "IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY@$IMAGE_DIGEST" >> $GITHUB_OUTPUT
+        echo "Using image digest: $IMAGE_DIGEST"
       id: build-image
         
     - name: Update Lambda function
