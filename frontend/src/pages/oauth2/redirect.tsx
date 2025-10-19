@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { showToast } from '../../utils/toast';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
 
 const OAuth2Redirect: React.FC = () => {
