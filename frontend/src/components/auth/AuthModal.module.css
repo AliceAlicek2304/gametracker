@@ -109,6 +109,34 @@
   box-shadow: none;
 }
 
+/* Google button styled to match other buttons */
+/* Google button styled to match Google branding */
+.google-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0.75rem !important;
+  background: #fff !important;
+  color: #222 !important;
+  border: 2px solid #dadce0 !important;
+  box-shadow: 0 2px 8px rgba(60,64,67,0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  border-radius: 10px !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+  transition: all 0.2s !important;
+  gap: 8px !important;
+}
+.google-btn:hover {
+  background: #f8fafc !important;
+  border-color: #4285F4 !important;
+  color: #4285F4 !important;
+  box-shadow: 0 4px 16px rgba(66,133,244,0.12) !important;
+}
+
 .forgot-btn {
   /* Make this a plain text link (override generic button styles) */
   background: transparent !important;

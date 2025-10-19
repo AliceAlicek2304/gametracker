@@ -14,6 +14,35 @@ import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
+    @Async
+    public void sendCredentialsEmail(String to, String fullName, String username, String password) {
+        logger.info("Sending credentials email to: {}", to);
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setSubject("Thông tin tài khoản GameTracker của bạn");
+            String htmlContent = String.format("""
+                <html>
+                <body>
+                    <h2>Chào %s!</h2>
+                    <p>Tài khoản của bạn đã được tạo qua đăng nhập Google.</p>
+                    <p><strong>Username:</strong> %s</p>
+                    <p><strong>Mật khẩu tạm thời:</strong> %s</p>
+                    <p>Vui lòng đăng nhập và đổi mật khẩu ngay để bảo mật tài khoản.</p>
+                    <br>
+                    <p>Trân trọng,<br>Đội ngũ GameTracker</p>
+                </body>
+                </html>
+            """, fullName, username, password);
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+            logger.info("Credentials email sent successfully to: {}", to);
+        } catch (MessagingException e) {
+            logger.error("Failed to send credentials email to: {}", to, e);
+        }
+    }
     
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
     

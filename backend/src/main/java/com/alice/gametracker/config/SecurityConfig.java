@@ -72,6 +72,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/auth/forgot-password").permitAll()
                     .requestMatchers("/api/auth/reset-password").permitAll()
                     .requestMatchers("/api/auth/verify-email").permitAll()
+                    .requestMatchers("/api/auth/oauth2/code").permitAll()
                     
                     // Account registration and utility endpoints - public  
                     .requestMatchers("/api/account/register").permitAll()

@@ -74,6 +74,25 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
           <button type="submit" disabled={loading}>
             {loading ? 'Đang đăng ký...' : 'Đăng ký'}
           </button>
+            <button
+              className={styles['google-btn']}
+              type="button"
+              onClick={() => {
+                const clientId = '928507113226-qqrcj7hbtt3maq2r56lrh20lqseg866s.apps.googleusercontent.com';
+                const redirectUri = window.location.origin + '/oauth2/redirect';
+                const scope = 'openid profile email';
+                const state = 'register';
+                const oauthUrl =
+                  `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}` +
+                  `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+                  `&scope=${encodeURIComponent(scope)}` +
+                  `&state=${state}`;
+                window.location.href = oauthUrl;
+              }}
+            >
+              <img src="/icons/google.svg" alt="Google" style={{ width: 22, height: 22 }} />
+              Đăng ký với Google
+            </button>
         </form>
         <button className={styles['close-btn']} onClick={onClose}>Đóng</button>
       </div>

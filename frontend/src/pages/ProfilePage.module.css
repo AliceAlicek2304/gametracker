@@ -1,3 +1,26 @@
+/* Hide default calendar icon for input[type="date"] */
+.field-row input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+.field-row input[type="date"]::-ms-expand {
+  display: none;
+}
+.field-row input[type="date"]::-moz-focus-inner {
+  border: 0;
+}
+.field-row input[type="date"] {
+  position: relative;
+  padding-right: 2em;
+}
+.field-row .custom-date-icon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1.3em;
+  color: #00d4ff;
+}
 /* Profile Page Styles */
 
 .profile-page {

@@ -17,6 +17,7 @@ interface AuthContextType {
   logout: () => void;
   updateUser: (data: Partial<User>) => void;
   isAuthenticated: boolean;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,20 +36,19 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Load user from localStorage on app start and validate token
     const storedUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
-    
     if (storedUser && token) {
-      // Check if token exists, if not clear user data
       setUser(JSON.parse(storedUser));
     } else if (storedUser && !token) {
-      // User exists but no token, clear everything
       localStorage.removeItem('user');
       setUser(null);
     }
+    setLoading(false);
   }, []);
 
   const login = (userData: User) => {
@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, isAuthenticated, loading }}>
       {children}
     </AuthContext.Provider>
   );

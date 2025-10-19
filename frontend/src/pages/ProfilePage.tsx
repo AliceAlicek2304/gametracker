@@ -9,8 +9,7 @@ import Footer from '../components/layout/Footer';
 import { apiFetch } from '../utils/apiHelper';
 
 const ProfilePage: React.FC = () => {
-  const { user, updateUser } = useAuth();
-  const { isAuthenticated } = useAuth();
+  const { user, updateUser, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [tab, setTab] = useState<'info' | 'security'>('info');
@@ -35,6 +34,7 @@ const ProfilePage: React.FC = () => {
   };
 
   useEffect(() => {
+    if (loading) return;
     // Redirect to home if not authenticated
     if (!isAuthenticated) {
       navigate('/', { replace: true });
@@ -60,7 +60,7 @@ const ProfilePage: React.FC = () => {
         // ignore
       }
     })();
-  }, []);
+  }, [loading]);
 
   useEffect(() => {
     if (backgrounds.length === 0) return;
@@ -142,6 +142,7 @@ const ProfilePage: React.FC = () => {
                   <div className={styles['field-row']}>
                     <label>Ngày sinh</label>
                     <input name="birthday" type="date" defaultValue={formatDateForInput(profile?.birthDay)} />
+                    <span className={styles['custom-date-icon']}>📅</span>
                   </div>
 
                   <div className={styles['field-row']}>

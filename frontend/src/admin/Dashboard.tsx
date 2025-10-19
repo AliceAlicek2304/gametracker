@@ -54,7 +54,7 @@ const Dashboard: React.FC = () => {
           <div style={{flex:1}} />
           <div
             className={`${styles.menuItem} ${styles.homeItem}`}
-            onClick={() => { window.location.href = 'http://localhost:3000/'; }}
+            onClick={() => { window.location.href = import.meta.env.VITE_HOMEPAGE_URL || window.location.origin + '/'; }}
           >
             Home
           </div>

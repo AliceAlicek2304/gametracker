@@ -15,6 +15,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import UnauthorizedModal from './components/UnauthorizedModal';
 import LoginModal from './components/auth/LoginModal';
 import { useState } from 'react';
+import OAuth2Redirect from './pages/oauth2/redirect';
 
 function App() {
   const [loginOpen, setLoginOpen] = useState(false);
@@ -38,6 +39,7 @@ function App() {
             <Route path="/banners" element={<BannerPage />} />
             <Route path="/tracker" element={<TrackerPage />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
           </Routes>
           <ToastContainer />
           <UnauthorizedModal />
