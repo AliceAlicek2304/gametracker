@@ -6,18 +6,18 @@ export default defineConfig({
   plugins: [react()],
   server: {
     // Proxy API requests to backend server during development
-    proxy: {
-      '/uploads': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      }
-    }
+    // proxy: {
+    //   '/uploads': {
+    //     target: 'http://localhost:8080',
+    //     changeOrigin: true,
+    //     secure: false,
+    //   },
+    //   '/api': {
+    //     target: 'http://localhost:8080',
+    //     changeOrigin: true,
+    //     secure: false,
+    //   }
+    // }
     
   }
 })

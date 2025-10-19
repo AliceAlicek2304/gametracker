@@ -65,6 +65,10 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -121,7 +125,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<!-- true for production, false for development -->
-					<skip>false</skip>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 			<plugin>
