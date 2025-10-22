@@ -2,8 +2,9 @@
 .homepage {
   min-height: 100vh;
   width: 100%;
-  /* Use contain so background images display at their natural size and are not cropped/zoomed */
-  background-size: contain;
+  /* Match other pages: let background cover and stay fixed for a full-bleed look */
+  background-size: cover;
+  background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
@@ -18,7 +19,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  /* Slightly lighter overlay like Tracker page for readability */
+  background: rgba(0, 0, 0, 0.4);
   z-index: 1;
   /* Allow clicks to pass through the overlay so footer and other elements remain interactive */
   pointer-events: none;
