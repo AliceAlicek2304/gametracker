@@ -175,7 +175,7 @@ const EventTimeline: React.FC = () => {
       <div className={styles.headerRow}>
         <div className={styles.datesRow} ref={datesRef}>
           <div className={styles.datesInner} style={{ width: days.length * dayWidth }}>
-            {days.map((d, i) => {
+            {days.map((d) => {
               const dt = new Date(d + 'T00:00:00');
               const label = dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
               return (
