@@ -2,7 +2,8 @@
 .homepage {
   min-height: 100vh;
   width: 100%;
-  background-size: cover;
+  /* Use contain so background images display at their natural size and are not cropped/zoomed */
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
