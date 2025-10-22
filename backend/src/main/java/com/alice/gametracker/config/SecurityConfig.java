@@ -130,6 +130,12 @@ public class SecurityConfig {
                     .requestMatchers("GET", "/api/echoes").permitAll()
                     .requestMatchers("GET", "/api/echoes/active").permitAll()
                     .requestMatchers("GET", "/api/echoes/{id}").permitAll()
+
+                    // Events - public read endpoints and public images
+                    .requestMatchers("GET", "/api/events").permitAll()
+                    .requestMatchers("GET", "/api/events/active").permitAll()
+                    .requestMatchers("GET", "/api/events/{id}").permitAll()
+                    .requestMatchers("/api/events/image/**").permitAll()
                     
                     // SetEcho icons - public (icons served from /api/set-echoes/icon/{filename})
                     .requestMatchers("/api/set-echoes/icon/**").permitAll()
@@ -151,6 +157,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/roles/**").hasRole("ADMIN")
                     .requestMatchers("/api/characters/**").hasRole("ADMIN")
                     .requestMatchers("/api/weapons/**").hasRole("ADMIN")
+                    .requestMatchers("/api/events/**").hasRole("ADMIN")
                     .requestMatchers("/api/set-echoes/**").hasRole("ADMIN")
                     .requestMatchers("/api/echoes/**").hasRole("ADMIN")
                     .requestMatchers("/api/banners/**").hasRole("ADMIN")

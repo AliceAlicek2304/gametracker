@@ -85,6 +85,12 @@ public class FileStorageService {
     @Value("${app.background.url.pattern:/api/background/image}")
     private String backgroundUrlPattern;
 
+    @Value("${app.event.storage.location:uploads/event/}")
+    private String eventStorageLocation;
+
+    @Value("${app.event.url.pattern:/api/events/image}")
+    private String eventUrlPattern;
+
     @Value("${app.storage.type:local}")
     private String storageType;
 
@@ -104,7 +110,8 @@ public class FileStorageService {
     private Path echoStoragePath;
     private Path elementStoragePath;
     private Path backgroundStoragePath;
-    
+    private Path eventStoragePath;
+
     // S3 storage
     private S3Client s3Client;
     private boolean isS3Storage;
@@ -112,7 +119,7 @@ public class FileStorageService {
     @PostConstruct
     public void init() {
         this.isS3Storage = "s3".equalsIgnoreCase(storageType);
-        
+
         if (isS3Storage) {
             log.info("Using S3 file storage for file operations");
             initializeS3Client();
@@ -143,6 +150,7 @@ public class FileStorageService {
         this.echoStoragePath = Paths.get(echoStorageLocation).toAbsolutePath().normalize();
         this.elementStoragePath = Paths.get(elementStorageLocation).toAbsolutePath().normalize();
         this.backgroundStoragePath = Paths.get(backgroundStorageLocation).toAbsolutePath().normalize();
+        this.eventStoragePath = Paths.get(eventStorageLocation).toAbsolutePath().normalize();
 
         try {
             Files.createDirectories(avatarStoragePath);
@@ -153,6 +161,7 @@ public class FileStorageService {
             Files.createDirectories(echoStoragePath);
             Files.createDirectories(elementStoragePath);
             Files.createDirectories(backgroundStoragePath);
+            Files.createDirectories(eventStoragePath);
             copyDefaultAvatar();
             log.info("Local storage directories created successfully");
         } catch (IOException e) {
@@ -173,7 +182,8 @@ public class FileStorageService {
                     log.info("Default avatar copied from uploads folder");
                 } else {
                     // Try to copy from resources
-                    try (InputStream inputStream = new ClassPathResource("static/img/default-avatar.jpg").getInputStream()) {
+                    try (InputStream inputStream = new ClassPathResource("static/img/default-avatar.jpg")
+                            .getInputStream()) {
                         Files.copy(inputStream, defaultAvatarPath, StandardCopyOption.REPLACE_EXISTING);
                         log.info("Default avatar copied from resources");
                     } catch (IOException e) {
@@ -292,6 +302,22 @@ public class FileStorageService {
         }
     }
 
+    // Helper to build event image URL based on storage type
+    private String buildEventImageUrl(String fileName) {
+        if (isS3Storage) {
+            return getS3FileUrl("events/" + fileName);
+        } else {
+            String base = eventUrlPattern;
+            if (!base.endsWith("/")) {
+                base += "/";
+            }
+            if (fileName.startsWith("/")) {
+                fileName = fileName.substring(1);
+            }
+            return base + fileName;
+        }
+    }
+
     // Get S3 file URL
     private String getS3FileUrl(String key) {
         try {
@@ -316,12 +342,12 @@ public class FileStorageService {
         if (file == null || file.isEmpty()) {
             return getDefaultAvatarUrl();
         }
-        
+
         String originalFileName = file.getOriginalFilename();
         String fileExtension = getFileExtension(originalFileName);
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String uniqueFileName = UUID.randomUUID().toString().substring(0, 8) + "_" + timestamp + fileExtension;
-        
+
         if (isS3Storage) {
             return storeAvatarToS3(file, uniqueFileName);
         } else {
@@ -334,12 +360,12 @@ public class FileStorageService {
         if (file == null || file.isEmpty()) {
             return getDefaultAvatarUrl();
         }
-        
+
         String originalFileName = file.getOriginalFilename();
         String fileExtension = getFileExtension(originalFileName);
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String uniqueFileName = "user_" + userId + "_" + timestamp + fileExtension;
-        
+
         if (isS3Storage) {
             return storeAvatarToS3(file, uniqueFileName);
         } else {
@@ -352,12 +378,12 @@ public class FileStorageService {
         if (file == null || file.isEmpty()) {
             return null;
         }
-        
+
         String originalFileName = file.getOriginalFilename();
         String fileExtension = getFileExtension(originalFileName);
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String uniqueFileName = UUID.randomUUID().toString().substring(0, 8) + "_" + timestamp + fileExtension;
-        
+
         if (isS3Storage) {
             return storeRoleIconToS3(file, uniqueFileName);
         } else {
@@ -369,7 +395,7 @@ public class FileStorageService {
     private String storeAvatarToS3(MultipartFile file, String fileName) throws IOException {
         try {
             String s3Key = "avatars/" + fileName;
-            
+
             long size = file.getSize();
             PutObjectRequest putObjectRequest;
             RequestBody requestBody;
@@ -405,7 +431,7 @@ public class FileStorageService {
                     log.warn("Failed to delete temp file: {}", tempFile, e);
                 }
             }
-            
+
             String fileUrl = getS3FileUrl(s3Key);
             log.debug("Avatar uploaded to S3: {}", fileUrl);
             return fileUrl;
@@ -428,7 +454,7 @@ public class FileStorageService {
     private String storeRoleIconToS3(MultipartFile file, String fileName) throws IOException {
         try {
             String s3Key = "roles/" + fileName;
-            
+
             long size = file.getSize();
             PutObjectRequest putObjectRequest;
             RequestBody requestBody;
@@ -464,7 +490,7 @@ public class FileStorageService {
                     log.warn("Failed to delete temp file: {}", tempFile, e);
                 }
             }
-            
+
             String fileUrl = getS3FileUrl(s3Key);
             log.debug("Role icon uploaded to S3: {}", fileUrl);
             return fileUrl;
@@ -488,12 +514,12 @@ public class FileStorageService {
         if (file == null || file.isEmpty()) {
             return null;
         }
-        
+
         String originalFileName = file.getOriginalFilename();
         String fileExtension = getFileExtension(originalFileName);
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String uniqueFileName = UUID.randomUUID().toString().substring(0, 8) + "_" + timestamp + fileExtension;
-        
+
         if (isS3Storage) {
             return storeCharacterImageToS3(file, uniqueFileName);
         } else {
@@ -519,6 +545,24 @@ public class FileStorageService {
         }
     }
 
+    // Store event image file
+    public String storeEventImage(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+
+        String originalFileName = file.getOriginalFilename();
+        String fileExtension = getFileExtension(originalFileName);
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String uniqueFileName = UUID.randomUUID().toString().substring(0, 8) + "_" + timestamp + fileExtension;
+
+        if (isS3Storage) {
+            return storeEventImageToS3(file, uniqueFileName);
+        } else {
+            return storeEventImageLocally(file, uniqueFileName);
+        }
+    }
+
     // Store setecho icon file
     public String storeSetEchoIcon(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
@@ -539,14 +583,16 @@ public class FileStorageService {
 
     // Store echo image file
     public String storeEchoImage(MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) return null;
+        if (file == null || file.isEmpty())
+            return null;
 
         String originalFileName = file.getOriginalFilename();
         String fileExtension = getFileExtension(originalFileName);
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String uniqueFileName = UUID.randomUUID().toString().substring(0, 8) + "_" + timestamp + fileExtension;
 
-        if (isS3Storage) return storeEchoImageToS3(file, uniqueFileName);
+        if (isS3Storage)
+            return storeEchoImageToS3(file, uniqueFileName);
         return storeEchoImageLocally(file, uniqueFileName);
     }
 
@@ -582,7 +628,11 @@ public class FileStorageService {
             s3Client.putObject(putObjectRequest, requestBody);
 
             if (tempFile != null) {
-                try { Files.deleteIfExists(tempFile); } catch (IOException e) { log.warn("Failed to delete temp file: {}", tempFile, e); }
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp file: {}", tempFile, e);
+                }
             }
 
             String fileUrl = getS3FileUrl(s3Key);
@@ -591,6 +641,55 @@ public class FileStorageService {
 
         } catch (Exception e) {
             log.error("Failed to upload weapon image to S3: {}", e.getMessage());
+            throw new IOException("Failed to upload file to S3", e);
+        }
+    }
+
+    // Store event image to S3
+    private String storeEventImageToS3(MultipartFile file, String fileName) throws IOException {
+        try {
+            String s3Key = "events/" + fileName;
+
+            long size = file.getSize();
+            PutObjectRequest putObjectRequest;
+            RequestBody requestBody;
+            Path tempFile = null;
+            if (size > 0) {
+                putObjectRequest = PutObjectRequest.builder()
+                        .bucket(s3BucketName)
+                        .key(s3Key)
+                        .contentType(file.getContentType())
+                        .contentLength(size).acl(ObjectCannedACL.PUBLIC_READ).build();
+                requestBody = RequestBody.fromInputStream(file.getInputStream(), size);
+            } else {
+                Path tempDir = Paths.get(System.getProperty("java.io.tmpdir", "/tmp"));
+                tempFile = Files.createTempFile(tempDir, "event", ".tmp");
+                Files.copy(file.getInputStream(), tempFile, StandardCopyOption.REPLACE_EXISTING);
+                long actualSize = Files.size(tempFile);
+                putObjectRequest = PutObjectRequest.builder()
+                        .bucket(s3BucketName)
+                        .key(s3Key)
+                        .contentType(file.getContentType())
+                        .contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ).build();
+                requestBody = RequestBody.fromFile(tempFile);
+            }
+
+            s3Client.putObject(putObjectRequest, requestBody);
+
+            if (tempFile != null) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp file: {}", tempFile, e);
+                }
+            }
+
+            String fileUrl = getS3FileUrl(s3Key);
+            log.debug("Event image uploaded to S3: {}", fileUrl);
+            return fileUrl;
+
+        } catch (Exception e) {
+            log.error("Failed to upload event image to S3: {}", e.getMessage());
             throw new IOException("Failed to upload file to S3", e);
         }
     }
@@ -627,7 +726,11 @@ public class FileStorageService {
             s3Client.putObject(putObjectRequest, requestBody);
 
             if (tempFile != null) {
-                try { Files.deleteIfExists(tempFile); } catch (IOException e) { log.warn("Failed to delete temp file: {}", tempFile, e); }
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp file: {}", tempFile, e);
+                }
             }
 
             String fileUrl = getS3FileUrl(s3Key);
@@ -646,8 +749,23 @@ public class FileStorageService {
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         log.debug("Weapon image stored locally: {}", fileName);
         String base = weaponUrlPattern;
-        if (!base.endsWith("/")) base += "/";
-        if (fileName.startsWith("/")) fileName = fileName.substring(1);
+        if (!base.endsWith("/"))
+            base += "/";
+        if (fileName.startsWith("/"))
+            fileName = fileName.substring(1);
+        return base + fileName;
+    }
+
+    // Store event image locally
+    private String storeEventImageLocally(MultipartFile file, String fileName) throws IOException {
+        Path targetLocation = eventStoragePath.resolve(fileName);
+        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        log.debug("Event image stored locally: {}", fileName);
+        String base = eventUrlPattern;
+        if (!base.endsWith("/"))
+            base += "/";
+        if (fileName.startsWith("/"))
+            fileName = fileName.substring(1);
         return base + fileName;
     }
 
@@ -657,8 +775,10 @@ public class FileStorageService {
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         log.debug("SetEcho icon stored locally: {}", fileName);
         String base = setEchoUrlPattern;
-        if (!base.endsWith("/")) base += "/";
-        if (fileName.startsWith("/")) fileName = fileName.substring(1);
+        if (!base.endsWith("/"))
+            base += "/";
+        if (fileName.startsWith("/"))
+            fileName = fileName.substring(1);
         return base + fileName;
     }
 
@@ -672,19 +792,28 @@ public class FileStorageService {
             RequestBody requestBody;
             Path tempFile = null;
             if (size > 0) {
-                putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(s3Key).contentType(file.getContentType()).contentLength(size).acl(ObjectCannedACL.PUBLIC_READ).build();
+                putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(s3Key)
+                        .contentType(file.getContentType()).contentLength(size).acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
                 requestBody = RequestBody.fromInputStream(file.getInputStream(), size);
             } else {
                 Path tempDir = Paths.get(System.getProperty("java.io.tmpdir", "/tmp"));
                 tempFile = Files.createTempFile(tempDir, "echo", ".tmp");
                 Files.copy(file.getInputStream(), tempFile, StandardCopyOption.REPLACE_EXISTING);
                 long actualSize = Files.size(tempFile);
-                putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(s3Key).contentType(file.getContentType()).contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ).build();
+                putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(s3Key)
+                        .contentType(file.getContentType()).contentLength(actualSize).acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
                 requestBody = RequestBody.fromFile(tempFile);
             }
 
             s3Client.putObject(putObjectRequest, requestBody);
-            if (tempFile != null) try { Files.deleteIfExists(tempFile); } catch (IOException ex) { log.warn("Failed to delete temp file: {}", tempFile, ex); }
+            if (tempFile != null)
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException ex) {
+                    log.warn("Failed to delete temp file: {}", tempFile, ex);
+                }
             String fileUrl = getS3FileUrl(s3Key);
             log.debug("Echo image uploaded to S3: {}", fileUrl);
             return fileUrl;
@@ -700,8 +829,10 @@ public class FileStorageService {
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         log.debug("Echo image stored locally: {}", fileName);
         String base = echoUrlPattern;
-        if (!base.endsWith("/")) base += "/";
-        if (fileName.startsWith("/")) fileName = fileName.substring(1);
+        if (!base.endsWith("/"))
+            base += "/";
+        if (fileName.startsWith("/"))
+            fileName = fileName.substring(1);
         return base + fileName;
     }
 
@@ -709,7 +840,7 @@ public class FileStorageService {
     private String storeCharacterImageToS3(MultipartFile file, String fileName) throws IOException {
         try {
             String s3Key = "characters/" + fileName;
-            
+
             long size = file.getSize();
             PutObjectRequest putObjectRequest;
             RequestBody requestBody;
@@ -745,7 +876,7 @@ public class FileStorageService {
                     log.warn("Failed to delete temp file: {}", tempFile, e);
                 }
             }
-            
+
             String fileUrl = getS3FileUrl(s3Key);
             log.debug("Character image uploaded to S3: {}", fileUrl);
             return fileUrl;
@@ -861,7 +992,7 @@ public class FileStorageService {
         } catch (Exception e) {
             log.error("Failed to extract key from URL: {}", fileUrl);
         }
-        
+
         return null;
     }
 
@@ -928,12 +1059,14 @@ public class FileStorageService {
         }
     }
 
-    // Get full URL for element icon (filename e.g., "fire.png") - returns local or S3 URL
+    // Get full URL for element icon (filename e.g., "fire.png") - returns local or
+    // S3 URL
     public String getElementIconUrl(String filename) {
         return buildElementIconUrl(filename);
     }
 
-    // Get full URL for background image (filename e.g., "bg1.jpg") - returns local or S3 URL
+    // Get full URL for background image (filename e.g., "bg1.jpg") - returns local
+    // or S3 URL
     public String getBackgroundImageUrl(String filename) {
         return buildBackgroundImageUrl(filename);
     }
@@ -942,14 +1075,14 @@ public class FileStorageService {
     private List<String> listS3Files(String prefix) {
         List<String> files = new ArrayList<>();
         try {
-            software.amazon.awssdk.services.s3.model.ListObjectsV2Request listRequest = 
-                software.amazon.awssdk.services.s3.model.ListObjectsV2Request.builder()
+            software.amazon.awssdk.services.s3.model.ListObjectsV2Request listRequest = software.amazon.awssdk.services.s3.model.ListObjectsV2Request
+                    .builder()
                     .bucket(s3BucketName)
                     .prefix(prefix)
                     .build();
 
-            software.amazon.awssdk.services.s3.model.ListObjectsV2Response listResponse = 
-                s3Client.listObjectsV2(listRequest);
+            software.amazon.awssdk.services.s3.model.ListObjectsV2Response listResponse = s3Client
+                    .listObjectsV2(listRequest);
 
             for (software.amazon.awssdk.services.s3.model.S3Object s3Object : listResponse.contents()) {
                 String key = s3Object.key();

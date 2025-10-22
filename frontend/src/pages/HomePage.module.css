@@ -19,6 +19,8 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1;
+  /* Allow clicks to pass through the overlay so footer and other elements remain interactive */
+  pointer-events: none;
 }
 
 .mainContent {
@@ -65,6 +67,22 @@
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 1.5rem;
+}
+
+/* Timeline wrapper placed under the main container */
+.timelineWrapper {
+  max-width: 1600px;
+  margin: 1.5rem auto 3rem auto;
+  padding: 0 1.5rem;
+  z-index: 2;
+}
+
+.timelineHeader {
+  color: #fbbf24;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 /* Left Section */

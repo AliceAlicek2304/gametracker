@@ -5,6 +5,7 @@ import Footer from '../components/layout/Footer';
 import { getElementIconUrlSync, preloadElementIcons } from '../utils/elementIcons';
 import { apiFetch } from '../utils/apiHelper';
 import styles from './HomePage.module.css';
+import EventTimeline from '../components/EventTimeline';
 
 interface Character {
   id: number;
@@ -287,7 +288,13 @@ const HomePage: React.FC = () => {
               ))}
             </div>
           </div>
-        </div>
+          </div>
+
+          {/* Event timeline shown under characters and banners */}
+          <div className={styles.timelineWrapper}>
+            <div className={styles.timelineHeader}>Sự kiện</div>
+            <EventTimeline />
+          </div>
       </main>
       <Footer />
     </div>

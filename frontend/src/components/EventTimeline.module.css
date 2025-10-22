@@ -1,0 +1,118 @@
+.timelineRoot {
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(10,10,14,0.6), rgba(6,6,10,0.6));
+  color: #e6f7ff;
+  padding: 8px;
+}
+
+.headerRow { display:block; }
+.datesRow { overflow-x: auto; overflow-y: hidden; }
+.datesInner { display:flex; position: relative; }
+.dateCell { text-align: center; padding: 8px 6px; font-weight:700; color: #ffd977; border-right: 1px solid rgba(255,255,255,0.03); min-width:48px; }
+
+.bodyRow { display:block; margin-top:8px; }
+
+.gridWrap { overflow: auto; width: 100%; position: relative; }
+
+/* Hide native scrollbars but keep scrolling functional */
+.datesRow,
+.gridWrap {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.datesRow::-webkit-scrollbar,
+.gridWrap::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+.grid { position: relative; height: auto; min-height: 200px; padding-bottom: 16px; }
+.gridCell { position: absolute; top: 0; bottom: 0; border-left: 1px solid rgba(255,255,255,0.03); }
+
+/* Now marker centered in the gridWrap */
+.nowMarker {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+  pointer-events: auto; /* allow hover */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.nowLine {
+  width: 2px;
+  background: rgba(255,255,255,0.85);
+  height: 100%;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+  opacity: 0.95;
+}
+.nowLabel {
+  position: absolute;
+  top: 6px;
+  transform: translateY(-100%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight:700;
+  font-size:12px;
+  pointer-events: none;
+}
+
+/* Dim the timeline content while hovering the now marker */
+.dimOnNowHover .datesRow,
+.dimOnNowHover .grid {
+  opacity: 0.2;
+  transition: opacity 180ms ease-in-out;
+}
+
+/* Keep the now marker fully visible during hover */
+.dimOnNowHover .nowMarker,
+.dimOnNowHover .nowMarker .nowLine,
+.dimOnNowHover .nowMarker .nowLabel {
+  opacity: 1 !important;
+}
+
+.eventBar { position: absolute; height: 48px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.6); overflow: hidden; display:flex; align-items:center; }
+.eventBarInner { display:flex; align-items:center; height:100%; padding: 0 10px; gap:8px; width:100%; }
+.eventTitle { font-weight:700; font-size:0.95rem; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.6); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+.eventThumb { height: 36px; width: 64px; object-fit: cover; border-radius: 6px; margin-left:8px; }
+
+/* Banner pill thumbnail: left rounded image and small days badge on the right */
+.bannerThumbWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.03);
+  padding: 4px 6px;
+  border-radius: 999px;
+  margin-left: 8px;
+}
+.bannerThumb {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.bannerDays {
+  background: rgba(0,0,0,0.45);
+  color: #ffd977;
+  padding: 6px 8px;
+  border-radius: 999px;
+  font-weight:700;
+  font-size: 12px;
+}
+
+.eventDays {
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight:700;
+  font-size: 11px;
+  margin-left: 8px;
+}

@@ -57,6 +57,12 @@ const Header: React.FC = () => {
               Vũ khí
             </Link>
             <Link 
+              to="/events" 
+              className={`${styles['nav-link']} ${location.pathname === '/events' ? styles['nav-link-active'] : ''}`}
+            >
+              Sự kiện
+            </Link>
+            <Link 
               to="/banners" 
               className={`${styles['nav-link']} ${location.pathname === '/banners' ? styles['nav-link-active'] : ''}`}
             >

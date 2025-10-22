@@ -1,0 +1,205 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: transparent;
+  color: #e6f7ff;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topBarCenter {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  margin: 0 1rem;
+}
+
+.searchInput {
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: #e6f7ff;
+  min-width: 320px;
+}
+
+
+.select {
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #e6f7ff;
+  background: rgba(255,255,255,0.02) !important;
+}
+.select option { background: linear-gradient(180deg, #07101a, #0b1220) !important; color: #e6f7ff !important; }
+.select, .select option { background-color: #07101a !important; }
+.select:focus { outline: none; box-shadow: 0 6px 18px rgba(0,0,0,0.45); }
+.select::-ms-expand { color: #e6f7ff; }
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #dff8ff;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn {
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg,#00d4ff,#ff6b6b);
+  color: #081221;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+}
+
+.card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 220px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.card:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(0,0,0,0.6); }
+
+.cardOverlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.6));
+  color: #fff;
+}
+
+.cardTitle { font-weight:700; font-size:0.95rem; }
+.cardSubtitle { font-size:0.8rem; opacity:0.85; }
+
+.modalOverlay { position: fixed; inset:0; display:flex; justify-content:center; align-items:center; background: rgba(0,0,0,0.5); z-index:2000; }
+.modal { width:980px; max-width:96vw; background: linear-gradient(180deg,#07101a,#0b1220); color:#e6f7ff; padding:1rem; border-radius:12px; box-shadow:0 18px 60px rgba(0,0,0,0.8); box-sizing:border-box; }
+.smallBtn { display:inline-flex; align-items:center; justify-content:center; height:40px; padding:0 10px; border-radius:8px; border:none; cursor:pointer; background: rgba(255,255,255,0.03); color:#e6f7ff; box-shadow:0 6px 18px rgba(0,0,0,0.4); transition: transform 0.12s ease, box-shadow 0.12s ease; font-weight:600; box-sizing:border-box; font-size:0.88rem; white-space:nowrap; width: auto; min-width:0; }
+.danger { background:#ff6b6b; color:#fff; }
+.muted { background:rgba(255,255,255,0.04); color:#e6f7ff; }
+
+.loading { padding:24px; }
+
+.formRow { display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.6rem; min-width:0; }
+.formRow label { font-weight:600; color: #e6f7ff; }
+.formRow input[type='text'], .formRow input[type='number'], .formRow textarea, .formRow select { padding:0.5rem; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); color: #e6f7ff; width:100%; box-sizing:border-box; }
+
+/* Date/time input tweaks: keep dark input and try to harmonize picker controls */
+.formRow input[type='datetime-local'], .formRow input[type='date'], .formRow input[type='time'] {
+  padding:0.5rem 0.6rem;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: #e6f7ff;
+  width:100%;
+  box-sizing:border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* For WebKit browsers: style the editable parts inside datetime input */
+input[type='datetime-local']::-webkit-datetime-edit, input[type='date']::-webkit-datetime-edit, input[type='time']::-webkit-datetime-edit {
+  color: #e6f7ff;
+}
+
+/* Calendar / clock indicator icon color */
+input[type='datetime-local']::-webkit-clear-button, input[type='datetime-local']::-webkit-inner-spin-button, input[type='datetime-local']::-webkit-calendar-picker-indicator,
+input[type='date']::-webkit-calendar-picker-indicator, input[type='time']::-webkit-calendar-picker-indicator {
+  /* make icon fully visible in dark theme */
+  /* force white appearance: strong invert + brightness and saturation */
+  filter: invert(1) brightness(5) saturate(3) contrast(1.4);
+  opacity: 1;
+  color: #ffffff; /* some UA implementations respect color */
+  -webkit-text-fill-color: #ffffff;
+  -webkit-filter: invert(1) brightness(5) saturate(3) contrast(1.4);
+  transition: filter 0.12s ease, opacity 0.12s ease;
+}
+
+/* On hover/focus emphasize the indicator slightly */
+input[type='datetime-local']:hover::-webkit-calendar-picker-indicator,
+input[type='date']:hover::-webkit-calendar-picker-indicator,
+input[type='time']:hover::-webkit-calendar-picker-indicator,
+input[type='datetime-local']:focus::-webkit-calendar-picker-indicator,
+input[type='date']:focus::-webkit-calendar-picker-indicator,
+input[type='time']:focus::-webkit-calendar-picker-indicator {
+  filter: invert(1) saturate(1.8) brightness(1.6) contrast(1.15);
+  opacity: 1;
+}
+
+/* On focus make input stand out a bit */
+.formRow input[type='datetime-local']:focus, .formRow input[type='date']:focus, .formRow input[type='time']:focus {
+  outline: none;
+  box-shadow: 0 6px 18px rgba(0, 212, 255, 0.12);
+  border-color: rgba(0,212,255,0.4);
+}
+
+/* Small help: if browser shows native popup we can't style it, but the input itself will match theme */
+
+.filePreview { display:flex; gap:0.6rem; align-items:center; }
+.filePreview img { width:64px; height:64px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
+
+.actions { display:flex; gap:0.4rem; }
+
+.modal { max-height: 84vh; overflow: auto; padding:1rem 1.25rem; }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  padding: 1rem 0;
+}
+
+.pageBtn {
+  padding: 0.5rem 1rem;
+  background: rgba(0, 212, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: #00d4ff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageBtn:hover:not(:disabled) { background: rgba(0, 212, 255, 0.2); }
+.pageBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.pageNumbers { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+
+.pageNum { padding: 0.4rem 0.7rem; min-width: 2rem; background: transparent; border: none; border-radius: 4px; color: #94a3b8; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+.pageNum:hover { background: rgba(0, 212, 255, 0.1); color: #00d4ff; }
+.pageNum.active { background: #00d4ff; color: #081221; }
+
+.closeBtn { position: sticky; top: 1rem; left: calc(100% - 3rem); width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255, 107, 107, 0.1); color: #ff6b6b; font-size: 1.5rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; z-index: 10; margin-bottom: -32px; float: right; }
+.closeBtn:hover { background: #ff6b6b; color: white; transform: scale(1.1); }
+
+@media (max-width: 1400px) { .grid { grid-template-columns: repeat(5, 1fr); } }
+@media (max-width: 1024px) { .topBar { flex-wrap: wrap; gap: 1rem; } .topBarCenter { order: 3; flex: 1 1 100%; margin: 0; } .grid { grid-template-columns: repeat(3, 1fr); } .searchInput { min-width: 180px; } }
+@media (max-width: 768px) { .topBar { flex-direction: column; align-items: stretch; } .topBarCenter { flex-direction: column; } .controls { justify-content: stretch; } .controls button { flex: 1; } .grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } .modal { width: 100%; max-width: 100vw; max-height: 100vh; border-radius: 0; padding: 1rem; } .searchInput { min-width: auto; width: 100%; } .select { width: 100%; } }
+@media (max-width: 480px) { .grid { grid-template-columns: 1fr; } .title { font-size: 1.1rem; } .pageNumbers { gap: 0.15rem; } .pageNum { padding: 0.3rem 0.5rem; min-width: 1.5rem; font-size: 0.8rem; } .pageBtn { padding: 0.4rem 0.7rem; font-size: 0.85rem; } }

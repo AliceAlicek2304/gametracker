@@ -18,22 +18,26 @@
 }
 
 .createBtn {
-  padding: 0.75rem 1.5rem;
-  background: var(--theme-primary);
-  color: white;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(90deg,#00d4ff,#ff6b6b);
+  color: #081221;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.98rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45);
 }
 
 .createBtn:hover {
-  background: var(--theme-secondary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 18px 48px rgba(0, 212, 255, 0.16);
+  opacity: 0.98;
 }
+
+.createBtn:active { transform: translateY(-1px); }
+.createBtn:focus { outline: none; box-shadow: 0 8px 28px rgba(0,0,0,0.6), 0 0 0 4px rgba(0,212,255,0.08); }
 
 .filters {
   display: flex;

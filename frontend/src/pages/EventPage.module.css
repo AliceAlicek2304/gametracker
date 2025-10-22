@@ -1,0 +1,51 @@
+.eventPage {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.eventPage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1;
+}
+
+.mainContent {
+  margin-top: 80px; /* space for fixed header */
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto; /* expand to fill available space so footer is at bottom */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+p {
+  opacity: 0.9;
+  color: rgba(255,255,255,0.85);
+}
+
+/* Ensure footer appears above the dark overlay so its gradient shows like other pages */
+.eventPage footer {
+  position: relative;
+  z-index: 3;
+}
