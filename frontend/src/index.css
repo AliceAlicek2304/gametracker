@@ -39,6 +39,14 @@ body {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
 }
 
+[class*="_mainContent_"] {
+  min-height: calc(100vh - 80px) !important;
+}
+
+main[class*="_mainContent_"] {
+  min-height: calc(100vh - 80px) !important;
+}
+
 a {
   font-weight: 500;
   color: #3b82f6;

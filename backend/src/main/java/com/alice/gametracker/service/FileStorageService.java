@@ -257,7 +257,7 @@ public class FileStorageService {
     // Helper to build setecho icon URL based on storage type
     private String buildSetEchoIconUrl(String fileName) {
         if (isS3Storage) {
-            return getS3FileUrl("setechos/" + fileName);
+            return getS3FileUrl("setechoes/" + fileName);
         } else {
             String base = setEchoUrlPattern;
             if (!base.endsWith("/")) {
@@ -697,7 +697,7 @@ public class FileStorageService {
     // Store setecho icon to S3
     private String storeSetEchoIconToS3(MultipartFile file, String fileName) throws IOException {
         try {
-            String s3Key = "setechos/" + fileName;
+            String s3Key = "setechoes/" + fileName;
 
             long size = file.getSize();
             PutObjectRequest putObjectRequest;

@@ -68,22 +68,23 @@ public class EchoController {
 
     @PostMapping(consumes = "application/json")
     public ResponseEntity<EchoResponse> createEcho(@RequestBody CreateEchoRequest req) {
-        EchoResponse resp = convertToResponse(echoService.createFromDto(req));
+        Echo saved = echoService.createFromDto(req);
+        // fetch response via service (ensures collections are loaded inside transaction)
+        EchoResponse resp = echoService.findByIdResponse(saved.getId()).orElseThrow(() -> new RuntimeException("Echo not found after create"));
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
 
     @PutMapping(path = "/{id}", consumes = "application/json")
     public ResponseEntity<EchoResponse> updateEcho(@PathVariable Long id, @RequestBody UpdateEchoRequest req) {
-        EchoResponse resp = convertToResponse(echoService.updateFromDto(id, req));
+        Echo updated = echoService.updateFromDto(id, req);
+        EchoResponse resp = echoService.findByIdResponse(updated.getId()).orElseThrow(() -> new RuntimeException("Echo not found after update"));
         return ResponseEntity.ok(resp);
     }
 
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<EchoResponse> deactivateEcho(@PathVariable Long id, @RequestBody DeactivateWeaponRequest req) {
-        Echo e = echoService.findById(id).orElseThrow(() -> new RuntimeException("Echo not found"));
-        e.setActive(req.getIsActive());
-        echoService.update(e);
-        return ResponseEntity.ok(convertToResponse(e));
+        EchoResponse resp = echoService.deactivateEcho(id, req);
+        return ResponseEntity.ok(resp);
     }
 
     @DeleteMapping("/{id}")
@@ -99,34 +100,25 @@ public class EchoController {
 
     @GetMapping
     public ResponseEntity<List<EchoResponse>> getAll() {
-        List<Echo> list = echoService.findAll();
-        return ResponseEntity.ok(list.stream().map(this::convertToResponse).toList());
+        return ResponseEntity.ok(echoService.findAllResponses());
     }
 
     @GetMapping("/active")
     public ResponseEntity<List<EchoResponse>> getActive() {
-        List<Echo> list = echoService.findAll().stream().filter(Echo::isActive).toList();
-        return ResponseEntity.ok(list.stream().map(this::convertToResponse).toList());
+        return ResponseEntity.ok(echoService.findActiveResponses());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EchoResponse> getById(@PathVariable Long id) {
-        Optional<Echo> opt = echoService.findById(id);
-        return opt.map(e -> ResponseEntity.ok(convertToResponse(e))).orElse(ResponseEntity.notFound().build());
+        Optional<EchoResponse> opt = echoService.findByIdResponse(id);
+        return opt.map(r -> ResponseEntity.ok(r)).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<EchoResponse> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) throws Exception {
-        Echo e = echoService.findById(id).orElseThrow(() -> new RuntimeException("Echo not found"));
         if (file == null || file.isEmpty()) return ResponseEntity.badRequest().build();
-        // delete old
-        if (e.getImageUrl() != null) {
-            try { fileStorageService.deleteFile(e.getImageUrl()); } catch (java.io.IOException ex) { log.warn("Failed to delete old echo image: {}", ex.getMessage()); }
-        }
-        String url = fileStorageService.storeEchoImage(file);
-        e.setImageUrl(url);
-        echoService.update(e);
-        return ResponseEntity.ok(convertToResponse(e));
+        EchoResponse resp = echoService.updateEchoImage(id, file);
+        return ResponseEntity.ok(resp);
     }
 
     @GetMapping("/image/{filename:.+}")
