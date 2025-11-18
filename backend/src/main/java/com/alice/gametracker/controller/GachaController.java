@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,10 @@ public class GachaController {
 
     @Autowired
     private CharacterService characterService;
+
+    // Store latest fetch result temporarily (in-memory cache)
+    private volatile ObjectNode latestGachaData = null;
+    private volatile long lastFetchTime = 0;
 
     @PostMapping("/fetch")
     public ResponseEntity<?> fetchGachaHistory(@RequestBody Map<String, String> request) {
@@ -190,6 +195,10 @@ public class GachaController {
             responseData.put("message", "success");
             responseData.set("data", bannerData);
             
+            // Cache the result for frontend polling
+            this.latestGachaData = responseData;
+            this.lastFetchTime = System.currentTimeMillis();
+            
             return ResponseEntity.ok(ApiResponse.success("Gacha history fetched from all banners", responseData));
 
         } catch (Exception e) {
@@ -212,6 +221,20 @@ public class GachaController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Invalid JSON"));
         }
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<?> getLatestGachaData() {
+        if (latestGachaData == null) {
+            return ResponseEntity.ok(ApiResponse.success("No gacha data available yet", null));
+        }
+        
+        // Return cached data with timestamp
+        ObjectNode response = objectMapper.createObjectNode();
+        response.set("data", latestGachaData);
+        response.put("timestamp", lastFetchTime);
+        
+        return ResponseEntity.ok(ApiResponse.success("Latest gacha data", response));
     }
 
     private Map<String, String> parseQueryString(String query) {

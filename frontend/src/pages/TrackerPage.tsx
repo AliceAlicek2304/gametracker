@@ -87,29 +87,70 @@ const TrackerPage: React.FC = () => {
 
   // Load cached gacha data on mount
   useEffect(() => {
-    const cachedData = localStorage.getItem('gachaData');
-    const cachedTime = localStorage.getItem('gachaDataTime');
-    
-    if (cachedData && cachedTime) {
-      const now = Date.now();
-      const expireTime = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const loadCachedData = () => {
+      const cachedData = localStorage.getItem('gachaData');
+      const cachedTime = localStorage.getItem('gachaDataTime');
       
-      if (now - parseInt(cachedTime) < expireTime) {
-        // Data is still valid
-        try {
-          const parsed = JSON.parse(cachedData);
-          setGachaData(parsed);
-        } catch (err) {
-          console.error('Error parsing cached gacha data:', err);
+      if (cachedData && cachedTime) {
+        const now = Date.now();
+        const expireTime = 30 * 60 * 1000; // 30 minutes in milliseconds
+        
+        if (now - parseInt(cachedTime) < expireTime) {
+          // Data is still valid
+          try {
+            const parsed = JSON.parse(cachedData);
+            setGachaData(parsed);
+            console.log('Loaded gacha data from cache:', Object.keys(parsed).length, 'banners');
+          } catch (err) {
+            console.error('Error parsing cached gacha data:', err);
+            localStorage.removeItem('gachaData');
+            localStorage.removeItem('gachaDataTime');
+          }
+        } else {
+          // Data expired, remove it
           localStorage.removeItem('gachaData');
           localStorage.removeItem('gachaDataTime');
         }
-      } else {
-        // Data expired, remove it
-        localStorage.removeItem('gachaData');
-        localStorage.removeItem('gachaDataTime');
       }
-    }
+    };
+
+    // Check if URL has import flag (from PowerShell script)
+    const checkUrlForImportFlag = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const importFlag = urlParams.get('import');
+      const timestamp = urlParams.get('timestamp');
+      
+      if (importFlag === 'success' && timestamp) {
+        console.log('PowerShell import detected! Fetching data from backend...');
+        
+        try {
+          const res = await apiFetch('gacha/latest');
+          const json = await res.json();
+          
+          if (json.success && json.data && json.data.data) {
+            const newData = json.data.data.data;
+            const serverTimestamp = json.data.timestamp;
+            
+            localStorage.setItem('gachaData', JSON.stringify(newData));
+            localStorage.setItem('gachaDataTime', serverTimestamp.toString());
+            setGachaData(newData);
+            
+            console.log('✓ Loaded gacha data from PowerShell import:', Object.keys(newData).length, 'banners');
+            
+            // Clean URL without reloading page
+            window.history.replaceState({}, '', '/tracker');
+          }
+        } catch (err) {
+          console.error('Failed to fetch data after PowerShell import:', err);
+        }
+      }
+    };
+
+    // Load cached data first
+    loadCachedData();
+    
+    // Then check if PowerShell just imported
+    checkUrlForImportFlag();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

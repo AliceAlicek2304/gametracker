@@ -171,8 +171,9 @@ function LogCheck {
                     Write-Host "`nYour gacha history is now available at: $FRONTEND_URL/tracker" -ForegroundColor Yellow
                     Write-Host "Opening in your browser..." -ForegroundColor Green
                     
-                    # Copy URL to clipboard so user can paste in current browser
-                    $websiteUrl = "$FRONTEND_URL/tracker"
+                    # Copy URL with query parameter to trigger auto-load
+                    $timestamp = [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
+                    $websiteUrl = "$FRONTEND_URL/tracker?import=success&timestamp=$timestamp"
                     Set-Clipboard $websiteUrl
                     Write-Host "`n✓ URL copied to clipboard: $websiteUrl" -ForegroundColor Cyan
                     Write-Host "Paste (Ctrl+V) in your current browser tab to view results!" -ForegroundColor Yellow
