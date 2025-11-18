@@ -21,16 +21,6 @@ type BannerData = {
   [key: string]: GachaItem[]; // Key is cardPoolType (1-9)
 };
 
-type GachaResponse = {
-  success: boolean;
-  message: string;
-  data?: {
-    code: number;
-    message: string;
-    data: BannerData;
-  };
-};
-
 type RarityFilter = '4' | '5' | 'both';
 
 // Banner names mapping
