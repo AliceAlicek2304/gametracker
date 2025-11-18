@@ -53,18 +53,9 @@ public class Skill {
             return null;
         }
         try { 
-            // Fix: MySQL import converted escape sequences to literal characters
-            // Need to properly escape all special characters before JSON parsing
-            String fixedJson = this.skillJson
-                .replace("\\", "\\\\")   // Backslash must be first!
-                .replace("\"", "\\\"")   // Quote
-                .replace("\b", "\\b")    // Backspace
-                .replace("\f", "\\f")    // Form feed
-                .replace("\n", "\\n")    // Newline
-                .replace("\r", "\\r")    // Carriage return
-                .replace("\t", "\\t");   // Tab
-            
-            return MAPPER.readTree(fixedJson); 
+            // JSON string from DB is already properly formatted with escape sequences
+            // Jackson handles it directly without any preprocessing needed
+            return MAPPER.readTree(this.skillJson); 
         }
         catch (Exception ex) { 
             System.err.println("Failed to parse skill JSON for id " + this.id + ": " + ex.getMessage());
