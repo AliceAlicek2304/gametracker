@@ -45,9 +45,6 @@ const BANNER_NAMES: { [key: string]: string } = {
 };
 
 const TrackerPage: React.FC = () => {
-  const [url, setUrl] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [gachaData, setGachaData] = useState<BannerData>({});
   const [activeTab, setActiveTab] = useState<string>('1');
   const [rarityFilter, setRarityFilter] = useState<RarityFilter>('both');
@@ -153,45 +150,6 @@ const TrackerPage: React.FC = () => {
     checkUrlForImportFlag();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!url.trim()) {
-      setError('Vui lòng nhập URL');
-      return;
-    }
-    setLoading(true);
-    setError('');
-    setGachaData({});
-
-    try {
-      const res = await apiFetch('gacha/fetch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || 'Lỗi khi gọi API');
-      }
-
-      const json: GachaResponse = await res.json();
-      if (json.success && json.data && json.data.data) {
-        setGachaData(json.data.data);
-        
-        // Save to localStorage with timestamp
-        localStorage.setItem('gachaData', JSON.stringify(json.data.data));
-        localStorage.setItem('gachaDataTime', Date.now().toString());
-      } else {
-        setError(json.message || 'Không thể lấy dữ liệu gacha');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Lỗi kết nối');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Filter items by rarity
   const getFilteredItems = (items: GachaItem[]) => {
     if (rarityFilter === 'both') {
@@ -281,8 +239,6 @@ const TrackerPage: React.FC = () => {
               💡 Script sẽ tự động tìm game, đọc URL và gửi dữ liệu lên server. Không cần copy-paste thủ công!
             </p>
           </div>
-
-          {error && <div className={styles.error}>{error}</div>}
 
           {Object.keys(gachaData).length > 0 && (
             <div className={styles.trackerLayout}>
