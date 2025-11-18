@@ -168,21 +168,24 @@ function LogCheck {
                 
                 if ($response.success) {
                     Write-Host "`n✓ SUCCESS! Gacha history imported successfully!" -ForegroundColor Green
-                    Write-Host "`nOpen your browser at: $FRONTEND_URL/gacha" -ForegroundColor Yellow
-                    Write-Host "Your gacha history is now available on the website!" -ForegroundColor Green
+                    Write-Host "`nYour gacha history is now available at: $FRONTEND_URL/tracker" -ForegroundColor Yellow
+                    Write-Host "Opening in your browser..." -ForegroundColor Green
                     
-                    # Open browser automatically
-                    Start-Process "$FRONTEND_URL/gacha"
+                    # Copy URL to clipboard so user can paste in current browser
+                    $websiteUrl = "$FRONTEND_URL/tracker"
+                    Set-Clipboard $websiteUrl
+                    Write-Host "`n✓ URL copied to clipboard: $websiteUrl" -ForegroundColor Cyan
+                    Write-Host "Paste (Ctrl+V) in your current browser tab to view results!" -ForegroundColor Yellow
                 }
                 else {
                     Write-Host "`n✗ API Error: $($response.message)" -ForegroundColor Red
-                    Write-Host "You can manually paste the URL at: $FRONTEND_URL/gacha" -ForegroundColor Yellow
+                    Write-Host "You can manually open: $FRONTEND_URL/tracker" -ForegroundColor Yellow
                 }
             }
             catch {
                 Write-Host "`n✗ Failed to connect to API: $_" -ForegroundColor Red
                 Write-Host "Make sure your backend server is running at: $BACKEND_URL" -ForegroundColor Yellow
-                Write-Host "You can manually paste the URL at: $FRONTEND_URL/gacha" -ForegroundColor Yellow
+                Write-Host "You can manually open: $FRONTEND_URL/tracker" -ForegroundColor Yellow
             }
         }
     }
