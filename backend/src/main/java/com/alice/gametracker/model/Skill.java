@@ -21,7 +21,7 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "skill_json", columnDefinition = "LONGTEXT")
+    @Column(name = "skill_json", columnDefinition = "NVARCHAR(MAX)")
     private String skillJson;
 
     @Column(nullable = false)

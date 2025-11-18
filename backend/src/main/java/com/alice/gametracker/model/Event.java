@@ -23,11 +23,11 @@ public class Event {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false, columnDefinition = "DATETIME(6)")
-    private LocalDateTime startAt;
+    @Column(name = "start_at", nullable = false, columnDefinition = "DATETIME2")
+    private LocalDateTime startDate;
 
-    @Column(nullable = true, columnDefinition = "DATETIME(6)")
-    private LocalDateTime endAt;
+    @Column(name = "end_at", nullable = true, columnDefinition = "DATETIME2")
+    private LocalDateTime endDate;
 
     @Column(length = 2000)
     private String imageUrl;
@@ -38,17 +38,17 @@ public class Event {
     @Column(length = 100)
     private String version = "default";
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String metadata;
 
     @Column(nullable = false)
     private boolean isActive = true;
 
-    @Column(nullable = false, columnDefinition = "DATETIME(6)")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME2")
+    private LocalDateTime createdDate = LocalDateTime.now();
 
-    @Column(nullable = false, columnDefinition = "DATETIME(6)")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @Column(name = "updated_at", nullable = true, columnDefinition = "DATETIME2")
+    private LocalDateTime updatedDate;
 
     public Event() {
     }
@@ -79,19 +79,19 @@ public class Event {
     }
 
     public LocalDateTime getStartAt() {
-        return startAt;
+        return startDate;
     }
 
     public void setStartAt(LocalDateTime startAt) {
-        this.startAt = startAt;
+        this.startDate = startAt;
     }
 
     public LocalDateTime getEndAt() {
-        return endAt;
+        return endDate;
     }
 
     public void setEndAt(LocalDateTime endAt) {
-        this.endAt = endAt;
+        this.endDate = endAt;
     }
 
     public String getImageUrl() {
@@ -135,19 +135,19 @@ public class Event {
     }
 
     public LocalDateTime getCreatedAt() {
-        return createdAt;
+        return createdDate;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+        this.createdDate = createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+        return updatedDate;
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+        this.updatedDate = updatedAt;
     }
 
 }

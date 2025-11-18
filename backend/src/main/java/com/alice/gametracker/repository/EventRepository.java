@@ -24,7 +24,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Page<Event> findByVersionAndIsActive(String version, boolean isActive, Pageable pageable);
 
-    List<Event> findByStartAtBetween(LocalDateTime start, LocalDateTime end);
+    List<Event> findByStartDateBetween(LocalDateTime start, LocalDateTime end);
 
-    Page<Event> findByStartAtBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
+    Page<Event> findByStartDateBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
 }

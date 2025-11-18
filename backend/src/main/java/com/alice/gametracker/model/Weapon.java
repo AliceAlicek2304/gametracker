@@ -29,7 +29,7 @@ public class Weapon {
     @Column(length = 500)
     private String imageUrl;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(length = 200)
@@ -42,7 +42,7 @@ public class Weapon {
     @Column(length = 50)
     private SubStatsType subStatsType;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String skill;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 1")
