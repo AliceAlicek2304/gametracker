@@ -26,8 +26,8 @@ public class StatusUpdateScheduler {
     @Autowired
     private EventRepository eventRepository;
     
-    // Run every 30 seconds (for testing - change to "0 0 * * * *" for production)
-    @Scheduled(cron = "*/30 * * * * *")
+    // Run every hour at minute 0
+    @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void updateBannerStatuses() {
         log.info("Starting banner status update task");
@@ -52,8 +52,8 @@ public class StatusUpdateScheduler {
         log.info("Banner status update completed. Updated {} banners", updated);
     }
     
-    // Run every 30 seconds (for testing - change to "0 0 * * * *" for production)
-    @Scheduled(cron = "*/30 * * * * *")
+    // Run every hour at minute 0
+    @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void updateEventStatuses() {
         log.info("Starting event status update task");
