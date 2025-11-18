@@ -58,7 +58,27 @@ public class Skill {
             return MAPPER.readTree(this.skillJson); 
         }
         catch (Exception ex) { 
-            System.err.println("Failed to parse skill JSON for id " + this.id + ": " + ex.getMessage());
+            System.err.println("\n========== SKILL JSON DEBUG (ID: " + this.id + ") ==========");
+            System.err.println("Error: " + ex.getMessage());
+            if (this.skillJson != null) {
+                System.err.println("JSON Length: " + this.skillJson.length());
+                System.err.println("\n--- First 500 chars (escaped view) ---");
+                String sample = this.skillJson.substring(0, Math.min(500, this.skillJson.length()));
+                System.err.println(sample.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t"));
+                
+                System.err.println("\n--- Last 200 chars (escaped view) ---");
+                int start = Math.max(0, this.skillJson.length() - 200);
+                String tail = this.skillJson.substring(start);
+                System.err.println(tail.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t"));
+                
+                System.err.println("\n--- Char analysis at position 0-50 ---");
+                for (int i = 0; i < Math.min(50, this.skillJson.length()); i++) {
+                    char c = this.skillJson.charAt(i);
+                    System.err.print(String.format("%c(%d) ", c, (int)c));
+                    if ((i + 1) % 10 == 0) System.err.println();
+                }
+            }
+            System.err.println("\n========================================\n");
             return null; 
         }
     }
