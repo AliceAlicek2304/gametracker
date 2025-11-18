@@ -23,10 +23,10 @@ public class Event {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false, columnDefinition = "DATETIME")
+    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     private LocalDateTime startAt;
 
-    @Column(nullable = true, columnDefinition = "DATETIME")
+    @Column(nullable = true, columnDefinition = "DATETIME(6)")
     private LocalDateTime endAt;
 
     @Column(length = 2000)
@@ -44,10 +44,10 @@ public class Event {
     @Column(nullable = false)
     private boolean isActive = true;
 
-    @Column(nullable = false, columnDefinition = "DATETIME")
+    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(nullable = false, columnDefinition = "DATETIME")
+    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     public Event() {
