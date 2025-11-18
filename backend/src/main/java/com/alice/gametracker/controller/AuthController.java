@@ -130,6 +130,7 @@ public class AuthController {
 
         try {
             HttpResponse<String> tokenResp = client.send(tokenRequest, HttpResponse.BodyHandlers.ofString());
+            logger.info("Google token exchange response: status={}, body={}", tokenResp.statusCode(), tokenResp.body());
             if (tokenResp.statusCode() != 200) {
                 throw new RuntimeException("Token exchange failed: " + tokenResp.body());
             }
