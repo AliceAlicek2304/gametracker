@@ -220,10 +220,10 @@ const TrackerPage: React.FC = () => {
           <div className={styles.instructionCard}>
             <h3 className={styles.instructionTitle}>
               <span className={styles.stepNumber}>1</span>
-              Chạy lệnh PowerShell để lấy URL
+              Chạy lệnh PowerShell để tự động import
             </h3>
             <p className={styles.instructionText}>
-              Mở <strong>PowerShell</strong> và chạy lệnh sau để tự động lấy URL gacha từ game:
+              Mở <strong>PowerShell</strong> và chạy lệnh sau. Lịch sử gacha sẽ tự động hiển thị trên trang này:
             </p>
             <div className={styles.codeBlock}>
               <code className={styles.code}>{powershellCommand}</code>
@@ -237,29 +237,9 @@ const TrackerPage: React.FC = () => {
               </button>
             </div>
             <p className={styles.instructionNote}>
-              💡 Lệnh này sẽ tự động tìm game Wuthering Waves, đọc log file và copy URL vào clipboard.
+              💡 Script sẽ tự động tìm game, đọc URL và gửi dữ liệu lên server. Không cần copy-paste thủ công!
             </p>
           </div>
-
-          <div className={styles.instructionCard}>
-            <h3 className={styles.instructionTitle}>
-              <span className={styles.stepNumber}>2</span>
-              Dán URL vào ô bên dưới
-            </h3>
-          </div>
-          
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="Dán URL lịch sử gacha vào đây..."
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
-            <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? 'Đang tải...' : 'Tải lịch sử'}
-            </button>
-          </form>
 
           {error && <div className={styles.error}>{error}</div>}
 

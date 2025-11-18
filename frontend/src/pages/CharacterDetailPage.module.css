@@ -771,6 +771,7 @@
   border-radius: 8px;
   border-left: 3px solid var(--theme-primary);
   margin-bottom: 0.75rem;
+  white-space: pre-line;
 }
 
 .skillDescription p {

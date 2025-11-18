@@ -1,0 +1,11 @@
+{
+  "backend": {
+    "local": "http://localhost:8080",
+    "production": "https://g3tevh4tkf.execute-api.ap-southeast-2.amazonaws.com"
+  },
+  "frontend": {
+    "local": "http://localhost:3000",
+    "production": "https://yourdomain.com"
+  },
+  "activeEnvironment": "local"
+}

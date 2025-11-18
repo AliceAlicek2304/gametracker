@@ -26,6 +26,28 @@
 #>
 
 Add-Type -AssemblyName System.Web
+
+# ========================================
+# Load Configuration from GitHub
+# ========================================
+Write-Host "Loading configuration..." -ForegroundColor Cyan
+try {
+    $configUrl = "https://raw.githubusercontent.com/AliceAlicek2304/gametracker/main/config.json"
+    $config = Invoke-RestMethod -Uri $configUrl -TimeoutSec 10
+    $environment = $config.activeEnvironment
+    $BACKEND_URL = $config.backend.$environment
+    $FRONTEND_URL = $config.frontend.$environment
+    Write-Host "Environment: $environment" -ForegroundColor Green
+    Write-Host "Backend: $BACKEND_URL" -ForegroundColor Green
+    Write-Host "Frontend: $FRONTEND_URL" -ForegroundColor Green
+}
+catch {
+    Write-Host "Failed to load config, using localhost defaults" -ForegroundColor Yellow
+    $BACKEND_URL = "http://localhost:8080"
+    $FRONTEND_URL = "http://localhost:3000"
+}
+# ========================================
+
 $gamePath = $null
 $urlFound = $false
 $logFound = $false
@@ -130,7 +152,38 @@ function LogCheck {
             $urlFound = $true
             Write-Host "`nConvene Record URL: $urlToCopy"
             Set-Clipboard $urlToCopy
-            Write-Host "`nLink copied to clipboard, paste it in wuwatracker.com and click the Import History button." -ForegroundColor Green
+            Write-Host "`nLink copied to clipboard." -ForegroundColor Green
+            
+            # AUTO-SEND TO API
+            Write-Host "`nSending data to GameTracker API..." -ForegroundColor Cyan
+            try {
+                $apiUrl = "$BACKEND_URL/api/gacha/fetch"
+                $body = @{ url = $urlToCopy } | ConvertTo-Json
+                $headers = @{
+                    "Content-Type" = "application/json"
+                }
+                
+                Write-Host "Connecting to: $apiUrl" -ForegroundColor Gray
+                $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Body $body -Headers $headers -TimeoutSec 60
+                
+                if ($response.success) {
+                    Write-Host "`n✓ SUCCESS! Gacha history imported successfully!" -ForegroundColor Green
+                    Write-Host "`nOpen your browser at: $FRONTEND_URL/gacha" -ForegroundColor Yellow
+                    Write-Host "Your gacha history is now available on the website!" -ForegroundColor Green
+                    
+                    # Open browser automatically
+                    Start-Process "$FRONTEND_URL/gacha"
+                }
+                else {
+                    Write-Host "`n✗ API Error: $($response.message)" -ForegroundColor Red
+                    Write-Host "You can manually paste the URL at: $FRONTEND_URL/gacha" -ForegroundColor Yellow
+                }
+            }
+            catch {
+                Write-Host "`n✗ Failed to connect to API: $_" -ForegroundColor Red
+                Write-Host "Make sure your backend server is running at: $BACKEND_URL" -ForegroundColor Yellow
+                Write-Host "You can manually paste the URL at: $FRONTEND_URL/gacha" -ForegroundColor Yellow
+            }
         }
     }
     return $folderFound, $logFound, $urlFound

@@ -124,7 +124,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<!-- true for production, false for development -->
-					<skip>false</skip>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 			<plugin>
