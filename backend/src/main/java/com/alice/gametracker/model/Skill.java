@@ -21,7 +21,7 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "skill_json", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "skill_json", columnDefinition = "LONGTEXT")
     private String skillJson;
 
     @Column(nullable = false)
@@ -49,9 +49,27 @@ public class Skill {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public JsonNode getSkillNode() {
-        if (this.skillJson == null) return null;
-        try { return MAPPER.readTree(this.skillJson); }
-        catch (Exception ex) { return null; }
+        if (this.skillJson == null) {
+            return null;
+        }
+        try { 
+            // Fix: MySQL import converted escape sequences to literal characters
+            // Need to properly escape all special characters before JSON parsing
+            String fixedJson = this.skillJson
+                .replace("\\", "\\\\")   // Backslash must be first!
+                .replace("\"", "\\\"")   // Quote
+                .replace("\b", "\\b")    // Backspace
+                .replace("\f", "\\f")    // Form feed
+                .replace("\n", "\\n")    // Newline
+                .replace("\r", "\\r")    // Carriage return
+                .replace("\t", "\\t");   // Tab
+            
+            return MAPPER.readTree(fixedJson); 
+        }
+        catch (Exception ex) { 
+            System.err.println("Failed to parse skill JSON for id " + this.id + ": " + ex.getMessage());
+            return null; 
+        }
     }
 
     public void setSkillNode(JsonNode node) {

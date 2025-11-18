@@ -25,10 +25,10 @@ public class SetEcho {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(columnDefinition = "NVARCHAR(1000)")
+    @Column(length = 1000)
     private String skill;
 
-    @Column(columnDefinition = "NVARCHAR(500)")
+    @Column(length = 500)
     private String icon;
 
     @ManyToMany

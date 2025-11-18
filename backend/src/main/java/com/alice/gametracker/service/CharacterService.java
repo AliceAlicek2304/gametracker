@@ -246,7 +246,7 @@ public class CharacterService {
 
     // Get character by ID
     public Optional<CharacterResponse> findCharacterById(Long id) {
-        return characterRepository.findById(id).map(this::convertToResponse);
+        return characterRepository.findByIdWithRelations(id).map(this::convertToResponse);
     }
 
     // Get all characters

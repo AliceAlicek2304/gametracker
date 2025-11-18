@@ -50,7 +50,7 @@ public class Character {
     @Column(nullable = false)
     private boolean isActive = true;
 
-    @Column(columnDefinition = "NVARCHAR(1000)")
+    @Column(length = 1000)
     private String description;
 
     private String imageUrl;       // Link ảnh nhân vật

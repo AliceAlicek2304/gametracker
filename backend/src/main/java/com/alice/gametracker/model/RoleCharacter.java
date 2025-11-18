@@ -22,7 +22,7 @@ public class RoleCharacter {
     @Column(nullable = false)
     private String name;
 
-    @Column(columnDefinition = "NVARCHAR(1000)")
+    @Column(length = 1000)
     private String description;
 
     @Column(nullable = false)

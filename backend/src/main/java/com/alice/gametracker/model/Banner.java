@@ -21,7 +21,7 @@ public class Banner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(200)")
+    @Column(nullable = false, length = 200)
     private String name;
 
     @Column(nullable = false)
@@ -31,7 +31,7 @@ public class Banner {
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "NVARCHAR(20)")
+    @Column(nullable = false, length = 20)
     private BannerType bannerType = BannerType.CHARACTER;
 
     // === CHARACTER BANNER FIELDS ===
@@ -77,7 +77,7 @@ public class Banner {
     private Weapon featured4StarWeapon3;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "NVARCHAR(20)")
+    @Column(nullable = false, length = 20)
     private BannerStatus status = BannerStatus.UPCOMING;
 
     @Column(nullable = false)

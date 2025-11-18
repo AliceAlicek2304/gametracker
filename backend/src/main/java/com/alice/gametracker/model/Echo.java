@@ -23,19 +23,19 @@ public class Echo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "NVARCHAR(500)")
+    @Column(length = 500)
     private String imageUrl;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(100)")
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(columnDefinition = "NVARCHAR(1000)")
+    @Column(length = 1000)
     private String description;
 
     @Column(nullable = false)
     private int cost = 0;
 
-    @Column(columnDefinition = "NVARCHAR(1000)")
+    @Column(length = 1000)
     private String skill;
 
     @ManyToMany(fetch = FetchType.LAZY)

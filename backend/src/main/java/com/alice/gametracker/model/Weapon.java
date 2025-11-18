@@ -23,26 +23,26 @@ public class Weapon {
     @Column(nullable = false)
     private WeaponType weaponType;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(100)")
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(columnDefinition = "NVARCHAR(500)")
+    @Column(length = 500)
     private String imageUrl;
 
-    @Column(columnDefinition = "NVARCHAR(1000)")
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
 
-    @Column(columnDefinition = "NVARCHAR(200)")
+    @Column(length = 200)
     private String mainStats;
 
-    @Column(columnDefinition = "NVARCHAR(200)")
+    @Column(length = 200)
     private String subStats;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "NVARCHAR(50)")
+    @Column(length = 50)
     private SubStatsType subStatsType;
 
-    @Column(columnDefinition = "NVARCHAR(1000)")
+    @Column(columnDefinition = "LONGTEXT")
     private String skill;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 1")

@@ -17,10 +17,10 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
+    @Column(nullable = false, length = 255)
     private String title;
 
-    @Column(columnDefinition = "NVARCHAR(1000)")
+    @Column(length = 1000)
     private String description;
 
     @Column(nullable = false)
@@ -29,16 +29,16 @@ public class Event {
     @Column(nullable = true)
     private LocalDateTime endAt;
 
-    @Column(columnDefinition = "NVARCHAR(2000)")
+    @Column(length = 2000)
     private String imageUrl;
 
-    @Column(columnDefinition = "NVARCHAR(2000)")
+    @Column(length = 2000)
     private String link;
 
-    @Column(columnDefinition = "NVARCHAR(100)")
+    @Column(length = 100)
     private String version = "default";
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "LONGTEXT")
     private String metadata;
 
     @Column(nullable = false)
