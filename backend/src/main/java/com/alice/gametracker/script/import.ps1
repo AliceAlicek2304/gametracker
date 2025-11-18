@@ -30,19 +30,14 @@ Add-Type -AssemblyName System.Web
 # ========================================
 # Load Configuration from GitHub
 # ========================================
-Write-Host "Loading configuration..." -ForegroundColor Cyan
 try {
     $configUrl = "https://raw.githubusercontent.com/AliceAlicek2304/gametracker/main/config.json"
     $config = Invoke-RestMethod -Uri $configUrl -TimeoutSec 10
     $environment = $config.activeEnvironment
     $BACKEND_URL = $config.backend.$environment
     $FRONTEND_URL = $config.frontend.$environment
-    Write-Host "Environment: $environment" -ForegroundColor Green
-    Write-Host "Backend: $BACKEND_URL" -ForegroundColor Green
-    Write-Host "Frontend: $FRONTEND_URL" -ForegroundColor Green
 }
 catch {
-    Write-Host "Failed to load config, using localhost defaults" -ForegroundColor Yellow
     $BACKEND_URL = "http://localhost:8080"
     $FRONTEND_URL = "http://localhost:3000"
 }
@@ -141,21 +136,15 @@ function LogCheck {
     if ($gachaUrlEntry -or $debugUrl) {
         if ($gachaUrlEntry) {
             $urlToCopy = $gachaUrlEntry -replace '.*?(https://aki-gm-resources(-oversea)?\.aki-game\.(net|com)[^"]*).*', '$1'
-            Write-Host "URL found in $($gachaLogPath)"
         }
         if ([string]::IsNullOrWhiteSpace($urlToCopy)) {
             $urlToCopy = $debugUrl
-            Write-Host "URL found in $($debugLogPath)"
         }
 
         if (![string]::IsNullOrWhiteSpace($urlToCopy)) {
             $urlFound = $true
-            Write-Host "`nConvene Record URL: $urlToCopy"
-            Set-Clipboard $urlToCopy
-            Write-Host "`nLink copied to clipboard." -ForegroundColor Green
             
             # AUTO-SEND TO API
-            Write-Host "`nSending data to GameTracker API..." -ForegroundColor Cyan
             try {
                 $apiUrl = "$BACKEND_URL/api/gacha/fetch"
                 $body = @{ url = $urlToCopy } | ConvertTo-Json
@@ -163,30 +152,30 @@ function LogCheck {
                     "Content-Type" = "application/json"
                 }
                 
-                Write-Host "Connecting to: $apiUrl" -ForegroundColor Gray
                 $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Body $body -Headers $headers -TimeoutSec 60
                 
                 if ($response.success) {
-                    Write-Host "`n✓ SUCCESS! Gacha history imported successfully!" -ForegroundColor Green
-                    Write-Host "`nYour gacha history is now available at: $FRONTEND_URL/tracker" -ForegroundColor Yellow
-                    Write-Host "Opening in your browser..." -ForegroundColor Green
+                    Write-Host "✓ Import successful!" -ForegroundColor Green
                     
-                    # Copy URL with query parameter to trigger auto-load
+                    # Auto-open Chrome with tracker URL
                     $timestamp = [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
                     $websiteUrl = "$FRONTEND_URL/tracker?import=success&timestamp=$timestamp"
-                    Set-Clipboard $websiteUrl
-                    Write-Host "`n✓ URL copied to clipboard: $websiteUrl" -ForegroundColor Cyan
-                    Write-Host "Paste (Ctrl+V) in your current browser tab to view results!" -ForegroundColor Yellow
+                    
+                    # Try to open in Chrome
+                    $chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+                    if (Test-Path $chromePath) {
+                        Start-Process $chromePath $websiteUrl
+                    } else {
+                        # Fallback to default browser
+                        Start-Process $websiteUrl
+                    }
                 }
                 else {
-                    Write-Host "`n✗ API Error: $($response.message)" -ForegroundColor Red
-                    Write-Host "You can manually open: $FRONTEND_URL/tracker" -ForegroundColor Yellow
+                    Write-Host "✗ Error: $($response.message)" -ForegroundColor Red
                 }
             }
             catch {
-                Write-Host "`n✗ Failed to connect to API: $_" -ForegroundColor Red
-                Write-Host "Make sure your backend server is running at: $BACKEND_URL" -ForegroundColor Yellow
-                Write-Host "You can manually open: $FRONTEND_URL/tracker" -ForegroundColor Yellow
+                Write-Host "✗ Failed to connect to API" -ForegroundColor Red
             }
         }
     }
