@@ -75,12 +75,8 @@ const TrackerPage: React.FC = () => {
   // Load cached gacha data on mount
   useEffect(() => {
     const loadCachedData = () => {
-      console.log('[DEBUG] Checking localStorage for cached gacha data...');
       const cachedData = localStorage.getItem('gachaData');
       const cachedTime = localStorage.getItem('gachaDataTime');
-      
-      console.log('[DEBUG] localStorage gachaData:', cachedData ? 'exists' : 'null');
-      console.log('[DEBUG] localStorage gachaDataTime:', cachedTime);
       
       if (cachedData && cachedTime) {
         const now = Date.now();
@@ -91,20 +87,17 @@ const TrackerPage: React.FC = () => {
           try {
             const parsed = JSON.parse(cachedData);
             setGachaData(parsed);
-            console.log('[DEBUG] ✓ Loaded gacha data from cache:', Object.keys(parsed).length, 'banners');
+            console.log('Loaded gacha data from cache:', Object.keys(parsed).length, 'banners');
           } catch (err) {
-            console.error('[DEBUG] ✗ Error parsing cached gacha data:', err);
+            console.error('Error parsing cached gacha data:', err);
             localStorage.removeItem('gachaData');
             localStorage.removeItem('gachaDataTime');
           }
         } else {
-          console.log('[DEBUG] Cache expired, removing...');
           // Data expired, remove it
           localStorage.removeItem('gachaData');
           localStorage.removeItem('gachaDataTime');
         }
-      } else {
-        console.log('[DEBUG] No cached data found');
       }
     };
 
@@ -114,39 +107,28 @@ const TrackerPage: React.FC = () => {
       const importFlag = urlParams.get('import');
       const timestamp = urlParams.get('timestamp');
       
-      console.log('[DEBUG] URL params:', { importFlag, timestamp });
-      
       if (importFlag === 'success' && timestamp) {
-        console.log('[DEBUG] ✓ PowerShell import detected! Fetching data from backend...');
+        console.log('PowerShell import detected! Fetching data from backend...');
         
         try {
-          const apiEndpoint = 'gacha/latest';
-          console.log('[DEBUG] Calling API:', apiEndpoint);
-          
-          const res = await apiFetch(apiEndpoint);
-          console.log('[DEBUG] API response status:', res.status);
-          
+          const res = await apiFetch('gacha/latest');
           const json = await res.json();
-          console.log('[DEBUG] API response body:', json);
           
           if (json.success && json.data && json.data.data) {
             const newData = json.data.data.data;
             const serverTimestamp = json.data.timestamp;
             
-            console.log('[DEBUG] Saving to localStorage...', Object.keys(newData).length, 'banners');
             localStorage.setItem('gachaData', JSON.stringify(newData));
             localStorage.setItem('gachaDataTime', serverTimestamp.toString());
             setGachaData(newData);
             
-            console.log('[DEBUG] ✓ Loaded gacha data from PowerShell import:', Object.keys(newData).length, 'banners');
+            console.log('✓ Loaded gacha data from PowerShell import:', Object.keys(newData).length, 'banners');
             
             // Clean URL without reloading page
             window.history.replaceState({}, '', '/tracker');
-          } else {
-            console.log('[DEBUG] ✗ Invalid response structure:', json);
           }
         } catch (err) {
-          console.error('[DEBUG] ✗ Failed to fetch data after PowerShell import:', err);
+          console.error('Failed to fetch data after PowerShell import:', err);
         }
       }
     };

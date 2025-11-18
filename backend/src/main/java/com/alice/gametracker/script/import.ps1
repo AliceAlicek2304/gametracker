@@ -147,29 +147,20 @@ function LogCheck {
             # AUTO-SEND TO API
             try {
                 $apiUrl = "$BACKEND_URL/api/gacha/fetch"
-                Write-Host "`n[DEBUG] Sending request to: $apiUrl" -ForegroundColor Cyan
-                Write-Host "[DEBUG] Request URL length: $($urlToCopy.Length) characters" -ForegroundColor Cyan
-                
                 $body = @{ url = $urlToCopy } | ConvertTo-Json
                 $headers = @{
                     "Content-Type" = "application/json"
                 }
                 
-                Write-Host "[DEBUG] Calling API... (timeout: 60s)" -ForegroundColor Cyan
+                Write-Host "Sending data to backend..." -ForegroundColor Cyan
                 $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Body $body -Headers $headers -TimeoutSec 60
                 
-                Write-Host "[DEBUG] API Response received:" -ForegroundColor Cyan
-                Write-Host ($response | ConvertTo-Json -Depth 3) -ForegroundColor Gray
-                
                 if ($response.success) {
-                    Write-Host "`n✓ Import successful!" -ForegroundColor Green
-                    Write-Host "  Data has been saved to backend cache" -ForegroundColor Green
+                    Write-Host "✓ Import successful!" -ForegroundColor Green
                     
                     # Auto-open Chrome with tracker URL
                     $timestamp = [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
                     $websiteUrl = "$FRONTEND_URL/tracker?import=success&timestamp=$timestamp"
-                    
-                    Write-Host "`n[DEBUG] Opening browser: $websiteUrl" -ForegroundColor Cyan
                     
                     # Try to open in Chrome
                     $chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
@@ -179,20 +170,14 @@ function LogCheck {
                         # Fallback to default browser
                         Start-Process $websiteUrl
                     }
-                    
-                    Write-Host "`nℹ Press F12 in the browser to open DevTools and check Console logs" -ForegroundColor Yellow
                 }
                 else {
-                    Write-Host "`n✗ Error: $($response.message)" -ForegroundColor Red
+                    Write-Host "✗ Error: $($response.message)" -ForegroundColor Red
                 }
             }
             catch {
-                Write-Host "`n✗ Failed to connect to API" -ForegroundColor Red
-                Write-Host "Error details: $($_.Exception.Message)" -ForegroundColor Red
-                if ($_.Exception.Response) {
-                    Write-Host "Status Code: $($_.Exception.Response.StatusCode.value__)" -ForegroundColor Red
-                    Write-Host "Status Description: $($_.Exception.Response.StatusDescription)" -ForegroundColor Red
-                }
+                Write-Host "✗ Failed to connect to API" -ForegroundColor Red
+                Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
             }
         }
     }
