@@ -129,7 +129,14 @@ public class AuthController {
                 .build();
 
         try {
+            long startTime = System.currentTimeMillis();
+            logger.info("Starting Google OAuth token exchange to: {}", tokenUri);
+            logger.info("Request body size: {} bytes", formBodyBuilder.length());
+            
             HttpResponse<String> tokenResp = client.send(tokenRequest, HttpResponse.BodyHandlers.ofString());
+            
+            long duration = System.currentTimeMillis() - startTime;
+            logger.info("Google token exchange completed in {} ms. Status: {}", duration, tokenResp.statusCode());
             logger.info("Google token exchange response: status={}, body={}", tokenResp.statusCode(), tokenResp.body());
             if (tokenResp.statusCode() != 200) {
                 throw new RuntimeException("Token exchange failed: " + tokenResp.body());
