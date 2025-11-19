@@ -51,6 +51,34 @@ const HomePage: React.FC = () => {
   const [featuredCharacterIds, setFeaturedCharacterIds] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
 
+  const getTimeRemaining = (endDate: string) => {
+    const end = new Date(endDate).getTime();
+    const now = Date.now();
+    const diff = end - now;
+
+    if (diff <= 0) return 'Đã kết thúc';
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return `${days} ngày ${hours} giờ ${minutes} phút`;
+  };
+
+  const getTimeUntilStart = (startDate: string) => {
+    const start = new Date(startDate).getTime();
+    const now = Date.now();
+    const diff = start - now;
+
+    if (diff <= 0) return null; // Already started
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return `${days} ngày ${hours} giờ ${minutes} phút`;
+  };
+
   useEffect(() => {
     // Preload element icons for faster rendering
     preloadElementIcons();
@@ -220,7 +248,9 @@ const HomePage: React.FC = () => {
                     {new Date(banner.startDate).toLocaleDateString('vi-VN')} - {new Date(banner.endDate).toLocaleDateString('vi-VN')}
                   </div>
                   <div className={styles.bannerTimeLeft}>
-                    Kết thúc sau: {Math.ceil((new Date(banner.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} ngày {Math.floor(((new Date(banner.endDate).getTime() - Date.now()) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))} giờ {Math.floor(((new Date(banner.endDate).getTime() - Date.now()) % (1000 * 60 * 60)) / (1000 * 60))} phút
+                    {banner.status === 'UPCOMING' 
+                      ? `Bắt đầu sau: ${getTimeUntilStart(banner.startDate)}` 
+                      : `Kết thúc sau: ${getTimeRemaining(banner.endDate)}`}
                   </div>
                   <div className={styles.bannerContent}>
                     <div className={styles.bannerMain}>
