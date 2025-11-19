@@ -98,16 +98,20 @@ const BannerPage: React.FC = () => {
       })
       .catch(error => console.error('Error fetching backgrounds:', error));
 
-    // Fetch all banners
+    // Fetch all banners (show both ACTIVE and UPCOMING)
     apiFetch('banners')
       .then(response => response.json())
       .then((data: Banner[]) => {
+        // Filter by status - show ACTIVE and UPCOMING, hide ENDED
         const current = data.filter(b => b.status === 'ACTIVE');
         const upcoming = data.filter(b => b.status === 'UPCOMING');
         setCurrentBanners(current);
         setUpcomingBanners(upcoming);
+        // Auto-select first banner (prioritize ACTIVE, fallback to UPCOMING)
         if (current.length > 0) {
           setSelectedBanner(current[0]);
+        } else if (upcoming.length > 0) {
+          setSelectedBanner(upcoming[0]);
         }
       })
       .catch(error => console.error('Error fetching banners:', error));
