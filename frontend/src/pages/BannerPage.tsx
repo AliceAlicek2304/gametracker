@@ -51,7 +51,8 @@ interface PityState {
 }
 
 const BannerPage: React.FC = () => {
-  const [banners, setBanners] = useState<Banner[]>([]);
+  const [currentBanners, setCurrentBanners] = useState<Banner[]>([]);
+  const [upcomingBanners, setUpcomingBanners] = useState<Banner[]>([]);
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
   const [backgrounds, setBackgrounds] = useState<string[]>([]);
   const [currentBg, setCurrentBg] = useState('');
@@ -97,13 +98,16 @@ const BannerPage: React.FC = () => {
       })
       .catch(error => console.error('Error fetching backgrounds:', error));
 
-    // Fetch current active banners
-    apiFetch('banners/current')
+    // Fetch all banners
+    apiFetch('banners')
       .then(response => response.json())
-      .then(data => {
-        setBanners(data);
-        if (data.length > 0) {
-          setSelectedBanner(data[0]);
+      .then((data: Banner[]) => {
+        const current = data.filter(b => b.status === 'ACTIVE');
+        const upcoming = data.filter(b => b.status === 'UPCOMING');
+        setCurrentBanners(current);
+        setUpcomingBanners(upcoming);
+        if (current.length > 0) {
+          setSelectedBanner(current[0]);
         }
       })
       .catch(error => console.error('Error fetching banners:', error));
@@ -124,6 +128,19 @@ const BannerPage: React.FC = () => {
     const diff = end - now;
 
     if (diff <= 0) return 'Đã kết thúc';
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    return `${days}d ${hours}h`;
+  };
+
+  const getTimeUntilStart = (startDate: string) => {
+    const start = new Date(startDate).getTime();
+    const now = Date.now();
+    const diff = start - now;
+
+    if (diff <= 0) return 'Đã bắt đầu';
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -228,25 +245,60 @@ const BannerPage: React.FC = () => {
         <div className={styles.container}>
           {/* Left Sidebar - Banner List */}
           <div className={styles.bannerList}>
-            {banners.map(banner => (
-              <div
-                key={banner.id}
-                className={`${styles.bannerItem} ${selectedBanner?.id === banner.id ? styles.active : ''}`}
-                onClick={() => setSelectedBanner(banner)}
-              >
-                <div className={styles.bannerItemBadge}>EVENT</div>
-                <img
-                  src={banner.bannerType === 'CHARACTER' 
-                    ? banner.featured5StarCharacterImageUrl 
-                    : banner.featured5StarWeaponImageUrl}
-                  alt={banner.name}
-                  className={styles.bannerItemImage}
-                />
-                <div className={styles.bannerItemOverlay}>
-                  <div className={styles.bannerItemName}>{banner.name}</div>
-                </div>
+            {/* Current Banners */}
+            {currentBanners.length > 0 && (
+              <div className={styles.bannerSection}>
+                <div className={styles.sectionTitle}>🔥 ĐANG DIỄN RA</div>
+                {currentBanners.map(banner => (
+                  <div
+                    key={banner.id}
+                    className={`${styles.bannerItem} ${selectedBanner?.id === banner.id ? styles.active : ''}`}
+                    onClick={() => setSelectedBanner(banner)}
+                  >
+                    <div className={styles.bannerItemBadge}>EVENT</div>
+                    <img
+                      src={banner.bannerType === 'CHARACTER' 
+                        ? banner.featured5StarCharacterImageUrl 
+                        : banner.featured5StarWeaponImageUrl}
+                      alt={banner.name}
+                      className={styles.bannerItemImage}
+                    />
+                    <div className={styles.bannerItemOverlay}>
+                      <div className={styles.bannerItemName}>{banner.name}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
+
+            {/* Upcoming Banners */}
+            {upcomingBanners.length > 0 && (
+              <div className={styles.bannerSection}>
+                <div className={styles.sectionTitle}>⏰ SẮP DIỄN RA</div>
+                {upcomingBanners.map(banner => (
+                  <div
+                    key={banner.id}
+                    className={`${styles.bannerItem} ${styles.upcomingItem} ${selectedBanner?.id === banner.id ? styles.active : ''}`}
+                    onClick={() => setSelectedBanner(banner)}
+                  >
+                    <div className={styles.bannerItemBadge} style={{ backgroundColor: '#ff9800' }}>UPCOMING</div>
+                    <img
+                      src={banner.bannerType === 'CHARACTER' 
+                        ? banner.featured5StarCharacterImageUrl 
+                        : banner.featured5StarWeaponImageUrl}
+                      alt={banner.name}
+                      className={styles.bannerItemImage}
+                    />
+                    <div className={styles.bannerItemOverlay}>
+                      <div className={styles.bannerItemName}>{banner.name}</div>
+                      <div className={styles.upcomingTimer}>
+                        Starts in: {getTimeUntilStart(banner.startDate)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Center - Banner Display */}
@@ -259,7 +311,9 @@ const BannerPage: React.FC = () => {
                   </span>
                   <h1 className={styles.bannerName}>{selectedBanner.name}</h1>
                   <div className={styles.bannerTimer}>
-                    ⏰ Remaining: {getTimeRemaining(selectedBanner.endDate)}
+                    {selectedBanner.status === 'UPCOMING' 
+                      ? `⏰ Starts in: ${getTimeUntilStart(selectedBanner.startDate)}` 
+                      : `⏰ Remaining: ${getTimeRemaining(selectedBanner.endDate)}`}
                   </div>
                 </div>
 
@@ -333,24 +387,32 @@ const BannerPage: React.FC = () => {
 
               {/* Roll Buttons */}
               <div className={styles.rollButtons}>
-                <button className={styles.rollButton} onClick={handleRollOne} disabled={isRolling}>
-                  <div className={styles.rollButtonText}>
-                    <span className={styles.rollLabel}>{isRolling ? 'Rolling...' : 'Convene ×1'}</span>
-                    <div className={styles.rollCost}>
-                      <span>×160</span>
-                      <img src="/icons/astrite-icon.png" alt="Astrite" className={styles.rollButtonIcon} />
-                    </div>
+                {selectedBanner.status === 'UPCOMING' ? (
+                  <div className={styles.upcomingNotice}>
+                    🔒 Banner chưa mở. Bắt đầu vào: {new Date(selectedBanner.startDate).toLocaleString('vi-VN')}
                   </div>
-                </button>
-                <button className={styles.rollButton} onClick={handleRollTen} disabled={isRolling}>
-                  <div className={styles.rollButtonText}>
-                    <span className={styles.rollLabel}>{isRolling ? 'Rolling...' : 'Convene ×10'}</span>
-                    <div className={styles.rollCost}>
-                      <span>×1600</span>
-                      <img src="/icons/astrite-icon.png" alt="Astrite" className={styles.rollButtonIcon} />
-                    </div>
-                  </div>
-                </button>
+                ) : (
+                  <>
+                    <button className={styles.rollButton} onClick={handleRollOne} disabled={isRolling}>
+                      <div className={styles.rollButtonText}>
+                        <span className={styles.rollLabel}>{isRolling ? 'Rolling...' : 'Convene ×1'}</span>
+                        <div className={styles.rollCost}>
+                          <span>×160</span>
+                          <img src="/icons/astrite-icon.png" alt="Astrite" className={styles.rollButtonIcon} />
+                        </div>
+                      </div>
+                    </button>
+                    <button className={styles.rollButton} onClick={handleRollTen} disabled={isRolling}>
+                      <div className={styles.rollButtonText}>
+                        <span className={styles.rollLabel}>{isRolling ? 'Rolling...' : 'Convene ×10'}</span>
+                        <div className={styles.rollCost}>
+                          <span>×1600</span>
+                          <img src="/icons/astrite-icon.png" alt="Astrite" className={styles.rollButtonIcon} />
+                        </div>
+                      </div>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}
