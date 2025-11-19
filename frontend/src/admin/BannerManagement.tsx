@@ -252,9 +252,9 @@ const BannerManagement: React.FC = () => {
     };
 
     try {
-      const url = editingId ? `/api/banners/${editingId}` : '/api/banners';
+      const url = editingId ? `banners/${editingId}` : 'banners';
       const method = editingId ? 'PUT' : 'POST';
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         headers: buildHeaders('application/json'),
         body: JSON.stringify(body),
