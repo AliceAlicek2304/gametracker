@@ -208,7 +208,7 @@ const TrackerPage: React.FC = () => {
           {/* PowerShell Command Section */}
           <div className={styles.instructionCard}>
             <h3 className={styles.instructionTitle}>
-              <span className={styles.stepNumber}>1</span>
+              <span className={styles.stepNumber}>📥</span>
               Chạy lệnh PowerShell để tự động import
             </h3>
             <p className={styles.instructionText}>
@@ -225,9 +225,6 @@ const TrackerPage: React.FC = () => {
                 📋 Copy
               </button>
             </div>
-            <p className={styles.instructionNote}>
-              💡 Script sẽ tự động tìm game, đọc URL và gửi dữ liệu lên server. Không cần copy-paste thủ công!
-            </p>
           </div>
 
           {Object.keys(gachaData).length > 0 && (
