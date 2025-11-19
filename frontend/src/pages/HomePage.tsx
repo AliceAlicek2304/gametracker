@@ -87,12 +87,15 @@ const HomePage: React.FC = () => {
       })
       .catch(error => console.error('Error fetching characters:', error));
 
-    // Fetch active banners
+    // Fetch active and upcoming banners
     apiFetch('banners')
       .then(response => response.json())
       .then(data => {
-        const activeBanners = data.filter((b: Banner) => b.status === 'ACTIVE');
-        setBanners(activeBanners);
+        // Show both ACTIVE and UPCOMING banners (hide ENDED)
+        const displayBanners = data.filter((b: Banner) => 
+          b.status === 'ACTIVE' || b.status === 'UPCOMING'
+        );
+        setBanners(displayBanners);
       })
       .catch(error => console.error('Error fetching banners:', error));
   }, []);
