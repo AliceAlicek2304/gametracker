@@ -1,8 +1,7 @@
-/* Base Layout */
+/* Base Layout with Retro-Futuristic Style */
 .homepage {
   min-height: 100vh;
   width: 100%;
-  /* Match other pages: let background cover and stay fixed for a full-bleed look */
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
@@ -10,8 +9,10 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 
+/* Animated Grid Background */
 .homepage::before {
   content: '';
   position: absolute;
@@ -19,11 +20,40 @@
   left: 0;
   right: 0;
   bottom: 0;
-  /* Slightly lighter overlay like Tracker page for readability */
-  background: rgba(0, 0, 0, 0.4);
+  background: 
+    linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
   z-index: 1;
-  /* Allow clicks to pass through the overlay so footer and other elements remain interactive */
   pointer-events: none;
+}
+
+/* Neon Glow Orbs */
+.homepage::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.1) 0%, transparent 25%),
+    radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 25%),
+    radial-gradient(circle at 50% 50%, rgba(157, 0, 255, 0.08) 0%, transparent 30%);
+  animation: orbFloat 15s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes gridMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(50px); }
+}
+
+@keyframes orbFloat {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
 }
 
 .mainContent {
@@ -34,34 +64,92 @@
   padding: 1.5rem;
 }
 
-/* Hero Section */
+/* Hero Section - Immersive 3D Style */
 .heroSection {
   text-align: center;
   margin-bottom: 2rem;
-  padding: 2rem 1rem;
+  padding: 4rem 1rem;
+  position: relative;
+  z-index: 10;
+  perspective: 1000px;
 }
 
 .heroTitle {
-  font-size: 4rem;
-  color: white;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-  animation: glow 2s ease-in-out infinite alternate;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  color: transparent;
+  background: linear-gradient(135deg, 
+    var(--neon-pink) 0%, 
+    var(--neon-magenta) 50%, 
+    var(--neon-purple) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  position: relative;
+  animation: neonGlow 3s ease-in-out infinite alternate, float3d 6s ease-in-out infinite;
+  transform-style: preserve-3d;
+  text-shadow: 
+    0 0 10px rgba(255, 20, 147, 0.8),
+    0 0 20px rgba(255, 0, 128, 0.6),
+    0 0 30px rgba(255, 0, 255, 0.4),
+    0 0 40px rgba(181, 54, 255, 0.3);
 }
 
-@keyframes glow {
+.heroTitle::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, 
+    rgba(0, 240, 255, 0.3) 0%, 
+    rgba(255, 0, 255, 0.3) 50%, 
+    rgba(157, 0, 255, 0.3) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: blur(20px);
+  transform: translateZ(-50px);
+}
+
+@keyframes neonGlow {
   from {
-    text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    text-shadow: 
+      0 0 10px rgba(255, 20, 147, 0.8),
+      0 0 20px rgba(255, 0, 128, 0.6),
+      0 0 30px rgba(255, 0, 255, 0.4);
   }
   to {
-    text-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 40px rgba(96, 165, 250, 0.5);
+    text-shadow: 
+      0 0 20px rgba(255, 20, 147, 1),
+      0 0 30px rgba(255, 0, 128, 0.8),
+      0 0 40px rgba(181, 54, 255, 0.6),
+      0 0 50px rgba(255, 0, 255, 0.4);
   }
+}
+
+@keyframes float3d {
+  0%, 100% { transform: translateY(0) rotateX(0deg); }
+  50% { transform: translateY(-20px) rotateX(5deg); }
 }
 
 .heroSubtitle {
-  font-size: 1.5rem;
-  color: white;
-  opacity: 0.9;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(1rem, 3vw, 1.8rem);
+  font-weight: 500;
+  color: var(--text-glow);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  opacity: 0.95;
+  text-shadow: 0 0 10px rgba(184, 184, 255, 0.5);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.95; }
+  50% { opacity: 0.7; }
 }
 
 .container {
@@ -81,11 +169,22 @@
 }
 
 .timelineHeader {
-  color: #fbbf24;
-  font-size: 1.5rem;
+  font-family: 'Orbitron', sans-serif;
+  color: var(--neon-yellow);
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px rgba(255, 255, 0, 0.6), 0 0 30px rgba(255, 255, 0, 0.3);
+  animation: neonFlicker 3s ease-in-out infinite;
+}
+
+@keyframes neonFlicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+  75% { opacity: 0.95; }
 }
 
 /* Left Section */
@@ -95,12 +194,50 @@
   gap: 1.5rem;
 }
 
-/* Quick Navigation */
+/* Quick Navigation - Neon Glass Effect */
 .quickNav {
-  background: rgba(20, 20, 30, 0.95);
-  border: 2px solid #4a4a5e;
-  border-radius: 8px;
-  padding: 1rem;
+  background: linear-gradient(135deg, 
+    rgba(20, 5, 40, 0.7) 0%, 
+    rgba(40, 10, 60, 0.5) 100%);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 20, 147, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 8px 32px rgba(255, 20, 147, 0.15),
+    inset 0 0 20px rgba(255, 20, 147, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.quickNav::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    var(--neon-pink), 
+    var(--neon-magenta), 
+    var(--neon-purple), 
+    var(--neon-pink));
+  background-size: 400% 400%;
+  border-radius: 12px;
+  z-index: -1;
+  animation: borderGlow 3s ease infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.quickNav:hover::before {
+  opacity: 0.7;
+}
+
+@keyframes borderGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .quickNavHeader {

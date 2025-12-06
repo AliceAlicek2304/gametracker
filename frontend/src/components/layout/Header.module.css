@@ -1,14 +1,42 @@
 .header {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, 
+    rgba(10, 1, 24, 0.95) 0%, 
+    rgba(20, 5, 40, 0.95) 50%,
+    rgba(13, 2, 33, 0.95) 100%);
+  backdrop-filter: blur(20px);
   color: white;
   padding: 1rem 0;
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.7),
+    0 0 30px rgba(0, 240, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 240, 255, 0.2);
+  position: relative;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--neon-cyan) 20%,
+    var(--neon-magenta) 50%,
+    var(--neon-cyan) 80%,
+    transparent 100%);
+  animation: borderSlide 3s ease-in-out infinite;
+}
+
+@keyframes borderSlide {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 .header-container {
@@ -23,8 +51,11 @@
 .logo {
   display: flex;
   align-items: center;
+  font-family: 'Orbitron', sans-serif;
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .logo-link {
@@ -33,17 +64,43 @@
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
+  position: relative;
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-magenta), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .logo-link:hover {
-  color: #3b82f6;
   transform: scale(1.05);
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.8));
+}
+
+.logo-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+  transition: width 0.3s ease;
+}
+
+.logo-link:hover::after {
+  width: 100%;
 }
 
 .icon {
   margin-right: 0.5rem;
   font-size: 2rem;
-  filter: drop-shadow(0 0 5px #3b82f6);
+  filter: drop-shadow(0 0 10px var(--neon-pink)) drop-shadow(0 0 20px var(--neon-magenta));
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
 
 .nav {
@@ -52,17 +109,22 @@
 }
 
 .nav-link {
-  color: white;
+  font-family: 'Rajdhani', sans-serif;
+  color: var(--text-glow);
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   transition: all 0.3s ease;
   position: relative;
-  padding: 0.5rem 0;
-  font-weight: 500;
+  padding: 0.5rem 1rem;
 }
 
 .nav-link:hover {
-  color: #3b82f6;
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px rgba(255, 20, 147, 0.8);
+  transform: translateY(-2px);
 }
 
 .nav-link::after {
@@ -70,10 +132,12 @@
   position: absolute;
   width: 0;
   height: 2px;
-  bottom: -5px;
-  left: 0;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--neon-pink), var(--neon-magenta), var(--neon-purple));
   transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
 }
 
 .nav-link:hover::after {
@@ -82,14 +146,20 @@
 
 /* Active navigation link */
 .nav-link-active {
-  color: #60a5fa !important;
-  font-weight: 600;
+  color: var(--neon-magenta) !important;
+  text-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
 }
 
 .nav-link-active::after {
   width: 100%;
-  background: linear-gradient(90deg, #60a5fa, #3b82f6);
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  background: linear-gradient(90deg, var(--neon-magenta), var(--neon-purple));
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
+  animation: activeGlow 2s ease-in-out infinite;
+}
+
+@keyframes activeGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
 .nav-link-active::before {
