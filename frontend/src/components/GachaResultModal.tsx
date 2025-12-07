@@ -272,15 +272,6 @@ const GachaResultModal: React.FC<GachaResultModalProps> = ({ items, onClose }) =
 
   const currentItem = items[currentIndex];
 
-  // Get next item's rarity for deck color
-  const getNextItemColor = (index: number) => {
-    if (index > currentIndex) {
-      const nextItem = items[index];
-      return getRarityColor(nextItem.rarity);
-    }
-    return '#fbbf24'; // Default gold
-  };
-
   return (
     <div 
       className={styles.modalOverlay}
