@@ -156,6 +156,7 @@ const BannerPage: React.FC = () => {
     if (!selectedBanner || isRolling) return;
     
     setIsRolling(true);
+    
     try {
       const currentPity = getPityState(selectedBanner.id);
       
@@ -185,6 +186,7 @@ const BannerPage: React.FC = () => {
           guaranteed4StarFeatured: result.guaranteed4StarFeatured
         });
         
+        // Set results and show modal
         setGachaResults(result.items);
         setShowGachaModal(true);
       } else {
@@ -201,6 +203,7 @@ const BannerPage: React.FC = () => {
     if (!selectedBanner || isRolling) return;
     
     setIsRolling(true);
+    
     try {
       const currentPity = getPityState(selectedBanner.id);
       
@@ -230,6 +233,7 @@ const BannerPage: React.FC = () => {
           guaranteed4StarFeatured: result.guaranteed4StarFeatured
         });
         
+        // Set results and show modal
         setGachaResults(result.items);
         setShowGachaModal(true);
       } else {
