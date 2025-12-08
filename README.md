@@ -17,7 +17,7 @@
 - 👤 Quản lý tài khoản cá nhân với avatar tùy chỉnh
 - 🔐 Đăng nhập bằng Google OAuth2
 
-**Live Demo:** [https://d2eu9it59oopt8.cloudfront.net](https://d2eu9it59oopt8.cloudfront.net)
+**Live Demo:** [https://trackerplus.site/](https://trackerplus.site/)
 
 ---
 
