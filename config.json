@@ -5,7 +5,7 @@
   },
   "frontend": {
     "local": "http://localhost:3000",
-    "production": "https://d2eu9it59oopt8.cloudfront.net"
+    "production": "https://trackerplus.site"
   },
   "activeEnvironment": "production"
 }

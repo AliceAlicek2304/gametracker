@@ -40,6 +40,8 @@ const TrackerPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('1');
   const [rarityFilter, setRarityFilter] = useState<RarityFilter>('both');
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [importUrl, setImportUrl] = useState('');
+  const [importing, setImporting] = useState(false);
   const itemsPerPage = 27;
 
   // Background image logic (same as HomePage)
@@ -102,44 +104,44 @@ const TrackerPage: React.FC = () => {
       }
     };
 
-    // Check if URL has import flag (from PowerShell script)
-    const checkUrlForImportFlag = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const importFlag = urlParams.get('import');
-      const timestamp = urlParams.get('timestamp');
-      
-      if (importFlag === 'success' && timestamp) {
-        console.log('PowerShell import detected! Fetching data from backend...');
-        
-        try {
-          const res = await apiFetch('gacha/latest');
-          const json = await res.json();
-          
-          if (json.success && json.data && json.data.data) {
-            const newData = json.data.data.data;
-            const serverTimestamp = json.data.timestamp;
-            
-            localStorage.setItem('gachaData', JSON.stringify(newData));
-            localStorage.setItem('gachaDataTime', serverTimestamp.toString());
-            setGachaData(newData);
-            
-            console.log('✓ Loaded gacha data from PowerShell import:', Object.keys(newData).length, 'banners');
-            
-            // Clean URL without reloading page
-            window.history.replaceState({}, '', '/tracker');
-          }
-        } catch (err) {
-          console.error('Failed to fetch data after PowerShell import:', err);
-        }
-      }
-    };
+
 
     // Load cached data first
     loadCachedData();
-    
-    // Then check if PowerShell just imported
-    checkUrlForImportFlag();
   }, []);
+
+  const handleImport = async () => {
+    if (!importUrl) return;
+    setImporting(true);
+    
+    try {
+      const res = await apiFetch('gacha/fetch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: importUrl })
+      });
+      const json = await res.json();
+      
+      if (json.success && json.data && json.data.data) {
+        const newData = json.data.data;
+        
+        const serverTimestamp = Date.now();
+        
+        localStorage.setItem('gachaData', JSON.stringify(newData));
+        localStorage.setItem('gachaDataTime', serverTimestamp.toString());
+        setGachaData(newData);
+        showToast.success('Import dữ liệu thành công!');
+        setImportUrl('');
+      } else {
+        showToast.error(json.message || 'Import thất bại');
+      }
+    } catch (err) {
+      console.error('Import error:', err);
+      showToast.error('Có lỗi xảy ra khi kết nối server');
+    } finally {
+      setImporting(false);
+    }
+  };
 
   // Filter items by rarity
   const getFilteredItems = (items: GachaItem[]) => {
@@ -238,11 +240,11 @@ const TrackerPage: React.FC = () => {
           {/* PowerShell Command Section */}
           <div className={styles.instructionCard}>
             <h3 className={styles.instructionTitle}>
-              <span className={styles.stepNumber}>📥</span>
-              Chạy lệnh PowerShell để tự động import
+              <span className={styles.stepNumber}>1</span>
+              Lấy Gacha URL
             </h3>
             <p className={styles.instructionText}>
-              Mở <strong>PowerShell</strong> và chạy lệnh sau. Lịch sử gacha sẽ tự động hiển thị trên trang này:
+              Mở <strong>PowerShell</strong> và chạy lệnh sau để lấy URL (URL sẽ được tự động copy vào clipboard):
             </p>
             <div className={styles.codeBlock}>
               <code className={styles.code}>{powershellCommand}</code>
@@ -253,6 +255,27 @@ const TrackerPage: React.FC = () => {
                 title="Copy lệnh"
               >
                 📋 Copy
+              </button>
+            </div>
+
+            <h3 className={styles.instructionTitle} style={{ marginTop: '1.5rem' }}>
+              <span className={styles.stepNumber}>2</span>
+              Dán URL và Import
+            </h3>
+            <div className={styles.importSection}>
+              <input
+                type="text"
+                placeholder="Dán link Gacha vào đây..."
+                value={importUrl}
+                onChange={(e) => setImportUrl(e.target.value)}
+                className={styles.importInput}
+              />
+              <button 
+                className={styles.importBtn} 
+                onClick={handleImport}
+                disabled={importing || !importUrl}
+              >
+                {importing ? 'Đang Import...' : 'Import Dữ Liệu'}
               </button>
             </div>
           </div>

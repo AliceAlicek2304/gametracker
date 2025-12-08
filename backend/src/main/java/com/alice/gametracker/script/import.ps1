@@ -1,30 +1,3 @@
-<#
-    [License]
-    This script is licensed under the GNU General Public License v3.0 (GPL-3.0).
-
-    Copyright (C) 2025 Luzefiru
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-    You can view the full text of the GNU General Public License at <https://www.gnu.org/licenses/>.
-
-    [Credits]
-    - Primarily used by WuWa Tracker at https://wuwatracker.com/import (visit the page for usage instructions)
-    - Originally created by @theREalpha
-    - Script inspired by astrite.gg
-    - Thanks to @antisocial93 for screening multiple registry entry logic
-    - Thanks to @timas130 for adding CN server support
-    - Thanks to @mei.yue on Discord for helping us debug OneDrive issues
-    - Thanks to @phenom for sharing the v2 launcher new Client.log directory path
-    - Thanks to @thekiwibirdddd for optimizing the search logic to O(1) to use a HashSet lookup and avoid duplicate checks
-
-    [Redistribution Provision]
-    When redistributing this script, you must include this license notice and credits in all copies or substantial portions of the script.
-    The script must not be used in a way that violates the terms of the GNU General Public License v3.0.
-#>
-
 Add-Type -AssemblyName System.Web
 
 # ========================================
@@ -144,40 +117,27 @@ function LogCheck {
         if (![string]::IsNullOrWhiteSpace($urlToCopy)) {
             $urlFound = $true
             
-            # AUTO-SEND TO API
+            # COPY TO CLIPBOARD AND NOTIFY USER
             try {
-                $apiUrl = "$BACKEND_URL/api/gacha/fetch"
-                $body = @{ url = $urlToCopy } | ConvertTo-Json
-                $headers = @{
-                    "Content-Type" = "application/json"
-                }
+                Set-Clipboard -Value $urlToCopy
+                Write-Host "✓ Gacha URL found and copied to clipboard!" -ForegroundColor Green
+                Write-Host "Please paste it into the input box on the website." -ForegroundColor Cyan
                 
-                Write-Host "Sending data to backend..." -ForegroundColor Cyan
-                $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Body $body -Headers $headers -TimeoutSec 60
+                # Auto-open Chrome with tracker URL
+                $websiteUrl = "$FRONTEND_URL/tracker"
                 
-                if ($response.success) {
-                    Write-Host "✓ Import successful!" -ForegroundColor Green
-                    
-                    # Auto-open Chrome with tracker URL
-                    $timestamp = [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
-                    $websiteUrl = "$FRONTEND_URL/tracker?import=success&timestamp=$timestamp"
-                    
-                    # Try to open in Chrome
-                    $chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
-                    if (Test-Path $chromePath) {
-                        Start-Process $chromePath $websiteUrl
-                    } else {
-                        # Fallback to default browser
-                        Start-Process $websiteUrl
-                    }
+                # Try to open in Chrome
+                $chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+                if (Test-Path $chromePath) {
+                    Start-Process $chromePath $websiteUrl
                 }
                 else {
-                    Write-Host "✗ Error: $($response.message)" -ForegroundColor Red
+                    # Fallback to default browser
+                    Start-Process $websiteUrl
                 }
             }
             catch {
-                Write-Host "✗ Failed to connect to API" -ForegroundColor Red
-                Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+                Write-Host "✗ Failed to copy to clipboard" -ForegroundColor Red
             }
         }
     }
@@ -275,8 +235,8 @@ if (!$urlFound) {
             foreach ($entry in $filteredEntries) {
                 $gamePath = ($entry.Name -split '\\client\\')[0]
                 if ($gamePath -like "*OneDrive*") {
-                  $err += "Skipping path as it contains 'OneDrive': $($gamePath)`n"
-                  continue
+                    $err += "Skipping path as it contains 'OneDrive': $($gamePath)`n"
+                    continue
                 }
 
                 if ($checkedDirectories.Contains($gamePath)) {
@@ -318,8 +278,8 @@ if (!$urlFound) {
             foreach ($entry in $filteredEntries) {
                 $gamePath = (($entry.Value -split 'App=')[1] -split '\\client\\')[0]
                 if ($gamePath -like "*OneDrive*") {
-                  $err += "Skipping path as it contains 'OneDrive': $($gamePath)`n"
-                  continue
+                    $err += "Skipping path as it contains 'OneDrive': $($gamePath)`n"
+                    continue
                 }
 
                 if ($checkedDirectories.Contains($gamePath)) {
@@ -360,7 +320,7 @@ if (!$urlFound) {
         $gamePath = (Get-ItemProperty -Path $32, $64 | Where-Object { $_.DisplayName -like "*wuthering*" } | Select-Object -ExpandProperty InstallPath)
         if ($gamePath) {
             if ($gamePath -like "*OneDrive*") {
-              $err += "Skipping path as it contains 'OneDrive': $($gamePath)`n"
+                $err += "Skipping path as it contains 'OneDrive': $($gamePath)`n"
             }
             elseif ($checkedDirectories.Contains($gamePath)) {
                 $err += "Already checked: $($gamePath)`n"
@@ -405,7 +365,7 @@ Write-Host $err -ForegroundColor Magenta
 while (!$urlFound) {
     Write-Host "Game install location not found or log files missing. Did you open your in-game Convene History first?" -ForegroundColor Red
    
-Write-Host @"
+    Write-Host @"
     +--------------------------------------------------+
     |         ARE YOU USING A THIRD-PARTY APP?         |
     +--------------------------------------------------+
