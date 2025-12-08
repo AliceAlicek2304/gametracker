@@ -123,18 +123,7 @@ function LogCheck {
                 Write-Host "✓ Gacha URL found and copied to clipboard!" -ForegroundColor Green
                 Write-Host "Please paste it into the input box on the website." -ForegroundColor Cyan
                 
-                # Auto-open Chrome with tracker URL
-                $websiteUrl = "$FRONTEND_URL/tracker"
-                
-                # Try to open in Chrome
-                $chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
-                if (Test-Path $chromePath) {
-                    Start-Process $chromePath $websiteUrl
-                }
-                else {
-                    # Fallback to default browser
-                    Start-Process $websiteUrl
-                }
+
             }
             catch {
                 Write-Host "✗ Failed to copy to clipboard" -ForegroundColor Red
