@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import styles from './TrackerPage.module.css';
@@ -200,7 +201,36 @@ const TrackerPage: React.FC = () => {
   return (
     <>
       <Header />
-      <div className={styles.container} style={{ backgroundImage: `url(${currentBg})` }}>
+      <div className={styles.container}>
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
+        }}>
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={currentBg}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5 }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundImage: `url(${currentBg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed'
+              }}
+            />
+          </AnimatePresence>
+        </div>
         <div className={styles.contentWrapper}>
           <h1 className={styles.title}>Lịch Sử Triệu Hồi</h1>
           <p className={styles.subtitle}>Xem lịch sử triệu hồi và thống kê của bạn.</p>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
@@ -154,8 +155,39 @@ const HomePage: React.FC = () => {
 
   const getRarityStars = (rarity: number) => '★'.repeat(rarity);
 
+
+
   return (
-    <div className={styles.homepage} style={{ backgroundImage: `url(${currentBg})` }}>
+    <div className={styles.homepage}>
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+      }}>
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            key={currentBg}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url(${currentBg})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundAttachment: 'fixed'
+            }}
+          />
+        </AnimatePresence>
+      </div>
       <Header />
       <main className={styles.mainContent}>
         <div className={styles.heroSection}>
