@@ -5,6 +5,8 @@ import CharacterPage from './pages/CharacterPage';
 import CharacterDetailPage from './pages/CharacterDetailPage';
 import WeaponPage from './pages/WeaponPage';
 import WeaponDetailPage from './pages/WeaponDetailPage';
+import EchoPage from './pages/EchoPage';
+import EchoDetailPage from './pages/EchoDetailPage';
 import BannerPage from './pages/BannerPage';
 import EventPage from './pages/EventPage';
 import Dashboard from './admin/Dashboard';
@@ -37,6 +39,8 @@ function App() {
             <Route path="/characters/:id" element={<CharacterDetailPage />} />
             <Route path="/weapons" element={<WeaponPage />} />
             <Route path="/weapons/:id" element={<WeaponDetailPage />} />
+            <Route path="/echoes" element={<EchoPage />} />
+            <Route path="/echoes/:id" element={<EchoDetailPage />} />
             <Route path="/banners" element={<BannerPage />} />
             <Route path="/events" element={<EventPage />} />
             <Route path="/tracker" element={<TrackerPage />} />

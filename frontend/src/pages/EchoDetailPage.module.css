@@ -1,0 +1,299 @@
+.container {
+  min-height: 100vh;
+  width: 100%;
+  padding-top: 80px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.contentWrapper {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.backBtn {
+  padding: 0.75rem 1.5rem;
+  background: rgba(59, 130, 246, 0.2);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+  color: #60a5fa;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.backBtn:hover {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: #3b82f6;
+  transform: translateX(-5px);
+}
+
+.detailCard {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.topSection {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.imageSection {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  border: 3px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
+}
+
+.echoImage {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 13px 13px 0 0;
+}
+
+.placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  color: #475569;
+}
+
+.costBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+  z-index: 10;
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.name {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  margin: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.description,
+.skillSection {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.description h3,
+.skillSection h3 {
+  font-size: 1.3rem;
+  color: #60a5fa;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.description p {
+  color: #cbd5e1;
+  line-height: 1.8;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.skillContent {
+  color: #cbd5e1;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  white-space: pre-wrap;
+}
+
+/* Set Echo Icons (below image) */
+.setEchoIcons {
+  bottom: 4.5rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.setEchoIconWrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.setEchoIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  background: rgba(15, 23, 42, 0.9);
+  transition: all 0.3s ease;
+  object-fit: cover;
+}
+
+.setEchoIcon:hover {
+  border-color: #3b82f6;
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.6);
+}
+
+.setEchoTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+  border: 2px solid rgba(59, 130, 246, 0.5);
+  border-radius: 10px;
+  padding: 1rem;
+  min-width: 300px;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.tooltipTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #60a5fa;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.tooltipContent {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  min-height: 400px;
+}
+
+.loading {
+  color: #94a3b8;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #ef4444;
+}
+
+.error h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .topSection {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .imageSection {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .name {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 1rem;
+  }
+
+  .detailCard {
+    padding: 2rem 1.5rem;
+  }
+
+  .name {
+    font-size: 2rem;
+  }
+
+  .description h3,
+  .skillSection h3 {
+    font-size: 1.1rem;
+  }
+
+  .description p,
+  .skillContent {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .detailCard {
+    padding: 1.5rem 1rem;
+  }
+
+  .name {
+    font-size: 1.5rem;
+  }
+
+  .costBadge {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+  }
+}

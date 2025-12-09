@@ -50,30 +50,43 @@ const Header: React.FC = () => {
             >
               Nhân vật
             </Link>
-            <Link 
-              to="/weapons" 
-              className={`${styles['nav-link']} ${location.pathname.startsWith('/weapons') ? styles['nav-link-active'] : ''}`}
-            >
-              Vũ khí
-            </Link>
+            
+            {/* Resources Dropdown */}
+            <div className={styles['nav-dropdown']}>
+              <div className={`${styles['nav-link']} ${(location.pathname.startsWith('/weapons') || location.pathname.startsWith('/echoes')) ? styles['nav-link-active'] : ''}`}>
+                Tài nguyên ▼
+              </div>
+              <div className={styles['dropdown-menu']}>
+                <Link to="/weapons" className={styles['dropdown-item']}>
+                  Vũ khí
+                </Link>
+                <Link to="/echoes" className={styles['dropdown-item']}>
+                  Echo
+                </Link>
+              </div>
+            </div>
+
             <Link 
               to="/events" 
               className={`${styles['nav-link']} ${location.pathname === '/events' ? styles['nav-link-active'] : ''}`}
             >
               Sự kiện
             </Link>
-            <Link 
-              to="/banners" 
-              className={`${styles['nav-link']} ${location.pathname === '/banners' ? styles['nav-link-active'] : ''}`}
-            >
-              Banner
-            </Link>
-            <Link 
-              to="/tracker" 
-              className={`${styles['nav-link']} ${location.pathname === '/tracker' ? styles['nav-link-active'] : ''}`}
-            >
-              Tracker
-            </Link>
+
+            {/* Tools Dropdown */}
+            <div className={styles['nav-dropdown']}>
+              <div className={`${styles['nav-link']} ${(location.pathname.startsWith('/banners') || location.pathname.startsWith('/tracker')) ? styles['nav-link-active'] : ''}`}>
+                Công cụ ▼
+              </div>
+              <div className={styles['dropdown-menu']}>
+                <Link to="/banners" className={styles['dropdown-item']}>
+                  Banner
+                </Link>
+                <Link to="/tracker" className={styles['dropdown-item']}>
+                  Tracker
+                </Link>
+              </div>
+            </div>
           </nav>
           <div className={styles['auth-buttons']}>
             {isAuthenticated && user ? (
