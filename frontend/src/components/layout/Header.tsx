@@ -135,10 +135,9 @@ const Header: React.FC = () => {
                 )}
               </div>
             ) : (
-              <>
-                <button className={styles['btn-login']} onClick={() => setShowLogin(true)}>Đăng nhập</button>
-                <button className={styles['btn-register']} onClick={() => setShowRegister(true)}>Đăng ký</button>
-              </>
+              <button className={styles['btn-user-icon']} onClick={() => setShowLogin(true)}>
+                <span className={styles['user-icon']}>👤</span>
+              </button>
             )}
           </div>
         </div>
