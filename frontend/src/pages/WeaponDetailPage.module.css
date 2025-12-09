@@ -40,23 +40,23 @@
 
 .backBtn {
   padding: 0.75rem 1.5rem;
-  margin-bottom: 1.5rem;
-  border-radius: 8px;
-  border: none;
-  background: rgba(0, 212, 255, 0.1);
-  color: var(--theme-primary);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 100%);
+  border: 2px solid rgba(59, 130, 246, 0.6);
+  border-radius: 10px;
+  color: white;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
 }
 
 .backBtn:hover {
-  background: rgba(0, 212, 255, 0.2);
-  transform: translateX(-4px);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 1) 0%, rgba(29, 78, 216, 1) 100%);
+  border-color: #3b82f6;
+  transform: translateX(-5px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
 }
 
 .detailCard {
