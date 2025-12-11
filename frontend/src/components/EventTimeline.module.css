@@ -1,19 +1,67 @@
 .timelineRoot {
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(10,10,14,0.6), rgba(6,6,10,0.6));
+  background: linear-gradient(180deg, 
+    rgba(20, 5, 40, 0.7) 0%, 
+    rgba(40, 10, 60, 0.5) 100%);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 20, 147, 0.3);
   color: #e6f7ff;
-  padding: 8px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 8px 32px rgba(255, 20, 147, 0.15),
+    inset 0 0 20px rgba(255, 20, 147, 0.05);
+  position: relative;
+  transition: all 0.3s ease;
 }
 
-.headerRow { display:block; }
-.datesRow { overflow-x: auto; overflow-y: hidden; }
-.datesInner { display:flex; position: relative; }
-.dateCell { text-align: center; padding: 8px 6px; font-weight:700; color: #ffd977; border-right: 1px solid rgba(255,255,255,0.03); min-width:48px; }
+.headerRow { 
+  display: block; 
+  margin-bottom: 1rem;
+}
 
-.bodyRow { display:block; margin-top:8px; }
+.datesRow { 
+  overflow-x: auto; 
+  overflow-y: hidden; 
+  padding-bottom: 0.5rem;
+}
 
-.gridWrap { overflow: auto; width: 100%; position: relative; }
+.datesInner { 
+  display: flex; 
+  position: relative; 
+  gap: 2px;
+}
+
+.dateCell { 
+  text-align: center; 
+  padding: 10px 8px; 
+  font-weight: 700; 
+  color: #ffd977;
+  background: rgba(30, 30, 40, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.1); 
+  min-width: 52px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.dateCell:hover {
+  background: rgba(40, 40, 50, 0.7);
+  color: #ffe599;
+}
+
+.bodyRow { 
+  display: block; 
+  margin-top: 1.5rem; 
+}
+
+.gridWrap { 
+  overflow: auto; 
+  width: 100%; 
+  position: relative;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem 0;
+}
 
 /* Hide native scrollbars but keep scrolling functional */
 .datesRow,
@@ -27,39 +75,66 @@
   height: 0;
   display: none;
 }
-.grid { position: relative; height: auto; min-height: 200px; padding-bottom: 16px; }
-.gridCell { position: absolute; top: 0; bottom: 0; border-left: 1px solid rgba(255,255,255,0.03); }
+.grid { 
+  position: relative; 
+  height: auto; 
+  min-height: 250px; 
+  padding-bottom: 20px; 
+}
 
-/* Now marker centered in the gridWrap */
+.gridCell { 
+  position: absolute; 
+  top: 0; 
+  bottom: 0; 
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Now marker with enhanced styling */
 .nowMarker {
   position: absolute;
   left: 50%;
   top: 0;
   bottom: 0;
   transform: translateX(-50%);
-  pointer-events: auto; /* allow hover */
+  pointer-events: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 10;
 }
+
 .nowLine {
-  width: 2px;
-  background: rgba(255,255,255,0.85);
+  width: 3px;
+  background: linear-gradient(180deg, 
+    rgba(255, 20, 147, 0.9) 0%, 
+    rgba(255, 0, 128, 0.7) 50%,
+    rgba(181, 54, 255, 0.6) 100%);
   height: 100%;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+  box-shadow: 
+    0 0 10px rgba(255, 20, 147, 0.6),
+    0 0 20px rgba(255, 0, 128, 0.4);
   opacity: 0.95;
+  border-radius: 2px;
 }
+
 .nowLabel {
   position: absolute;
   top: 6px;
   transform: translateY(-100%);
-  background: rgba(0,0,0,0.6);
+  background: linear-gradient(135deg, 
+    rgba(255, 20, 147, 0.9) 0%, 
+    rgba(181, 54, 255, 0.8) 100%);
   color: #fff;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-weight:700;
-  font-size:12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
   pointer-events: none;
+  box-shadow: 
+    0 4px 12px rgba(255, 20, 147, 0.4),
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.5px;
 }
 
 /* Dim the timeline content while hovering the now marker */
@@ -76,43 +151,116 @@
   opacity: 1 !important;
 }
 
-.eventBar { position: absolute; height: 48px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.6); overflow: hidden; display:flex; align-items:center; }
-.eventBarInner { display:flex; align-items:center; height:100%; padding: 0 10px; gap:8px; width:100%; }
-.eventTitle { font-weight:700; font-size:0.95rem; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.6); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
-.eventThumb { height: 36px; width: 64px; object-fit: cover; border-radius: 6px; margin-left:8px; }
+/* Event and Banner Bars with enhanced styling */
+.eventBar { 
+  position: absolute; 
+  height: 54px; 
+  border-radius: 12px; 
+  box-shadow: 
+    0 6px 18px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(59, 130, 246, 0.3);
+  overflow: hidden; 
+  display: flex; 
+  align-items: center;
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, 
+    rgba(30, 30, 50, 0.95) 0%, 
+    rgba(40, 40, 60, 0.9) 100%);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
 
-/* Banner pill thumbnail: left rounded image and small days badge on the right */
+.eventBar:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.8),
+    0 0 30px rgba(59, 130, 246, 0.5);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.eventBarInner { 
+  display: flex; 
+  align-items: center; 
+  height: 100%; 
+  padding: 0 12px; 
+  gap: 10px; 
+  width: 100%; 
+}
+
+.eventTitle { 
+  font-weight: 700; 
+  font-size: 1rem; 
+  color: #fff; 
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+  flex: 1;
+  letter-spacing: 0.3px;
+}
+
+.eventThumb { 
+  height: 42px; 
+  width: 70px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+  margin-left: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Banner pill thumbnail with enhanced styling */
 .bannerThumbWrap {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255,255,255,0.03);
-  padding: 4px 6px;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 5px 10px;
   border-radius: 999px;
-  margin-left: 8px;
+  margin-left: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
 }
+
+.bannerThumbWrap:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
 .bannerThumb {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 215, 0, 0.3);
 }
+
 .bannerDays {
-  background: rgba(0,0,0,0.45);
-  color: #ffd977;
-  padding: 6px 8px;
+  background: linear-gradient(135deg, 
+    rgba(255, 215, 0, 0.9) 0%, 
+    rgba(255, 180, 0, 0.8) 100%);
+  color: #1a1a2e;
+  padding: 6px 10px;
   border-radius: 999px;
-  font-weight:700;
+  font-weight: 700;
   font-size: 12px;
+  box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+  letter-spacing: 0.5px;
 }
 
 .eventDays {
-  background: rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.8) 0%, 
+    rgba(37, 99, 235, 0.7) 100%);
   color: #fff;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 999px;
-  font-weight:700;
+  font-weight: 700;
   font-size: 11px;
-  margin-left: 8px;
+  margin-left: 10px;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
