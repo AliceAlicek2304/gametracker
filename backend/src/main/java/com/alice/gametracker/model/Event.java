@@ -1,6 +1,8 @@
 package com.alice.gametracker.model;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,7 +47,7 @@ public class Event {
     private boolean isActive = true;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME2")
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private LocalDateTime createdDate = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
 
     @Column(name = "updated_at", nullable = true, columnDefinition = "DATETIME2")
     private LocalDateTime updatedDate;

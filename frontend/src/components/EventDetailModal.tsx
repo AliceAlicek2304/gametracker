@@ -24,9 +24,9 @@ const EventDetailModal: React.FC<Props> = ({ isOpen, onClose, event }) => {
 
   if (!isOpen || !event) return null;
 
-  const daysLeft = event.endAt ? Math.max(0, Math.floor((new Date(event.endAt).getTime() - now) / (1000*60*60*24))) : null;
-  const hoursLeft = event.endAt ? Math.floor(((new Date(event.endAt).getTime() - now) % (1000*60*60*24)) / (1000*60*60)) : null;
-  const minsLeft = event.endAt ? Math.floor(((new Date(event.endAt).getTime() - now) % (1000*60*60)) / (1000*60)) : null;
+  const daysLeft = event.endAt ? Math.max(0, Math.floor((new Date(event.endAt.replace('T', ' ')).getTime() - now) / (1000*60*60*24))) : null;
+  const hoursLeft = event.endAt ? Math.floor(((new Date(event.endAt.replace('T', ' ')).getTime() - now) % (1000*60*60*24)) / (1000*60*60)) : null;
+  const minsLeft = event.endAt ? Math.floor(((new Date(event.endAt.replace('T', ' ')).getTime() - now) % (1000*60*60)) / (1000*60)) : null;
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>

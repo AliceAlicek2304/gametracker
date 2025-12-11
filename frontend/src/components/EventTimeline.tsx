@@ -62,8 +62,8 @@ const EventTimeline: React.FC = () => {
     if (!events || events.length === 0) return;
     const parsed = events.map(e => ({
       ...e,
-      s: e.startAt ? new Date(e.startAt).getTime() : null,
-      eAt: e.endAt ? new Date(e.endAt as string).getTime() : null,
+      s: e.startAt ? new Date(e.startAt.replace('T', ' ')).getTime() : null,
+      eAt: e.endAt ? new Date((e.endAt as string).replace('T', ' ')).getTime() : null,
     }));
 
     let min = Infinity;
@@ -214,13 +214,13 @@ const EventTimeline: React.FC = () => {
 
             {/* banner rows first, then event rows */}
             {[...banners, ...events].map((ev, idx) => {
-              const s = ev.startAt ? new Date(ev.startAt).getTime() : null;
-              const e = ev.endAt ? new Date(ev.endAt as string).getTime() : null;
+              const s = ev.startAt ? new Date(ev.startAt.replace('T', ' ')).getTime() : null;
+              const e = ev.endAt ? new Date((ev.endAt as string).replace('T', ' ')).getTime() : null;
               const start = s ? Math.max(s, startDate) : startDate;
               const end = e ? Math.max(e, start + dayMs) : (start + dayMs);
               const left = Math.round((start - startDate) / dayMs) * dayWidth;
               const width = Math.max(Math.round((Math.max(end, start + dayMs) - start) / dayMs) * dayWidth, dayWidth);
-              const daysLeft = ev.endAt ? Math.max(0, Math.ceil((new Date(ev.endAt).getTime() - Date.now()) / dayMs)) : null;
+              const daysLeft = ev.endAt ? Math.max(0, Math.ceil((new Date(ev.endAt.replace('T', ' ')).getTime() - Date.now()) / dayMs)) : null;
               const onClick = () => {
                 if (ev.isBanner) {
                   navigate('/banners');

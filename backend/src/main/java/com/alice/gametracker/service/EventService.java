@@ -2,6 +2,8 @@ package com.alice.gametracker.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +45,9 @@ public class EventService {
         } else {
             event.setActive(request.getIsActive());
         }
-        event.setCreatedAt(LocalDateTime.now());
-        event.setUpdatedAt(LocalDateTime.now());
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
+        event.setCreatedAt(now);
+        event.setUpdatedAt(now);
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = fileStorageService.storeEventImage(imageFile);
@@ -72,7 +75,7 @@ public class EventService {
         if (request.getIsActive() != null) {
             event.setActive(request.getIsActive());
         }
-        event.setUpdatedAt(LocalDateTime.now());
+        event.setUpdatedAt(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             // Delete old image if present
@@ -111,7 +114,7 @@ public class EventService {
             }
             String imageUrl = fileStorageService.storeEventImage(imageFile);
             event.setImageUrl(imageUrl);
-            event.setUpdatedAt(LocalDateTime.now());
+            event.setUpdatedAt(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime());
         }
 
         Event updated = eventRepository.save(event);
@@ -146,7 +149,7 @@ public class EventService {
      * This implements the "currently active" definition: now < endAt (if endAt present) and isActive == true.
      */
     public List<EventResponse> findActiveResponses() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
         return eventRepository.findByIsActive(true).stream()
                 .filter(e -> e.getEndAt() == null || now.isBefore(e.getEndAt()))
                 .map(this::convertToResponse)
