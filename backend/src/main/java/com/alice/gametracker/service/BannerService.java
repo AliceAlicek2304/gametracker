@@ -1,6 +1,8 @@
 package com.alice.gametracker.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,7 +51,8 @@ public class BannerService {
 
     // Get currently running banners
     public List<BannerResponse> getCurrentBanners() {
-        List<Banner> banners = bannerRepository.findCurrentlyActiveBanners(LocalDateTime.now());
+        LocalDateTime vietnamNow = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
+        List<Banner> banners = bannerRepository.findCurrentlyActiveBanners(vietnamNow);
         return banners.stream()
                 .peek(Banner::updateStatus)
                 .map(this::convertToResponse)
@@ -58,7 +61,8 @@ public class BannerService {
 
     // Get upcoming banners
     public List<BannerResponse> getUpcomingBanners() {
-        List<Banner> banners = bannerRepository.findUpcomingBanners(LocalDateTime.now());
+        LocalDateTime vietnamNow = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
+        List<Banner> banners = bannerRepository.findUpcomingBanners(vietnamNow);
         return banners.stream()
                 .peek(Banner::updateStatus)
                 .map(this::convertToResponse)
@@ -67,7 +71,8 @@ public class BannerService {
 
     // Get past banners (history)
     public List<BannerResponse> getPastBanners() {
-        List<Banner> banners = bannerRepository.findPastBanners(LocalDateTime.now());
+        LocalDateTime vietnamNow = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
+        List<Banner> banners = bannerRepository.findPastBanners(vietnamNow);
         return banners.stream()
                 .peek(Banner::updateStatus)
                 .map(this::convertToResponse)
@@ -379,7 +384,8 @@ public class BannerService {
 
     // Get featured 5-star character and weapon IDs from active banners
     public FeaturedFiveStarIdsResponse getFeaturedFiveStarIds() {
-        List<Banner> activeBanners = bannerRepository.findCurrentlyActiveBanners(LocalDateTime.now());
+        LocalDateTime vietnamNow = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
+        List<Banner> activeBanners = bannerRepository.findCurrentlyActiveBanners(vietnamNow);
         
         Set<Long> characterIds = new HashSet<>();
         Set<Long> weaponIds = new HashSet<>();
