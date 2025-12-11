@@ -1,6 +1,8 @@
     package com.alice.gametracker.model;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -232,7 +234,8 @@ public class Banner {
 
     // Helper method to update status based on current time
     public void updateStatus() {
-        LocalDateTime now = LocalDateTime.now();
+        // Use Vietnam timezone (UTC+7) since database stores Vietnam local time
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
         
         if (now.isBefore(startDate)) {
             this.status = BannerStatus.UPCOMING;
@@ -245,7 +248,8 @@ public class Banner {
 
     // Helper method to check if banner is currently active
     public boolean isCurrentlyActive() {
-        LocalDateTime now = LocalDateTime.now();
+        // Use Vietnam timezone (UTC+7) since database stores Vietnam local time
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
         return isActive && 
                !now.isBefore(startDate) && 
                !now.isAfter(endDate);

@@ -128,8 +128,8 @@ const BannerPage: React.FC = () => {
   }, [backgrounds]);
 
   const getTimeRemaining = (endDate: string) => {
-    // Backend stores Vietnam time, parse as local time
-    const end = new Date(endDate).getTime();
+    // Parse as local time by replacing 'T' with space, forcing browser to use local timezone
+    const end = new Date(endDate.replace('T', ' ')).getTime();
     const now = Date.now();
     const diff = end - now;
 
@@ -142,8 +142,8 @@ const BannerPage: React.FC = () => {
   };
 
   const getTimeUntilStart = (startDate: string) => {
-    // Backend stores Vietnam time, parse as local time
-    const start = new Date(startDate).getTime();
+    // Parse as local time by replacing 'T' with space, forcing browser to use local timezone
+    const start = new Date(startDate.replace('T', ' ')).getTime();
     const now = Date.now();
     const diff = start - now;
 
