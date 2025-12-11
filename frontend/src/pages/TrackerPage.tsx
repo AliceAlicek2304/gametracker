@@ -241,10 +241,18 @@ const TrackerPage: React.FC = () => {
           <div className={styles.instructionCard}>
             <h3 className={styles.instructionTitle}>
               <span className={styles.stepNumber}>1</span>
-              Lấy Gacha URL
+              Mở Game
             </h3>
             <p className={styles.instructionText}>
-              Mở <strong>PowerShell</strong> và chạy lệnh sau để lấy URL (URL sẽ được tự động copy vào clipboard):
+              Mở <strong>Wuthering Waves</strong> và đăng nhập vào game. Sau đó mở trang <strong>Convene History</strong> (Lịch sử Gacha) trong game.
+            </p>
+
+            <h3 className={styles.instructionTitle} style={{ marginTop: '1.5rem' }}>
+              <span className={styles.stepNumber}>2</span>
+              Mở PowerShell và Copy Lệnh
+            </h3>
+            <p className={styles.instructionText}>
+              Mở <strong>PowerShell</strong> (bấm phím <strong>Windows + X</strong> rồi chọn <strong>Windows PowerShell</strong>) và chạy lệnh sau để lấy URL:
             </p>
             <div className={styles.codeBlock}>
               <code className={styles.code}>{powershellCommand}</code>
@@ -254,14 +262,20 @@ const TrackerPage: React.FC = () => {
                 onClick={handleCopyCommand}
                 title="Copy lệnh"
               >
-                📋 Copy
+                📋 COPY
               </button>
             </div>
+            <p className={styles.instructionText} style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: '#ffd977' }}>
+              💡 <strong>Lưu ý:</strong> URL sẽ tự động được copy vào clipboard sau khi chạy lệnh thành công.
+            </p>
 
             <h3 className={styles.instructionTitle} style={{ marginTop: '1.5rem' }}>
-              <span className={styles.stepNumber}>2</span>
-              Dán URL và Import
+              <span className={styles.stepNumber}>3</span>
+              Quay Lại Web và Dán URL
             </h3>
+            <p className={styles.instructionText}>
+              Quay lại trang web này và dán URL vào ô bên dưới, sau đó bấm <strong>Import Dữ Liệu</strong>:
+            </p>
             <div className={styles.importSection}>
               <input
                 type="text"
