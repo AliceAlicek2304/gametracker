@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Tesseract from 'tesseract.js';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import { apiFetch } from '../utils/apiHelper';
 import styles from './InsightPage.module.css';
 import { characterWeights } from '../data/characterWeights.ts';
 import type { CharacterWeights } from '../data/characterWeights.ts';
@@ -57,7 +58,7 @@ const InsightPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch backgrounds
-    fetch('/api/background')
+    apiFetch('background')
       .then(response => response.json())
       .then(data => {
         const bgUrls = Array.isArray(data) && data.length > 0 && typeof data[0] === 'object'
