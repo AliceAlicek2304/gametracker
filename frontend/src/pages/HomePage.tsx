@@ -53,7 +53,8 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   const getTimeRemaining = (endDate: string) => {
-    const end = new Date(endDate).getTime();
+    // Backend returns UTC without 'Z', add it to parse correctly
+    const end = new Date(endDate + 'Z').getTime();
     const now = Date.now();
     const diff = end - now;
 
@@ -67,7 +68,8 @@ const HomePage: React.FC = () => {
   };
 
   const getTimeUntilStart = (startDate: string) => {
-    const start = new Date(startDate).getTime();
+    // Backend returns UTC without 'Z', add it to parse correctly
+    const start = new Date(startDate + 'Z').getTime();
     const now = Date.now();
     const diff = start - now;
 
@@ -277,7 +279,7 @@ const HomePage: React.FC = () => {
                     {banner.name}
                   </div>
                   <div className={styles.bannerDates}>
-                    {new Date(banner.startDate).toLocaleDateString('vi-VN')} - {new Date(banner.endDate).toLocaleDateString('vi-VN')}
+                    {new Date(banner.startDate + 'Z').toLocaleDateString('vi-VN')} - {new Date(banner.endDate + 'Z').toLocaleDateString('vi-VN')}
                   </div>
                   <div className={styles.bannerTimeLeft}>
                     {banner.status === 'UPCOMING' 

@@ -354,8 +354,8 @@ const BannerManagement: React.FC = () => {
               </div>
               <div className={styles.bannerDates}>
                 <div>Type: {banner.bannerType === 'CHARACTER' ? '🎭 Character' : '⚔️ Weapon'}</div>
-                <div>Start: {new Date(banner.startDate).toLocaleString()}</div>
-                <div>End: {new Date(banner.endDate).toLocaleString()}</div>
+                <div>Start: {new Date(banner.startDate + 'Z').toLocaleString()}</div>
+                <div>End: {new Date(banner.endDate + 'Z').toLocaleString()}</div>
               </div>
               <div className={styles.characters}>
                 {banner.bannerType === 'CHARACTER' ? (

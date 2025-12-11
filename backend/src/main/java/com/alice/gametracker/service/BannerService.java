@@ -42,6 +42,7 @@ public class BannerService {
     public List<BannerResponse> getAllActiveBanners() {
         List<Banner> banners = bannerRepository.findByIsActiveTrueOrderByStartDateDesc();
         return banners.stream()
+                .peek(Banner::updateStatus)
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -50,6 +51,7 @@ public class BannerService {
     public List<BannerResponse> getCurrentBanners() {
         List<Banner> banners = bannerRepository.findCurrentlyActiveBanners(LocalDateTime.now());
         return banners.stream()
+                .peek(Banner::updateStatus)
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -58,6 +60,7 @@ public class BannerService {
     public List<BannerResponse> getUpcomingBanners() {
         List<Banner> banners = bannerRepository.findUpcomingBanners(LocalDateTime.now());
         return banners.stream()
+                .peek(Banner::updateStatus)
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
@@ -66,6 +69,7 @@ public class BannerService {
     public List<BannerResponse> getPastBanners() {
         List<Banner> banners = bannerRepository.findPastBanners(LocalDateTime.now());
         return banners.stream()
+                .peek(Banner::updateStatus)
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
