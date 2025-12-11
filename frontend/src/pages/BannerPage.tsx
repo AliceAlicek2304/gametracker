@@ -128,8 +128,8 @@ const BannerPage: React.FC = () => {
   }, [backgrounds]);
 
   const getTimeRemaining = (endDate: string) => {
-    // Backend returns UTC without 'Z', add it to parse correctly
-    const end = new Date(endDate + 'Z').getTime();
+    // Backend stores Vietnam time, parse as local time
+    const end = new Date(endDate).getTime();
     const now = Date.now();
     const diff = end - now;
 
@@ -142,8 +142,8 @@ const BannerPage: React.FC = () => {
   };
 
   const getTimeUntilStart = (startDate: string) => {
-    // Backend returns UTC without 'Z', add it to parse correctly
-    const start = new Date(startDate + 'Z').getTime();
+    // Backend stores Vietnam time, parse as local time
+    const start = new Date(startDate).getTime();
     const now = Date.now();
     const diff = start - now;
 
