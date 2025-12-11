@@ -75,7 +75,7 @@ const Header: React.FC = () => {
 
             {/* Tools Dropdown */}
             <div className={styles['nav-dropdown']}>
-              <div className={`${styles['nav-link']} ${(location.pathname.startsWith('/banners') || location.pathname.startsWith('/tracker')) ? styles['nav-link-active'] : ''}`}>
+              <div className={`${styles['nav-link']} ${(location.pathname.startsWith('/banners') || location.pathname.startsWith('/tracker') || location.pathname.startsWith('/insight')) ? styles['nav-link-active'] : ''}`}>
                 Công cụ ▼
               </div>
               <div className={styles['dropdown-menu']}>
@@ -84,6 +84,9 @@ const Header: React.FC = () => {
                 </Link>
                 <Link to="/tracker" className={styles['dropdown-item']}>
                   Tracker
+                </Link>
+                <Link to="/insight" className={styles['dropdown-item']}>
+                  Insight
                 </Link>
               </div>
             </div>

@@ -9,6 +9,7 @@ import EchoPage from './pages/EchoPage';
 import EchoDetailPage from './pages/EchoDetailPage';
 import BannerPage from './pages/BannerPage';
 import EventPage from './pages/EventPage';
+import InsightPage from './pages/InsightPage';
 import Dashboard from './admin/Dashboard';
 import styles from './App.module.css';
 import { ToastContainer } from 'react-toastify';
@@ -44,6 +45,7 @@ function App() {
             <Route path="/banners" element={<BannerPage />} />
             <Route path="/events" element={<EventPage />} />
             <Route path="/tracker" element={<TrackerPage />} />
+            <Route path="/insight" element={<InsightPage />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
           </Routes>

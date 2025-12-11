@@ -69,6 +69,43 @@
    - Filter theo rarity
    - Phân trang
 
+### 🔍 Wuthering Insight (Echo Analyzer)
+**Phân tích tự động Echo stats từ ảnh Showcase game!**
+
+#### Tính Năng:
+- 📷 **OCR Recognition**: Quét tự động thông tin nhân vật và 5 echoes từ ảnh
+- 🎯 **Stat Analysis**: Phân tích 25 stat lines (5 echoes × 5 stats mỗi echo)
+- ⚔️ **Crit Stats**: Tính toán tổng Crit Rate + Crit DMG
+- ⭐ **Weighted Stats**: Xếp hạng stats theo độ quan trọng với nhân vật
+- 🏆 **Tier System**: 8 mức tier cho mỗi stat (S+ đến F)
+- 🎨 **Visual Analysis**: Hiển thị tier bar, icon stats, và visual feedback
+
+#### Cách Sử Dụng:
+
+1. **Tạo ảnh Showcase** trong game:
+   - Vào Character > Showcase
+   - Sắp xếp 5 echoes tốt nhất
+   - Screenshot (1920×1080)
+
+2. **Hoặc dùng bot Discord:**
+   - Vào Wuthering Waves Discord server
+   - Chạy command: `/create`
+   - Bot sẽ tự động tạo ảnh showcase chuẩn
+
+3. **Upload lên Wuthering Insight:**
+   - Mở trang [Wuthering Insight](https://trackerplus.site/insight)
+   - Click "📤 Chọn ảnh showcase"
+   - Chọn file PNG/JPG (1920×1080)
+   - Chờ phân tích hoàn tất
+
+4. **Xem kết quả:**
+   - Nhân vật được nhận diện
+   - 5 echoes với stats chi tiết
+   - Crit value tổng cộng
+   - Weighted score từng echo
+   - Filter theo Crit hoặc Weighted stats
+   - Upload lại ảnh khác để so sánh
+
 ---
 
 ## 🛠️ Tech Stack
