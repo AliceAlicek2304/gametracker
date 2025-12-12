@@ -101,8 +101,15 @@ public class AccountService {
         tokenRepository.save(emailToken);
         
         // Send verification email asynchronously
-        emailService.sendVerificationEmail(savedAccount.getEmail(), verificationToken);
-        logger.info("Verification email queued for: {}", savedAccount.getEmail());
+        // Wrap in try-catch to prevent transaction rollback if email sending fails
+        try {
+            emailService.sendVerificationEmail(savedAccount.getEmail(), verificationToken);
+            logger.info("Verification email queued for: {}", savedAccount.getEmail());
+        } catch (Exception e) {
+            // Log error but don't fail the registration
+            logger.error("Failed to queue verification email for: {}. Error: {}", savedAccount.getEmail(), e.getMessage());
+            logger.warn("Account created successfully but email sending failed. User can resend verification email later.");
+        }
         
         return convertToAccountResponse(savedAccount);
     }

@@ -92,7 +92,11 @@ public class EmailService {
             
         } catch (MessagingException e) {
             logger.error("Failed to send verification email to: {}", to, e);
-            throw new RuntimeException("Failed to send verification email", e);
+            // Don't throw exception to avoid transaction rollback
+            // The registration should succeed even if email fails
+        } catch (Exception e) {
+            logger.error("Unexpected error sending verification email to: {}", to, e);
+            // Don't throw exception to avoid transaction rollback
         }
     }
     
