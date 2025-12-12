@@ -110,7 +110,6 @@
     rgba(157, 0, 255, 0.3) 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  filter: blur(20px);
   transform: translateZ(-50px);
 }
 
